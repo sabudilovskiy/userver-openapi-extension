@@ -6,7 +6,7 @@
 
 namespace uopenapi::utils
 {
-constexpr std::size_t k_len_fixed_string = 32;
+constexpr std::size_t k_len_fixed_string = UOPENAPI_FIXED_STRING_SIZE;
 
 struct constexpr_string
 {
