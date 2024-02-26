@@ -10,9 +10,8 @@ namespace userver::formats::serialize{
     formats::json::Value Serialize (const T& t, userver::formats::serialize::To<formats::json::Value>){
         formats::json::ValueBuilder json;
         auto one_field = [&]<typename Info>(auto& field, Info) {
-            auto req = uopenapi::reflective::requirements<T, Info::name>;
             auto name = Info::name.AsString();
-            validate(field, req);
+            uopenapi::reflective::call_validate<T, Info::name>(field);
             json[name] = field;
         };
         uopenapi::pfr_extension::for_each_named_field(t, one_field);

@@ -10,11 +10,10 @@ namespace userver::formats::parse{
     T Parse (const userver::formats::json::Value& value, userver::formats::parse::To<T>){
         T t;
         auto one_field = [&]<typename Info>(auto& field, Info) {
-            auto req = uopenapi::reflective::requirements<T, Info::name>;
             using F = std::remove_cvref_t<decltype(field)>;
             auto name = Info::name.AsStringView();
             field = value[name].template As<F>();
-            validate(field, req);
+            uopenapi::reflective::call_validate<T, Info::name>(field);
         };
         uopenapi::pfr_extension::for_each_named_field(t, one_field);
         return t;

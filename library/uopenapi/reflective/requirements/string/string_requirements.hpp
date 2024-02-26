@@ -6,39 +6,38 @@
 #include <uopenapi/utils/formatted_exception.hpp>
 
 namespace uopenapi::reflective{
-    struct basic_string_requirements{
-        std::optional<std::size_t>& min_length;
-        std::optional<std::size_t>& max_length;
-        std::optional<std::string>& pattern;
-    };
 
-    void validate(std::string_view str, basic_string_requirements requirements);
+    void check_pattern(std::string_view str, std::string_view pattern);
 
-    template <utils::constexpr_string Format = "">
+    template <utils::ce::string Format = "">
     struct string_requirements{
-        std::optional<std::size_t> min_length;
-        std::optional<std::size_t> max_length;
-        std::optional<std::string> pattern;
+        utils::ce::optional<std::size_t> min_length;
+        utils::ce::optional<std::size_t> max_length;
+        utils::ce::optional<utils::ce::string> pattern;
         static constexpr auto format = Format;
     };
 
-    template <utils::constexpr_string Format>
+    template <utils::ce::string Format>
     struct string_validator{
         //must have static validate(std::string_view)
     };
 
     template <>
     struct string_validator<"">{
-        //must have static validate(std::string_view)
+        constexpr static void validate(std::string_view){
+            //no-op
+        }
     };
 
-    template <utils::constexpr_string Format = "">
-    void validate(std::string_view str, string_requirements<Format> requirements){
-        validate(str, basic_string_requirements{
-            .min_length = requirements.min_length,
-            .max_length = requirements.max_length,
-            .pattern = requirements.pattern
-        });
-        string_validator<Format>::validate(str);
+    template <string_requirements req>
+    void validate(std::string_view str){
+        if (req.min_length && str.size() < *req.min_length){
+            throw utils::formated_exception("str.size: {}, min_length: {}", str.size(), *req.max_length);
+        }
+        if (req.max_length && str.size() > *req.max_length){
+            throw utils::formated_exception("str.size: {}, min_length: {}", str.size(), *req.max_length);
+        }
+        string_validator<req.format>::validate(str);
+        check_pattern(str, req.format.AsStringView());
     }
 }

@@ -4,22 +4,22 @@
 #include <cstddef>
 #include <string_view>
 
-namespace uopenapi::utils
+namespace uopenapi::utils::ce
 {
 constexpr std::size_t k_len_fixed_string = UOPENAPI_FIXED_STRING_SIZE;
 
-struct constexpr_string
+struct string
 {
-    constexpr constexpr_string() noexcept = default;
+    constexpr string() noexcept = default;
 
     template <std::size_t Size>
-    constexpr constexpr_string(const char (&str)[Size]) noexcept : len(Size - 1)
+    constexpr string(const char (&str)[Size]) noexcept : len(Size - 1)
             {
                     static_assert(Size <= capacity);
             std::copy_n(str, Size, data_.begin());
             }
 
-    constexpr constexpr_string(std::string_view sv){
+    constexpr string(std::string_view sv){
         if (sv.size() > k_len_fixed_string){
             throw std::runtime_error("sv too big");
         }
@@ -46,12 +46,12 @@ struct constexpr_string
     {
         return data_.data();
     }
-    friend constexpr bool operator==(const constexpr_string& string, const char* rhs)
+    friend constexpr bool operator==(const string& string, const char* rhs)
     {
         std::string_view right{rhs};
         return string.AsStringView() == right;
     }
-    friend constexpr bool operator==(const char* lhs, const constexpr_string& string)
+    friend constexpr bool operator==(const char* lhs, const string& string)
     {
         return string == lhs;
     }
@@ -77,6 +77,6 @@ public:
     std::array<char, capacity> data_{};
 };
 
-constexpr constexpr_string k_empty_fixed_string{};
+constexpr string k_empty_fixed_string{};
 
 }  // namespace utils

@@ -4,7 +4,7 @@
 #include <optional>
 #include <string_view>
 
-namespace uopenapi::utils{
+namespace uopenapi::utils::ce{
     struct access_to_null : public std::exception
     {
     public:
@@ -24,17 +24,20 @@ namespace uopenapi::utils{
     static constexpr null_t null = {};
 
     template <typename T>
-    struct constexpr_optional
+    struct optional
     {
         using value_type = T;
-        constexpr constexpr_optional() noexcept : value_(T{}), has_value_(false)
+        constexpr optional() noexcept : value_(T{}), has_value_(false)
         {
         }
-        constexpr constexpr_optional(const T& value) noexcept
+        constexpr optional(const T& value) noexcept
                 : value_(value), has_value_(true)
         {
         }
-        constexpr constexpr_optional(null_t) noexcept
+        constexpr operator bool() const{
+            return has_value();
+        }
+        constexpr optional(null_t) noexcept
                 : value_{}, has_value_(false)
         {
         }
@@ -78,13 +81,13 @@ namespace uopenapi::utils{
             }
             return value_;
         }
-        constexpr constexpr_optional& operator=(const T& t) noexcept
+        constexpr optional& operator=(const T& t) noexcept
         {
             value_ = t;
             has_value_ = true;
             return *this;
         }
-        constexpr constexpr_optional& operator=(null_t) noexcept
+        constexpr optional& operator=(null_t) noexcept
         {
             has_value_ = false;
             return *this;

@@ -3,7 +3,7 @@
 #include <uopenapi/reflective/requirements/string/string_requirements.hpp>
 
 namespace uopenapi::reflective{
-    constexpr utils::constexpr_string kDateTime = "datetime";
+    constexpr utils::ce::string kDateTime = "datetime";
     template <>
     struct string_validator<kDateTime> {
         static void validate(std::string_view str);

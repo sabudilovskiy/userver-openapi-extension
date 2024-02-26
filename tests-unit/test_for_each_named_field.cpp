@@ -4,9 +4,9 @@
 #include <uopenapi/json/reflectie_serialize.hpp>
 #include <userver/formats/parse/common_containers.hpp>
 #include <userver/formats/serialize/common_containers.hpp>
-#include <uopenapi/utils/constexpr_string.hpp>
 #include <uopenapi/reflective/requirements/requirements.hpp>
 #include <uopenapi/reflective/requirements/string/format_datetime.hpp>
+#include <uopenapi/reflective/requirements/integer/integer_requirements.hpp>
 
 namespace {
     struct SecretStruct{
@@ -14,26 +14,14 @@ namespace {
         std::string b;
         std::optional<std::string> c;
     };
-    struct IntRequirenments{
-        std::optional<int> min;
-        std::optional<int> max;
-    };
-    void validate(int value, IntRequirenments req){
-        if (value < req.min){
-            throw std::runtime_error("min");
-        }
-        if (value > req.max){
-            throw std::runtime_error("max");
-        }
-    }
 }
 
-REQUIREMENTS_UOPENAPI(SecretStruct, a) = IntRequirenments{
-        .min = 4,
-        .max = 6
+REQUIREMENTS_CE_UOPENAPI(SecretStruct, a) = uopenapi::reflective::integer_requirements<int>{
+    .minimum = 0,
+    .exclusive_minimum = true
 };
 
-REQUIREMENTS_UOPENAPI(SecretStruct, b) = uopenapi::reflective::string_requirements<kDateTime>{};
+REQUIREMENTS_CE_UOPENAPI(SecretStruct, b) = uopenapi::reflective::string_requirements<kDateTime>{};
 
 UTEST(Openapi_json_Parse, SomeStruct){
     userver::formats::json::ValueBuilder json{userver::formats::common::Type::kObject};
