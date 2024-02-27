@@ -6,6 +6,6 @@ namespace uopenapi::reflective{
     constexpr utils::ce::string kDateTime = "datetime";
     template <>
     struct string_validator<kDateTime> {
-        static void validate(std::string_view str);
+        static validate_result validate(std::string_view str);
     };
 }

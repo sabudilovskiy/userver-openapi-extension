@@ -11,7 +11,13 @@ namespace userver::formats::serialize{
         formats::json::ValueBuilder json;
         auto one_field = [&]<typename Info>(auto& field, Info) {
             auto name = Info::name.AsString();
-            uopenapi::reflective::call_validate<T, Info::name>(field);
+            auto result = uopenapi::reflective::call_validate<T, Info::name>(field);
+            if (!result){
+                throw uopenapi::utils::formatted_exception(
+                        "An error occurred while serializing the field. Field name: {}, message: {}",
+                        name,
+                        result.error_message());
+            }
             json[name] = field;
         };
         uopenapi::pfr_extension::for_each_named_field(t, one_field);

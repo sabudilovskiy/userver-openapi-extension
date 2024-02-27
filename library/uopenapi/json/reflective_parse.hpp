@@ -1,8 +1,9 @@
 #pragma once
 #include <type_traits>
-#include "uopenapi/reflective/requirements/requirements.hpp"
+#include <uopenapi/reflective/requirements/requirements.hpp>
 #include <uopenapi/reflective/reflectivable.hpp>
-#include "userver/formats/json.hpp"
+#include <userver/formats/json.hpp>
+#include <uopenapi/utils/formatted_exception.hpp>
 
 namespace userver::formats::parse{
 
@@ -13,7 +14,14 @@ namespace userver::formats::parse{
             using F = std::remove_cvref_t<decltype(field)>;
             auto name = Info::name.AsStringView();
             field = value[name].template As<F>();
-            uopenapi::reflective::call_validate<T, Info::name>(field);
+            auto result = uopenapi::reflective::call_validate<T, Info::name>(field);
+            if (!result){
+                throw uopenapi::utils::formatted_exception(
+                        "An error occurred while parsing the field on path: [{}]. Field name: [{}], message: [{}]",
+                        value.GetPath(),
+                        name,
+                        result.error_message());
+            }
         };
         uopenapi::pfr_extension::for_each_named_field(t, one_field);
         return t;
