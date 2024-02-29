@@ -3,7 +3,7 @@
 #include <optional>
 #include <uopenapi/utils/constexpr_optional.hpp>
 #include <uopenapi/utils/constexpr_string.hpp>
-#include <uopenapi/reflective/requirements/validate_result.hpp>
+#include <uopenapi/reflective/validate_result.hpp>
 
 namespace uopenapi::reflective{
 

@@ -9,8 +9,8 @@ namespace uopenapi::pfr_extension{
         template <std::size_t I>
         constexpr void one_field_consume(auto& t, auto& functor) {
             using T = std::remove_cvref_t<decltype(t)>;
-            auto info = field_info<I, boost::pfr::get_name<I, T>()>();
-            functor(boost::pfr::get<I>(t), info);
+            using Info = field_info<I, boost::pfr::get_name<I, T>()>;
+            functor.template operator()<Info>(boost::pfr::get<I>(t));
         }
         template <std::size_t... I>
         constexpr void for_each_named_field_helper(

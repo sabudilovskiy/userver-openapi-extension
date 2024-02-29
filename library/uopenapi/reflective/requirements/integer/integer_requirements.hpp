@@ -1,7 +1,7 @@
 #pragma once
 #include <optional>
 #include <numeric>
-#include <uopenapi/reflective/requirements/validate_result.hpp>
+#include <uopenapi/reflective/validate_result.hpp>
 #include <uopenapi/utils/constexpr_optional.hpp>
 
 namespace uopenapi::reflective {

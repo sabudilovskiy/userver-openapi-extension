@@ -6,7 +6,7 @@
 #include <uopenapi/utils/formatted_exception.hpp>
 #include <uopenapi/utils/indirect_hash.hpp>
 #include <uopenapi/utils/indirect_comparator.hpp>
-#include <uopenapi/reflective/requirements/validate_result.hpp>
+#include "uopenapi/reflective/validate_result.hpp"
 
 namespace uopenapi::reflective{
     template <array_requirements req, typename T>

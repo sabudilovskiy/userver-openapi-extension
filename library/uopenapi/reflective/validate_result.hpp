@@ -3,6 +3,15 @@
 #include <string>
 
 namespace uopenapi::reflective{
+    template <typename T>
+    concept is_validate_result = requires(T&& t, void(* some_bool_function)(bool)){
+        {
+            some_bool_function((T&&)t)
+        };
+        {
+            std::forward<T>(t).error_message()
+        };
+    };
     struct validate_result{
         static validate_result error(std::exception& exc){
             return validate_result{
@@ -33,11 +42,13 @@ namespace uopenapi::reflective{
             return error_message_;
         }
 
-        auto error_message() &&{
+        auto error_message() && {
             return std::move(error_message_);
         }
     public:
         bool has_error_ = false;
         std::string error_message_;
     };
+
+    static_assert(is_validate_result<validate_result>);
 }
