@@ -1,0 +1,16 @@
+BasedOnStyle: Google
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+BreakBeforeBraces: Attach
+AllowShortIfStatementsOnASingleLine: true
+AllowShortLoopsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: true
+ColumnLimit: 80
+PointerAlignment: Left
+SpaceAfterCStyleCast: true
+DerivePointerAlignment: false
+AlignTrailingComments: true
+SortIncludes: true
+RequiresClausePosition: WithPreceding
+IndentRequiresClause: true
