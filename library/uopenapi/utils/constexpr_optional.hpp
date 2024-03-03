@@ -1,8 +1,6 @@
 #pragma once
 
 #include <cstddef>
-#include <optional>
-#include <string_view>
 
 namespace uopenapi::utils::ce {
 struct access_to_null : public std::exception {
@@ -22,9 +20,9 @@ static constexpr null_t null = {};
 template <typename T>
 struct optional {
     using value_type = T;
-    constexpr optional() noexcept : value_(T{}), has_value_(false) {}
+    constexpr optional() noexcept : has_value_(false), value_(T{}) {}
     constexpr optional(const T& value) noexcept
-        : value_(value), has_value_(true) {}
+        : has_value_(true), value_(value) {}
     constexpr operator bool() const { return has_value(); }
     constexpr optional(null_t) noexcept : value_{}, has_value_(false) {}
     constexpr bool has_value() const noexcept { return has_value_; }
@@ -36,7 +34,7 @@ struct optional {
         return value_;
     }
     constexpr const T& operator*() const { return value(); }
-    constexpr const T& operator*() { return value(); }
+    constexpr T& operator*() { return value(); }
     constexpr const T& value() const {
         if (is_null()) {
             throw access_to_null();
@@ -73,7 +71,8 @@ struct optional {
     }
 
    public:
-    T value_;
+    //поля переставлены местами, потому что clang от 15 до 17 крашится в некоторых контекстах
     bool has_value_;
+    T value_;
 };
 }  // namespace uopenapi::utils::ce

@@ -1,4 +1,4 @@
-#pragma once
+    #pragma once
 #include <uopenapi/utils/name_type.hpp>
 
 namespace uopenapi::reflective {

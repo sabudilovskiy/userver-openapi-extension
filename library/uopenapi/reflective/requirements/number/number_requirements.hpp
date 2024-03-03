@@ -3,20 +3,24 @@
 #include <optional>
 #include <uopenapi/reflective/validate_result.hpp>
 #include <uopenapi/utils/constexpr_optional.hpp>
+#include <uopenapi/utils/nttp_adl.hpp>
 
 namespace uopenapi::reflective {
 
 template <typename T>
-struct integer_requirements {
+struct number_requirements {
     utils::ce::optional<T> minimum;
     utils::ce::optional<T> maximum;
+    //exclusiveMinimum
     bool exclusive_minimum = false;
+    //exclusiveMaximum
     bool exclusive_maximum = false;
+    //multipleOf
     utils::ce::optional<T> multiple_of;
 };
 
-template <integer_requirements req, typename T>
-validate_result validate(const T& value) {
+template <typename T, number_requirements<T> req>
+validate_result validate(const T& value, utils::nttp_adl<number_requirements<T>, req>) {
     if (req.minimum) {
         if (value < *req.minimum) {
             return validate_result::error("value: {} less than minumum: {}",

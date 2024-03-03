@@ -24,20 +24,21 @@ struct schema_appender<std::vector<T>, array_requirements> {
             field_node["uniqueItems"] = true;
         }
         auto items_node = field_node["items"];
-        schema_appender<T, none_requirements>::append(
+        schema_appender<T, none_requirements>::template append<none_requirements{}>(
             schema.from_node(items_node));
     }
 };
 template <typename T>
-struct schema_appender<T, none_requirements> {
-    template <array_requirements requirements>
+struct schema_appender<std::vector<T>, none_requirements> {
+    template <none_requirements>
     static void append(schema_view schema) {
         auto& field_node = schema.cur_place;
         if (!field_node.IsObject()) {
             field_node = userver::formats::common::Type::kObject;
         }
+        field_node["type"] = "array";
         auto items_node = field_node["items"];
-        schema_appender<T, none_requirements>::append(
+        schema_appender<T, none_requirements>::template append<none_requirements{}>(
             schema.from_node(items_node));
     }
 };

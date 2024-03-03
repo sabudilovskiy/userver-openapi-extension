@@ -9,8 +9,8 @@
 #include <vector>
 
 namespace uopenapi::reflective {
-template <array_requirements req, typename T>
-validate_result validate(const std::vector<T>& value) {
+template <typename T, array_requirements req>
+validate_result validate(const std::vector<T>& value, utils::nttp_adl<array_requirements, req>) {
     if (req.min_items && *req.min_items > value.size()) {
         return validate_result::error(
             "array has size: {} less than min_items: {}", value.size(),
