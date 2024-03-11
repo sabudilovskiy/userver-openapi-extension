@@ -4,7 +4,7 @@
 namespace uopenapi::utils {
 template <typename T, typename Hash>
 struct indirect_hash {
-    std::size_t operator()(const T& t) {
+    std::size_t operator()(const T& t) const {
         if (!t) {
             return 0;
         }

@@ -3,7 +3,7 @@
 #include <uopenapi/reflective/alias/alias_meta.hpp>
 #include <uopenapi/reflective/reflectivable.hpp>
 #include <uopenapi/reflective/requirements/requirements_field.hpp>
-#include <uopenapi/utils/is_optional/is_optional.hpp>
+#include <uopenapi/utils/optional_meta//is_optional.hpp>
 #include <userver/formats/yaml.hpp>
 
 namespace uopenapi::reflective {

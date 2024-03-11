@@ -18,6 +18,8 @@ constexpr void for_each_named_field_helper(
     (one_field_consume<I>(t, functor), ...);
 }
 }  // namespace details
+
+//<typename Info, typename F>
 constexpr void for_each_named_field(auto&& t, auto&& functor) {
     using T = std::remove_cvref_t<decltype(t)>;
     constexpr std::size_t N = boost::pfr::tuple_size_v<T>;

@@ -3,7 +3,7 @@
 namespace uopenapi::utils {
 template <typename T>
 struct indirect_comparator {
-    bool operator()(const T& left, const T& right) {
+    bool operator()(const T& left, const T& right) const {
         if (!left && !right) {
             return true;
         }

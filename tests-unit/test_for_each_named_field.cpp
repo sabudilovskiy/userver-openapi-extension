@@ -1,26 +1,43 @@
 #include <userver/utest/utest.hpp>
-#include <uopenapi/reflective/schema/schema.hpp>
-#include <vector>
+#include <uopenapi/all.hpp>
 #include <unordered_map>
 #include <string>
 
-namespace {
-    struct SecretStruct{
-        std::string c;
-        int a; //min: 1, max: 2
-        std::string b;
-    };
-    struct SecretStruct2{
-        std::string d;
-        int a; //min: 1, max: 2
-        std::string b;
-    };
-}
+using namespace uopenapi::reflective;
+
+struct SecretStruct{
+    std::string b;
+};
+
+struct Data{
+    int a;
+    int b;
+    int c;
+    int d;
+    std::string test;
+};
+
+REQUIREMENTS_CE_UOPENAPI(Data, a) = number_requirements<int>{
+    .minimum  = 1,
+    .maximum = 10
+};
+
+REQUIREMENTS_CE_UOPENAPI(Data, b) = number_requirements<int>{
+        .minimum  = 1,
+        .exclusive_minimum = true
+};
+
+
+REQUIREMENTS_CE_UOPENAPI(Data, test) = string_requirements<"date-time">{
+    .pattern = "f$"
+};
+
 
 UTEST(Openapi_json_Parse, SomeStruct){
-//    EXPECT_EQ(uopenapi::reflective::schema_type_name<std::vector<SecretStruct>>(), "");
-//    EXPECT_EQ(std::string{uopenapi::utils::anonymous_ns}, "");
-    static_assert(uopenapi::utils::is_specialisation<std::vector<int>, "std::vector">(), "test this thit");
-    static_assert(uopenapi::utils::is_specialisation<std::map<int, int>, "std::map">(), "test this thit");
+    schema s;
+    auto view = schema_view::from_schema(s);
+    schema_appender<Data, none_requirements>::append<none_requirements{}>(view);
+    auto result = ToString(s.v.ExtractValue());
+    EXPECT_EQ(result, "");
 }
 

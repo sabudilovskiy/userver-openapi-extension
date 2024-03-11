@@ -33,15 +33,15 @@ struct string_validator<""> {
 template <utils::ce::string Format, string_requirements<Format> req>
 validate_result validate(std::string_view str, utils::nttp_adl<string_requirements<Format>, req>) {
     if (req.min_length && str.size() < *req.min_length) {
-        return validate_result::error("str.size: {}, min_length: {}",
+        return validate_result::error("str.size: [{}] less than min_length: [{}]",
                                       str.size(), *req.min_length);
     }
     if (req.max_length && str.size() > *req.max_length) {
-        return validate_result::error("str.size: {}, max_length: {}",
+        return validate_result::error("str.size: [{}] greater than max_length: [{}]",
                                       str.size(), *req.max_length);
     }
     if (!req.pattern.empty() && !check_pattern(str, req.pattern)) {
-        return validate_result::error("str: {}, doesn't match with: {}", str,
+        return validate_result::error("str: [{}], doesn't match with: [{}]", str,
                                       req.pattern);
     }
     return string_validator<req.format>::validate(str);
