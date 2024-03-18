@@ -1,14 +1,14 @@
 #pragma once
 #include <uopenapi/utils/constexpr_string.hpp>
 #include <uopenapi/utils/check_field.hpp>
+#include <uopenapi/http/source_type.hpp>
 
 namespace uopenapi::http{
-
-    enum struct source_type {
-        body, query, header, cookie
-    };
     template <typename T, utils::ce::string name>
-    constexpr source_type field_source = source_type::body;
+    constexpr source_type field_source = source_type::query;
+
+    template <typename T>
+    constexpr source_type field_source<T, "body"> = source_type::body;
 }
 
 #ifdef UOPENAPI_CREATE_MACROS

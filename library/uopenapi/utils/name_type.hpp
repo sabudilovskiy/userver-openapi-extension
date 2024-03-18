@@ -21,8 +21,7 @@ constexpr std::string_view get_clear_name(std::string_view raw_name) {
 #if defined(__clang__)
     return raw_name.substr(12 + N, raw_name.size() - 13 - N);
 #elif defined(__GNUC__)
-    auto border = raw_name.find(';');
-    return raw_name.substr(27 + N, border - 28 - N);
+    return raw_name.substr(27 + N, raw_name.size() - 28 - N);
 #else
 #error("unsupported compiler")
 #endif

@@ -7,7 +7,8 @@
 #include <userver/components/component_context.hpp>
 #include <userver/server/handlers/http_handler_base.hpp>
 #include <userver/server/http/http_status.hpp>
-
+#include <uopenapi/http/openapi_descriptor.h>
+#include <uopenapi/http/schema_path.hpp>
 
 namespace uopenapi::http{
     template <typename request, typename... responses>
@@ -16,7 +17,24 @@ namespace uopenapi::http{
         openapi_handler(const userver::components::ComponentConfig& cfg,
                        const userver::components::ComponentContext& ctx)
                 : userver::server::handlers::HttpHandlerBase(cfg, ctx)
-        {}
+        {
+            auto descriptor = ctx.FindComponentOptional<openapi_descriptor>();
+            if (!descriptor){
+                return;
+            }
+            auto& schema = descriptor->get_schema();
+            append_to_schema(schema);
+        }
+        void append_to_schema(reflective::schema& schema){
+            auto& config = GetConfig();
+            if (config.path.index() == 1)
+            {
+                return;
+            }
+            handler_info handlerInfo{.path = std::get<0>(config.path),
+                    .method = config.method};
+            append_path<request, responses...>(schema, handlerInfo);
+        }
         virtual response handle(request) const = 0;
         static response_info perform_r400(std::string msg){
             return response_info{
@@ -40,7 +58,7 @@ namespace uopenapi::http{
                 return parse_from_request<request>(make_request_info(httpReq, mapQuery));
             }
             catch (std::exception& exc){
-                std::string body_error = fmt::format(R"("message" : "Some error happens where server tried to parse request: {}")",
+                std::string body_error = fmt::format(R"("message" : "Some error happens where server tried to parse request: [{}]")",
                                                      exc.what());
                 respInfo.emplace(perform_r400(std::move(body_error)));
                 return std::nullopt;

@@ -7,6 +7,7 @@
 #include <uopenapi/utils/converter/converter.hpp>
 #include <uopenapi/utils/formatted_exception.hpp>
 #include <uopenapi/reflective/requirements/validate.hpp>
+#include <uopenapi/http/request_parser/parser.hpp>
 
 namespace uopenapi::http{
     namespace details{
@@ -15,67 +16,53 @@ namespace uopenapi::http{
             return userver::formats::json::FromString(body).As<T>();
         }
 
-        template <typename T, typename Field, utils::ce::string name> requires (!utils::is_optional<Field>)
+        template <typename T, typename Field, utils::ce::string name>
         Field parse_cookie(const request_info::cookies_map& cookies){
+            using parser = request_parser<Field, source_type::cookie>;
+
             auto c_name = name.AsString();
             auto c_it = cookies.find(c_name);
             if (c_it == cookies.end()){
-                throw utils::formatted_exception("Not founded cookie with name: [{}]", c_name);
+                return parser::missing(c_name);
             }
-            auto res = utils::converter<std::string, Field>::convert(c_it->second);
+            auto res = parser::parse(c_it->second, name.AsStringView());
             reflective::is_validate_result auto validate_result = reflective::field_call_validate<T, name>(res);
             if (validate_result.has_error()){
                 throw utils::formatted_exception("Failed validate cookie with name: [{}], error: [{}]", name, validate_result.error_message());
             }
-            return res;
+            return std::move(res);
         }
 
-        template <typename T, typename Field, utils::ce::string name> requires (utils::is_optional<Field>)
-        Field parse_cookie(const request_info::cookies_map& cookies){
-            auto c_name = name.AsString();
-            auto c_it = cookies.find(c_name);
-            if (c_it == cookies.end()){
-                return utils::optional_getter<Field>::make_none();
-            }
-            using raw_type = utils::optional_getter_t<Field>;
-            auto res = utils::converter<std::string, raw_type>::convert(c_it->second);
-            reflective::is_validate_result auto validate_result = reflective::field_call_validate<T, name>(res);
-            if (validate_result.has_error()){
-                throw utils::formatted_exception("Failed validate cookie with name: [{}], error: [{}]", name, validate_result.error_message());
-            }
-            return res;
-        }
-
-        template <typename T, typename Field, utils::ce::string name> requires (!utils::is_optional<T>)
+        template <typename T, typename Field, utils::ce::string name>
         Field parse_header(const request_info::headers_map & headers){
+            using parser = request_parser<Field, source_type::header>;
+
             auto h_name = name.AsString();
             auto h_it = headers.find(h_name);
             if (h_it == headers.end()){
-                throw utils::formatted_exception("Not founded header with name: [{}]", h_name);
+                return parser::missing(h_name);
             }
-            auto res = utils::converter<std::string, Field>::convert(h_it->second);
+            auto res = parser::parse(h_it->second, h_name);
             reflective::is_validate_result auto validate_result = reflective::field_call_validate<T, name>(res);
             if (validate_result.has_error()){
                 throw utils::formatted_exception("Failed validate header with name: [{}], error: [{}]", name, validate_result.error_message());
             }
-            return res;
+            return std::move(res);
         }
 
+        template <typename T, typename Field, utils::ce::string name>
+        Field parse_queries(const request_info::queries_map & queries){
+            using parser = request_parser<Field, source_type::query>;
 
-        template <typename T, typename F, utils::ce::string name>
-        F parse_queries(const request_info::queries_map & queries){
             auto q_name = name.AsString();
             auto q_it = queries.find(q_name);
-            F res;
             if (q_it == queries.end()){
-                res = utils::converter<std::vector<std::string>, F>::convert({});
+                return parser::missing(q_name);
             }
-            else {
-                res = utils::converter<std::vector<std::string>, F>::convert(q_it->second);
-            }
+            Field res = parser::parse(q_it->second, q_name);
             reflective::is_validate_result auto validate_result = reflective::field_call_validate<T, name>(res);
             if (validate_result.has_error()){
-                throw utils::formatted_exception("Failed validate header with name: [{}], error: [{}]", name, validate_result.error_message());
+                throw utils::formatted_exception("Failed validate query with name: [{}], error: [{}]", name, validate_result.error_message());
             }
             return res;
         }

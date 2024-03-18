@@ -8,6 +8,7 @@
 #include <uopenapi/utils/formatted_exception.hpp>
 #include <uopenapi/reflective/requirements/validate.hpp>
 #include <uopenapi/http/response.hpp>
+#include <uopenapi/http/response_serializator/serializator.hpp>
 
 namespace uopenapi::http{
     namespace details{
@@ -30,12 +31,6 @@ namespace uopenapi::http{
         std::string serialize_json_body(const T& body) {
             return ToString(userver::formats::json::ValueBuilder{body}.ExtractValue());
         }
-
-        template<typename F>
-        std::string serialize_as_string(const F& f) {
-            static_assert(utils::can_convert<F, std::string>, "Must exist converter from your type to string");
-            return utils::converter<F, std::string>::convert(f);
-        }
     }
 
 
@@ -48,10 +43,10 @@ namespace uopenapi::http{
                 res.body = details::serialize_json_body(f);
             }
             else if constexpr (st == source_type::cookie){
-                res.cookies[Info::name.AsStringView()] = details::serialize_as_string(f);
+                response_serializator<F, source_type::cookie>::serialize(f, res, Info::name.AsStringView());
             }
             else if constexpr (st == source_type::header){
-                res.headers[Info::name.AsStringView()] = details::serialize_as_string(f);
+                response_serializator<F, source_type::header>::serialize(f, res, Info::name.AsStringView());
             }
             else if constexpr (st == source_type::query){
                 static_assert(st != source_type::query, "queries cannot be used in responses");

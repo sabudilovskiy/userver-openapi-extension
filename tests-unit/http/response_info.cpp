@@ -2,6 +2,7 @@
 #include <uopenapi/all.hpp>
 #include <raw_string.hpp>
 #include <mock_converters.hpp>
+#include <mock_appenders.hpp>
 
 using namespace uopenapi::http;
 
@@ -21,7 +22,8 @@ UOPENAPI_SOURCE_TYPE(TestResp, header_enum, header);
 UOPENAPI_SOURCE_TYPE(TestResp, cookie_enum, cookie);
 
 UTEST(openapi_validates, HttpSerializeResponseInfo){
-   TestResp resp{
+//    uopenapi::http::response_serializator<some_enum, uopenapi::http::source_type::header>::serialize();
+    TestResp resp{
        .header_enum = some_enum::C,
        .cookie_enum = some_enum::D,
        .body = TestBodyResp{

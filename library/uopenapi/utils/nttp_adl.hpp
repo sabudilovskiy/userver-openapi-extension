@@ -1,4 +1,5 @@
 #pragma once
+#include <type_traits>
 
 namespace uopenapi::utils{
 
@@ -9,6 +10,6 @@ namespace uopenapi::utils{
 
     template <auto v>
     auto create_nttp_adl(){
-        return nttp_adl<decltype(v), v>{};
+        return nttp_adl<std::remove_cvref_t<decltype(v)>, v>{};
     }
 }

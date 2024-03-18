@@ -11,7 +11,7 @@ function(InitializeCppMacro)
     elseif (DEFINED ARG_default)
         set (value_variable ${ARG_default})
     else ()
-        message(WARNING "Не задана ни переменная: "${CURRENT_PROJECT}_${ARG_variable} ", ни дефолтное значение. Таргет:  ${ARG_target}, макрос: ${ARG_name_macro}")
+        message(WARNING "Не задана ни переменная: " ${CURRENT_PROJECT}_${ARG_variable}", ни дефолтное значение. Таргет:  ${ARG_target}, макрос: ${ARG_name_macro}")
     endif ()
 
     if (DEFINED value_variable)

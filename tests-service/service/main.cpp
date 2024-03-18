@@ -8,23 +8,77 @@
 #include <uopenapi/all.hpp>
 
 struct TestBody{
-    std::string first;
-    std::string second;
+    std::int64_t left;
+    std::int64_t right;
 };
+
+enum struct Operation{
+    sum,
+    div,
+    sub,
+    prod
+};
+
+namespace uopenapi::utils{
+    template <>
+    struct converter<std::string_view, Operation>{
+        static Operation convert(std::string_view text){
+            if (text == "+"){
+                return Operation::sum;
+            }
+            else if (text == "-"){
+                return Operation::sub;
+            }
+            else if (text == "/"){
+                return Operation::div;
+            }
+            else if (text == "*"){
+                return Operation::prod;
+            }
+            else {
+                throw utils::formatted_exception("Unknowned value [{}] try to convert to Operation", text);
+            }
+        }
+
+    };
+}
+
+namespace uopenapi::reflective{
+    template <>
+    struct schema_appender<Operation, none_requirements>{
+        template <none_requirements>
+        static void append(schema_view schemaView){
+            place_ref_to_type<Operation>(schemaView.cur_place);
+            auto type_node = schemaView.root["components"]["schemas"][schema_type_name<Operation>()];
+            if (type_node.IsObject()){
+                return;
+            }
+            type_node = userver::formats::yaml::Type::kObject;
+            type_node["type"] = "string";
+            auto enum_node = type_node["enum"];
+            enum_node = userver::formats::yaml::Type::kArray;
+            enum_node.PushBack("+");
+            enum_node.PushBack("/");
+            enum_node.PushBack("*");
+            enum_node.PushBack("-");
+        }
+    };
+}
 
 struct TestRequest{
-    std::vector<std::string> filter_name;
-    std::string token;
-    std::string test_cookie;
     TestBody body;
+    std::optional<Operation> op;
 };
 
-struct Empty{};
-using Resp200 = uopenapi::http::response<Empty, 200>;
+struct ResponseBody{
+    std::int64_t result;
+};
 
-UOPENAPI_SOURCE_TYPE(TestRequest, filter_name, query);
-UOPENAPI_SOURCE_TYPE(TestRequest, token, header);
-UOPENAPI_SOURCE_TYPE(TestRequest, test_cookie, cookie);
+struct Response{
+    ResponseBody body;
+};
+
+using Resp200 = uopenapi::http::response<Response, 200>;
 
 using Base = uopenapi::http::openapi_handler<TestRequest, Resp200>;
 struct TestHandler : Base{
@@ -34,11 +88,27 @@ struct TestHandler : Base{
             : Base(cfg, ctx)
     {}
     response handle(TestRequest req) const override{
-        LOG_INFO() << "filter_name: " << req.filter_name;
-        LOG_INFO() << "token: " << req.token;
-        LOG_INFO() << "body.first: " << req.body.first;
-        LOG_INFO() << "body.second: " << req.body.second;
-        return Resp200{};
+        if (!req.op){
+            req.op = Operation::sum;
+        }
+        std::int64_t result;
+        switch (req.op.value()) {
+            case Operation::sum:
+                result = req.body.left + req.body.right;
+                break;
+            case Operation::div:
+                result = req.body.left / req.body.right;
+                break;
+            case Operation::sub:
+                result = req.body.left - req.body.right;
+                break;
+            case Operation::prod:
+                result = req.body.left * req.body.right;
+                break;
+        }
+        Resp200 resp200;
+        resp200().body.result = result;
+        return resp200;
     }
 };
 
@@ -50,6 +120,7 @@ int main(int argc, char* argv[]) {
             .Append<userver::clients::dns::Component>()
             .Append<userver::server::handlers::TestsControl>();
     component_list.Append<TestHandler>();
+    component_list.Append<uopenapi::http::openapi_descriptor>();
 
     return userver::utils::DaemonMain(argc, argv, component_list);
 }

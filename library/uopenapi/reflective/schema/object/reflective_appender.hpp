@@ -19,7 +19,7 @@ namespace uopenapi::reflective{
             type_node["type"] = "object";
             auto visiter = [&]<typename F, typename Info>() {
                 std::string name = Info::name.AsString();
-                auto field_node = type_node["fields"][name];
+                auto field_node = type_node["properties"][name];
                 if (!utils::is_optional<F>) {
                     auto required_node = type_node["required"];
                     if (!required_node.IsArray()) {

@@ -7,9 +7,19 @@
 namespace uopenapi::reflective {
 template <typename T>
 void place_ref_to_type(userver::formats::yaml::ValueBuilder& place) {
-    std::string result = "components/schemas/";
+    std::string result = "#/components/schemas/";
     result += schema_type_name<T>();
-    if (place.IsObject()) {
+    if (!place.IsObject()) {
+        place = userver::formats::yaml::Type::kObject;
+    }
+    place["$ref"] = result;
+}
+
+template <typename T>
+void place_ref_to_response(userver::formats::yaml::ValueBuilder& place) {
+    std::string result = "#/components/responses/";
+    result += schema_type_name<T>();
+    if (!place.IsObject()) {
         place = userver::formats::yaml::Type::kObject;
     }
     place["$ref"] = result;

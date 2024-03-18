@@ -36,7 +36,7 @@ components:
   schemas:
     BasicObject:
       type: object
-      fields:
+      properties:
         f1:
           type: string
         f2:
@@ -58,7 +58,7 @@ components:
   schemas:
     BasicObjectOpt:
       type: object
-      fields:
+      properties:
         f1:
           type: string
         f2:
@@ -99,7 +99,7 @@ components:
   schemas:
     BasicObjectReqFields:
       type: object
-      fields:
+      properties:
         f1:
           type: string
           maxLength: 1

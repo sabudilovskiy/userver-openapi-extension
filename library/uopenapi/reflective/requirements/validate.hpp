@@ -2,6 +2,8 @@
 #include <uopenapi/reflective/requirements/requirements_field.hpp>
 #include <uopenapi/reflective/validate_result.hpp>
 #include <uopenapi/utils/nttp_adl.hpp>
+#include <uopenapi/utils/optional_meta/is_optional.hpp>
+#include <uopenapi/utils/optional_meta/optional_getter.hpp>
 
 namespace uopenapi::reflective {
 template <typename T, utils::ce::string name, typename F>
@@ -17,7 +19,8 @@ validate_result validate(const T&, utils::nttp_adl<none_requirements, req>) {
     return validate_result::ok();
 }
 
-template <typename T, utils::ce::string name, typename F>
+
+template <typename T, utils::ce::string name, typename F> requires (!utils::is_optional<F>)
 is_validate_result auto field_call_validate(const F& f) {
     if constexpr (nttp_requirements_field<T, name> && field_exist_nttp_validate<T, name, F>) {
         return validate(f, utils::create_nttp_adl<requirements_field<T, name>>());
@@ -40,6 +43,15 @@ is_validate_result auto field_call_validate(const F& f) {
             "2) Перегрузка не видна в месте инстанцирования call_validate() "
             "или не существует вообще");
     }
+}
+
+template <typename T, utils::ce::string name, typename F> requires (utils::is_optional<F>)
+is_validate_result auto field_call_validate(const F& f){
+    using getter = utils::optional_getter<F>;
+    if (!getter::has_value(f)){
+       return validate_result::ok();
+    }
+    return field_call_validate<T, name>(getter::value(f));
 }
 
 }  // namespace uopenapi::reflective

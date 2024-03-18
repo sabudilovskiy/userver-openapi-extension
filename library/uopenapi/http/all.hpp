@@ -1,0 +1,14 @@
+#pragma once
+#include <uopenapi/http/schema_path.hpp>
+#include <uopenapi/http/code.hpp>
+#include <uopenapi/http/field_source.hpp>
+#include <uopenapi/http/request_info.hpp>
+#include <uopenapi/http/source_type.hpp>
+#include <uopenapi/http/response_info.hpp>
+#include <uopenapi/http/parse_request_info.hpp>
+#include <uopenapi/http/meta_request.hpp>
+#include <uopenapi/http/serialize_response_info.hpp>
+#include <uopenapi/http/response.hpp>
+#include <uopenapi/http/openapi_handler.hpp>
+#include <uopenapi/http/request_parser/all.hpp>
+#include <uopenapi/http/response_serializator/all.hpp>

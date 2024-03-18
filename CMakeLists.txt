@@ -13,6 +13,8 @@ CreateTrivialPart(
         path "/library"
 )
 
+target_compile_options(${library_module} PRIVATE "-Wno-missing-field-initializers")
+
 target_link_libraries(${library_module} PUBLIC userver-core)
 
 CreateTrivialExe(

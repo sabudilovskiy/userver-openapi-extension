@@ -10,13 +10,32 @@ enum struct some_enum{
 };
 
 
-
 namespace uopenapi::utils {
     template<>
     struct converter<std::string, some_enum>{
         using source_type = std::string;
         using result_type = some_enum;
         static result_type convert(const source_type& source){
+            if (source == "A"){
+                return some_enum::A;
+            }
+            if (source == "B"){
+                return some_enum::B;
+            }
+            if (source == "C"){
+                return some_enum::C;
+            }
+            if (source == "D"){
+                return some_enum::D;
+            }
+            throw formatted_exception("unknown value: {}", source);
+        }
+    };
+    template<>
+    struct converter<std::string_view, some_enum>{
+        using source_type = std::string_view;
+        using result_type = some_enum;
+        static result_type convert(source_type source){
             if (source == "A"){
                 return some_enum::A;
             }
@@ -67,6 +86,23 @@ namespace uopenapi::utils {
         }
     };
 
+}
+
+namespace uopenapi::reflective{
+    template<>
+    struct schema_appender<some_enum, none_requirements>{
+        template <none_requirements>
+        static void append(schema_view schemaView){
+             place_ref_to_type<some_enum>(schemaView.cur_place);
+             auto type_node = schemaView.root["components"]["schemas"][schema_type_name<some_enum>()];
+             type_node["type"] = "string";
+             type_node["enum"] = userver::formats::yaml::Type::kArray;
+             type_node["enum"].PushBack("A");
+             type_node["enum"].PushBack("B");
+             type_node["enum"].PushBack("C");
+             type_node["enum"].PushBack("D");
+        }
+    };
 }
 
 inline some_enum Parse(const userver::formats::json::Value& j, userver::formats::parse::To<some_enum>){

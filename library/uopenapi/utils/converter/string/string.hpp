@@ -13,10 +13,10 @@ namespace uopenapi::utils{
     };
     template <>
     struct converter<std::string_view, std::string>{
-        using source_type = std::string;
+        using source_type = std::string_view;
         using result_type = std::string;
         static result_type convert(source_type source){
-            return source;
+            return result_type{source};
         };
     };
 }
