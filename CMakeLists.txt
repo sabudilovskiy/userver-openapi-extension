@@ -55,13 +55,7 @@ add_google_tests(${unit_tests_exe})
 #        name "service_src"
 #        path "/tests-service/src"
 #)
-
-CreateTrivialExe(
-        name "test_service"
-        path "/tests-service/service"
-)
-
-target_link_libraries(${test_service_exe} PUBLIC ${library_module})
+add_subdirectory(tests-service)
 
 unset (library_module)
 unset (unit_tests_exe)
