@@ -7,7 +7,7 @@
 #include <userver/utils/daemon_run.hpp>
 #include <uopenapi/all.hpp>
 
-struct TestBody{
+struct OperationBody{
     std::int64_t left;
     std::int64_t right;
 };
@@ -65,8 +65,8 @@ namespace uopenapi::reflective{
     };
 }
 
-struct TestRequest{
-    TestBody body;
+struct OperationRequest{
+    OperationBody body;
     std::optional<Operation> op;
 };
 
@@ -80,14 +80,14 @@ struct Response{
 
 using Resp200 = uopenapi::http::response<Response, 200>;
 
-using Base = uopenapi::http::openapi_handler<TestRequest, Resp200>;
-struct TestHandler : Base{
-    static constexpr std::string_view kName = "test_handler";
-    TestHandler(const userver::components::ComponentConfig& cfg,
+using Base = uopenapi::http::openapi_handler<OperationRequest, Resp200>;
+struct OperationHandler : Base{
+    static constexpr std::string_view kName = "operation-handler";
+    OperationHandler(const userver::components::ComponentConfig& cfg,
                     const userver::components::ComponentContext& ctx)
             : Base(cfg, ctx)
     {}
-    response handle(TestRequest req) const override{
+    response handle(OperationRequest req) const override{
         if (!req.op){
             req.op = Operation::sum;
         }
@@ -119,7 +119,7 @@ int main(int argc, char* argv[]) {
             .Append<userver::components::HttpClient>()
             .Append<userver::clients::dns::Component>()
             .Append<userver::server::handlers::TestsControl>();
-    component_list.Append<TestHandler>();
+    component_list.Append<OperationHandler>();
     component_list.Append<uopenapi::http::openapi_descriptor>();
 
     return userver::utils::DaemonMain(argc, argv, component_list);
