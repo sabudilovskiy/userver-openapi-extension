@@ -1,0 +1,43 @@
+name: format
+
+'on':
+  pull_request:
+  push:
+    branches:
+      - develop
+
+env:
+  UBSAN_OPTIONS: print_stacktrace=1
+
+jobs:
+  posix:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+
+    name: '${{matrix.os}}: ${{matrix.info}}'
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Install dependencies
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 15
+          rm llvm.sh
+          sudo apt install python3
+      - name: Format
+        run: |
+          python3.10 scripts/generate_all_headers.py library/uopenapi uopenapi
+          python3.10 scripts/format_includes.py library boost uopenapi checks
+          @find benchs -name '*pp' -type f | xargs clang-format-15 -i
+      - name: Check format sources
+        run: |
+          make check-git-status
