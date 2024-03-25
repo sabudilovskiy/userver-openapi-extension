@@ -4,7 +4,7 @@ name: format
   pull_request:
   push:
     branches:
-      - develop
+      - trunk
 
 env:
   UBSAN_OPTIONS: print_stacktrace=1

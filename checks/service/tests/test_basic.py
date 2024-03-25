@@ -20,6 +20,7 @@ async def test_operation(service_client):
         'result': 200
     }
 
+
 async def test_openapi(service_client):
     response = await service_client.get(
         '/openapi',
@@ -88,3 +89,18 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ResponseBody\""""
+
+
+async def test_operation2(service_client):
+    response = await service_client.post(
+        '/operation',
+        json={
+            'left': 10,
+            'right': 20
+        },
+        params={'op': '-'},
+    )
+    assert response.status == 200
+    assert response.json() == {
+        'result': 0
+    }

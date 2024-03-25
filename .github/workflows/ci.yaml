@@ -4,7 +4,7 @@ name: CI
   pull_request:
   push:
     branches:
-      - develop
+      - trunk
 
 env:
   UBSAN_OPTIONS: print_stacktrace=1
@@ -20,6 +20,16 @@ jobs:
             info: [debug] clang-15
             compiler: clang
             version: 15
+          - os: ubuntu-22.04
+            type: Debug
+            info: [ debug ] clang-16
+            compiler: clang
+            version: 16
+          - os: ubuntu-22.04
+            type: Debug
+            info: [ debug ] clang-17
+            compiler: clang
+            version: 17
 
     name: '${{matrix.os}}: ${{matrix.info}}'
     runs-on: ${{matrix.os}}
@@ -59,4 +69,6 @@ jobs:
       - name: Run ${{matrix.make}}
         run: |
           cmake -B _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}} -DCMAKE_BUILD_TYPE={{matrix.type}}
+          cmake --build _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}} -j 6 --target all
+          cd _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}}
           (test -t 1 && GTEST_COLOR=1 PYTEST_ADDOPTS="--color=yes" ctest -V) || ctest -V
