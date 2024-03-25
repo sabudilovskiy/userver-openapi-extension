@@ -23,5 +23,6 @@ constexpr decltype(auto) get_by_name(T&& t) {
 }
 
 template <typename T, utils::ce::string name>
-using tuple_element_name_t = boost::pfr::tuple_element_t<get_index<T, name>(), T>;
+using tuple_element_name_t =
+    boost::pfr::tuple_element_t<get_index<T, name>(), T>;
 }  // namespace uopenapi::pfr_extension

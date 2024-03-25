@@ -18,7 +18,8 @@ template <typename T, utils::ce::string name>
 constexpr auto requirements_field = none_requirements{};
 
 template <typename T, utils::ce::string name>
-using requirements_field_t = std::remove_cvref_t<decltype(requirements_field<T, name>)>;
+using requirements_field_t =
+    std::remove_cvref_t<decltype(requirements_field<T, name>)>;
 
 template <typename T, utils::ce::string name>
 constexpr bool trivial_requirements_field =

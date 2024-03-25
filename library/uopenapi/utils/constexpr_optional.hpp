@@ -41,12 +41,8 @@ struct optional {
         }
         return value_;
     }
-    constexpr const T* operator->() const{
-        return &value();
-    }
-    constexpr T* operator->() {
-        return &value();
-    }
+    constexpr const T* operator->() const { return &value(); }
+    constexpr T* operator->() { return &value(); }
 
     constexpr T& value() {
         if (is_null()) {
@@ -71,7 +67,8 @@ struct optional {
     }
 
    public:
-    //поля переставлены местами, потому что clang от 15 до 17 крашится в некоторых контекстах
+    // поля переставлены местами, потому что clang от 15 до 17 крашится в
+    // некоторых контекстах
     bool has_value_;
     T value_;
 };

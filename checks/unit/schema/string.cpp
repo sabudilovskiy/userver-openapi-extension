@@ -1,10 +1,10 @@
-#include <userver/utest/utest.hpp>
-#include <uopenapi/all.hpp>
 #include <raw_string.hpp>
+#include <uopenapi/all.hpp>
+#include <userver/utest/utest.hpp>
 
 using namespace uopenapi::reflective;
 
-UTEST(openapi_schema_appenders, StringNone){
+UTEST(openapi_schema_appenders, StringNone) {
     using appender = schema_appender<std::string, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
@@ -15,15 +15,12 @@ type: string
     EXPECT_EQ(ToString(s.v.ExtractValue()), expected);
 }
 
-UTEST(openapi_schema_appenders, StringAllEmptyFormat){
+UTEST(openapi_schema_appenders, StringAllEmptyFormat) {
     using appender = schema_appender<std::string, string_requirements<>>;
     schema s;
     auto view = schema_view::from_schema(s);
     appender::append<string_requirements<>{
-        .min_length = 1,
-        .max_length = 5,
-        .pattern = "[a-z]"
-    }>(view);
+        .min_length = 1, .max_length = 5, .pattern = "[a-z]"}>(view);
     auto expected = UOPENAPI_RAW_STRING(R"(
 type: string
 minLength: 1
@@ -34,15 +31,13 @@ pattern: "[a-z]"
     EXPECT_EQ(got, expected);
 }
 
-UTEST(openapi_schema_appenders, StringAll){
-    using appender = schema_appender<std::string, string_requirements<"date_time">>;
+UTEST(openapi_schema_appenders, StringAll) {
+    using appender =
+        schema_appender<std::string, string_requirements<"date_time">>;
     schema s;
     auto view = schema_view::from_schema(s);
     appender::append<string_requirements<"date_time">{
-            .min_length = 1,
-            .max_length = 5,
-            .pattern = "[a-z]"
-    }>(view);
+        .min_length = 1, .max_length = 5, .pattern = "[a-z]"}>(view);
     auto expected = UOPENAPI_RAW_STRING(R"(
 type: string
 format: date_time

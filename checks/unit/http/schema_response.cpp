@@ -1,31 +1,31 @@
-#include <userver/utest/utest.hpp>
-#include <uopenapi/all.hpp>
-#include <raw_string.hpp>
 #include <mock_converters.hpp>
+#include <raw_string.hpp>
+#include <uopenapi/all.hpp>
+#include <userver/utest/utest.hpp>
 
 using namespace uopenapi::http;
 
-inline namespace tests_response_http_schema{
-    struct TestBody{
-        some_enum first;
-        some_enum second;
-    };
-    struct TestReq{
-        some_enum header_enum;
-        TestBody body;
-    };
-}
+inline namespace tests_response_http_schema {
+struct TestBody {
+    some_enum first;
+    some_enum second;
+};
+struct TestReq {
+    some_enum header_enum;
+    TestBody body;
+};
+}  // namespace tests_response_http_schema
 UOPENAPI_SOURCE_TYPE(TestReq, header_enum, header);
 
-UTEST(openapi_schema, BasicResponse){
-uopenapi::reflective::schema schema;
-auto path_node = schema.v["paths"]["/test"];
-auto sv = uopenapi::reflective::schema_view{
-    .root = schema.v,
-    .cur_place = path_node,
-};
-details::append_response<TestReq, 200>(sv);
-auto str = ToString(schema.v.ExtractValue());
+UTEST(openapi_schema, BasicResponse) {
+    uopenapi::reflective::schema schema;
+    auto path_node = schema.v["paths"]["/test"];
+    auto sv = uopenapi::reflective::schema_view{
+        .root = schema.v,
+        .cur_place = path_node,
+    };
+    details::append_response<TestReq, 200>(sv);
+    auto str = ToString(schema.v.ExtractValue());
     EXPECT_EQ(str, UOPENAPI_RAW_STRING(R"(
 paths:
   /test:
@@ -64,4 +64,3 @@ components:
         - second
 )")) << str;
 }
-

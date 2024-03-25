@@ -10,8 +10,7 @@ constexpr std::size_t k_len_fixed_string = UOPENAPI_FIXED_STRING_SIZE;
 struct string {
     constexpr string() noexcept = default;
 
-    constexpr string(const char* c_str) : string(std::string_view{c_str}) {
-    }
+    constexpr string(const char* c_str) : string(std::string_view{c_str}) {}
 
     template <std::size_t Size>
     constexpr string(const char (&str)[Size]) noexcept : len(Size - 1) {

@@ -1,94 +1,86 @@
-#include <userver/components/minimal_server_component_list.hpp>
+#include <uopenapi/all.hpp>
 #include <userver/clients/dns/component.hpp>
 #include <userver/clients/http/component.hpp>
+#include <userver/components/minimal_server_component_list.hpp>
 #include <userver/server/handlers/ping.hpp>
 #include <userver/server/handlers/tests_control.hpp>
 #include <userver/testsuite/testsuite_support.hpp>
 #include <userver/utils/daemon_run.hpp>
-#include <uopenapi/all.hpp>
 
-struct OperationBody{
+struct OperationBody {
     std::int64_t left;
     std::int64_t right;
 };
 
-enum struct Operation{
-    sum,
-    div,
-    sub,
-    prod
+enum struct Operation { sum, div, sub, prod };
+
+namespace uopenapi::utils {
+template <>
+struct converter<std::string_view, Operation> {
+    static Operation convert(std::string_view text) {
+        if (text == "+") {
+            return Operation::sum;
+        } else if (text == "-") {
+            return Operation::sub;
+        } else if (text == "/") {
+            return Operation::div;
+        } else if (text == "*") {
+            return Operation::prod;
+        } else {
+            throw utils::formatted_exception(
+                "Unknowned value [{}] try to convert to Operation", text);
+        }
+    }
 };
+}  // namespace uopenapi::utils
 
-namespace uopenapi::utils{
-    template <>
-    struct converter<std::string_view, Operation>{
-        static Operation convert(std::string_view text){
-            if (text == "+"){
-                return Operation::sum;
-            }
-            else if (text == "-"){
-                return Operation::sub;
-            }
-            else if (text == "/"){
-                return Operation::div;
-            }
-            else if (text == "*"){
-                return Operation::prod;
-            }
-            else {
-                throw utils::formatted_exception("Unknowned value [{}] try to convert to Operation", text);
-            }
+namespace uopenapi::reflective {
+template <>
+struct schema_appender<Operation, none_requirements> {
+    template <none_requirements>
+    static void append(schema_view schemaView) {
+        place_ref_to_type<Operation>(schemaView.cur_place);
+        auto type_node =
+            schemaView
+                .root["components"]["schemas"][schema_type_name<Operation>()];
+        if (type_node.IsObject()) {
+            return;
         }
+        type_node = userver::formats::yaml::Type::kObject;
+        type_node["type"] = "string";
+        auto enum_node = type_node["enum"];
+        enum_node = userver::formats::yaml::Type::kArray;
+        enum_node.PushBack("+");
+        enum_node.PushBack("/");
+        enum_node.PushBack("*");
+        enum_node.PushBack("-");
+    }
+};
+}  // namespace uopenapi::reflective
 
-    };
-}
-
-namespace uopenapi::reflective{
-    template <>
-    struct schema_appender<Operation, none_requirements>{
-        template <none_requirements>
-        static void append(schema_view schemaView){
-            place_ref_to_type<Operation>(schemaView.cur_place);
-            auto type_node = schemaView.root["components"]["schemas"][schema_type_name<Operation>()];
-            if (type_node.IsObject()){
-                return;
-            }
-            type_node = userver::formats::yaml::Type::kObject;
-            type_node["type"] = "string";
-            auto enum_node = type_node["enum"];
-            enum_node = userver::formats::yaml::Type::kArray;
-            enum_node.PushBack("+");
-            enum_node.PushBack("/");
-            enum_node.PushBack("*");
-            enum_node.PushBack("-");
-        }
-    };
-}
-
-struct OperationRequest{
+struct OperationRequest {
     OperationBody body;
     std::optional<Operation> op;
 };
 
-struct ResponseBody{
+struct ResponseBody {
     std::int64_t result;
 };
 
-struct Response{
+struct Response {
     ResponseBody body;
 };
 
 using Resp200 = uopenapi::http::response<Response, 200>;
 
 using Base = uopenapi::http::openapi_handler<OperationRequest, Resp200>;
-struct OperationHandler : Base{
+struct OperationHandler : Base {
     static constexpr std::string_view kName = "operation-handler";
     OperationHandler(const userver::components::ComponentConfig& cfg,
-                    const userver::components::ComponentContext& ctx)
-            : Base(cfg, ctx)
-    {}
-    response handle(OperationRequest req) const override{
-        if (!req.op){
+                     const userver::components::ComponentContext& ctx)
+        : Base(cfg, ctx) {}
+    response handle(OperationRequest req) const override {
+        if (!req.op) {
             req.op = Operation::sum;
         }
         std::int64_t result;
@@ -113,7 +105,8 @@ struct OperationHandler : Base{
 };
 
 int main(int argc, char* argv[]) {
-    auto component_list = userver::components::MinimalServerComponentList()
+    auto component_list =
+        userver::components::MinimalServerComponentList()
             .Append<userver::server::handlers::Ping>()
             .Append<userver::components::TestsuiteSupport>()
             .Append<userver::components::HttpClient>()

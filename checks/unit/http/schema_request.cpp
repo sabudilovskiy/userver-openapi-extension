@@ -1,28 +1,29 @@
-#include <userver/utest/utest.hpp>
-#include <uopenapi/all.hpp>
-#include <raw_string.hpp>
-#include <mock_converters.hpp>
 #include <uopenapi/http/openapi_descriptor.h>
+
+#include <mock_converters.hpp>
+#include <raw_string.hpp>
+#include <uopenapi/all.hpp>
+#include <userver/utest/utest.hpp>
 
 using namespace uopenapi::http;
 
-inline namespace tests_request_http_schema{
-    struct TestBody{
-        some_enum first;
-        some_enum second;
-    };
-    struct TestReq{
-        some_enum header_enum;
-        some_enum cookie_enum;
-        std::vector<some_enum> query_items;
-        TestBody body;
-    };
-}
+inline namespace tests_request_http_schema {
+struct TestBody {
+    some_enum first;
+    some_enum second;
+};
+struct TestReq {
+    some_enum header_enum;
+    some_enum cookie_enum;
+    std::vector<some_enum> query_items;
+    TestBody body;
+};
+}  // namespace tests_request_http_schema
 UOPENAPI_SOURCE_TYPE(TestReq, query_items, query);
 UOPENAPI_SOURCE_TYPE(TestReq, header_enum, header);
 UOPENAPI_SOURCE_TYPE(TestReq, cookie_enum, cookie);
 
-UTEST(openapi_schema, BasicRequest){
+UTEST(openapi_schema, BasicRequest) {
     uopenapi::reflective::schema schema;
     auto sv_root = uopenapi::reflective::schema_view::from_schema(schema);
     auto path = sv_root.root["paths"]["/login"]["post"];
@@ -79,4 +80,3 @@ components:
         - second
 )"));
 }
-

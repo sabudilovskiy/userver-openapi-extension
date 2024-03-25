@@ -1,47 +1,48 @@
-#include <userver/utest/utest.hpp>
-#include <uopenapi/all.hpp>
-#include <raw_string.hpp>
 #include <mock_converters.hpp>
+#include <raw_string.hpp>
+#include <uopenapi/all.hpp>
+#include <userver/utest/utest.hpp>
 
 using namespace uopenapi::http;
 
-inline namespace tests_path_http_schema{
-    struct TestReqBody{
-        some_enum first;
-        some_enum second;
-    };
-    struct TestReq{
-        some_enum header_enum;
-        some_enum cookie_enum;
-        std::vector<some_enum> query_items;
-        TestReqBody body;
-    };
-    struct TestRespBody{
-        some_enum first;
-        some_enum second;
-    };
-    struct TestResp{
-        some_enum header_enum;
-        TestRespBody body;
-    };
-}
+inline namespace tests_path_http_schema {
+struct TestReqBody {
+    some_enum first;
+    some_enum second;
+};
+struct TestReq {
+    some_enum header_enum;
+    some_enum cookie_enum;
+    std::vector<some_enum> query_items;
+    TestReqBody body;
+};
+struct TestRespBody {
+    some_enum first;
+    some_enum second;
+};
+struct TestResp {
+    some_enum header_enum;
+    TestRespBody body;
+};
+}  // namespace tests_path_http_schema
 UOPENAPI_SOURCE_TYPE(TestReq, header_enum, header);
 UOPENAPI_SOURCE_TYPE(TestReq, query_items, query);
 UOPENAPI_SOURCE_TYPE(TestReq, cookie_enum, cookie);
 
 UOPENAPI_SOURCE_TYPE(TestResp, header_enum, header);
 
-UTEST(openapi_schema, BasicPath){
-uopenapi::reflective::schema schema;
-std::string path = "/login";
-std::string method = "POST";
-handler_info handlerInfo{
-    .path = path,
-    .method = method,
-};
-append_path<TestReq, uopenapi::http::response<TestResp, 200>>(schema, handlerInfo);
-auto str = ToString(schema.v.ExtractValue());
-EXPECT_EQ(str, UOPENAPI_RAW_STRING(R"(
+UTEST(openapi_schema, BasicPath) {
+    uopenapi::reflective::schema schema;
+    std::string path = "/login";
+    std::string method = "POST";
+    handler_info handlerInfo{
+        .path = path,
+        .method = method,
+    };
+    append_path<TestReq, uopenapi::http::response<TestResp, 200>>(schema,
+                                                                  handlerInfo);
+    auto str = ToString(schema.v.ExtractValue());
+    EXPECT_EQ(str, UOPENAPI_RAW_STRING(R"(
 paths:
   /login:
     post:
@@ -116,4 +117,3 @@ components:
             $ref: "#/components/schemas/tests_path_http_schema.TestRespBody"
 )")) << str;
 }
-
