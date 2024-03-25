@@ -32,12 +32,22 @@ install-compiler:
       echo "Unknown compiler"; \
   	fi
 
-.PHONY: get-compiler-path
-get-compiler-path:
+.PHONY: find-cxx-compiler
+find-cxx-compiler:
 	@if [ "$(compiler)" = "clang" ]; then \
         echo "/usr/bin/clang-$(version)"; \
       elif [ "$(compiler)" = "gcc" ]; then \
-        echo "hi linux"; \
+        echo "Gcc compiler" >&2; \
       else \
-        echo "Unknown compiler"; \
+        echo "Unknown compiler" >&2; \
+      fi
+
+.PHONY: find-c-compiler
+find-c-compiler:
+	@if [ "$(compiler)" = "clang" ]; then \
+        echo "/usr/bin/clang-$(version)"; \
+      elif [ "$(compiler)" = "gcc" ]; then \
+        echo "Gcc compiler" >&2;  \
+      else \
+        echo "Unknown compiler" >&2;  \
       fi

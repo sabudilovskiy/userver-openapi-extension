@@ -12,5 +12,5 @@ struct optional_getter {
 };
 
 template <typename T>
-using optional_getter_t = optional_getter<T>::value_type;
+using optional_getter_t = typename optional_getter<T>::value_type;
 }  // namespace uopenapi::utils
