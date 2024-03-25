@@ -67,9 +67,22 @@ jobs:
           ccache -M 2.0GB
           ccache -s
 
+      - name: Configure cmake project
+        run: >
+          cmake 
+          -B _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}} 
+          -DCMAKE_BUILD_TYPE={{matrix.type}} 
+          -DCMAKE_C_COMPILER=$(make get-compiler-path compiler=${{matrix.compiler}} version=${{matrix.version}})
+          -DCMAKE_CXX_COMPILER=$(make get-compiler-path compiler=${{matrix.compiler}} version=${{matrix.version}})
+
+      - name: Build project
+        run: >
+          cmake 
+          --build _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}}
+          -j 6
+          --target all
+
       - name: Run ${{matrix.make}}
-        run: |
-          cmake -B _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}} -DCMAKE_BUILD_TYPE={{matrix.type}} -DCMAKE_CXX_COMPILER=$(make get-compiler-path compiler=${{matrix.compiler}} version=${{matrix.version}})
-          cmake --build _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}} -j 6 --target all
+        run: | 
           cd _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}}
           (test -t 1 && GTEST_COLOR=1 PYTEST_ADDOPTS="--color=yes" ctest -V) || ctest -V
