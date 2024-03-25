@@ -53,8 +53,6 @@ jobs:
       - name: install compiler
         run: |
           sudo make install-compiler compiler=${{matrix.compiler}} version=${{matrix.version}}
-          export CXX=$(make get-compiler-path compiler=${{matrix.compiler}} version=${{matrix.version}})
-          printenv | grep CXX
       - name: Reuse ccache directory
         uses: actions/cache@v2
         with:
@@ -71,7 +69,7 @@ jobs:
 
       - name: Run ${{matrix.make}}
         run: |
-          cmake -B _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}} -DCMAKE_BUILD_TYPE={{matrix.type}}
+          cmake -B _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}} -DCMAKE_BUILD_TYPE={{matrix.type}} -DCMAKE_CXX_COMPILER=$(make get-compiler-path compiler=${{matrix.compiler}} version=${{matrix.version}})
           cmake --build _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}} -j 6 --target all
           cd _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}}
           (test -t 1 && GTEST_COLOR=1 PYTEST_ADDOPTS="--color=yes" ctest -V) || ctest -V
