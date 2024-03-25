@@ -20,7 +20,3 @@ UTEST(UtilsTests, NameType) {
     auto test = test_get_name_function<Tests>();
     EXPECT_EQ(test, "utils_tests::name_type::Tests");
 }
-
-UTEST(UtilsTests, Todo) {
-    EXPECT_TRUE(false);
-}

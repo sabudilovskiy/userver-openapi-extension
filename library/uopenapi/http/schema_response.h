@@ -29,12 +29,12 @@ namespace uopenapi::http {
 
         template<typename T, utils::ce::string name>
         requires (uopenapi::http::field_source<T, name> == source_type::query)
-        void append_response_field(reflective::schema_view schemaView) {
+        void append_response_field(reflective::schema_view) {
             static_assert(uopenapi::http::field_source<T, name> != source_type::query, "query cannot be in response");
         }
         template<typename T, utils::ce::string name>
         requires (uopenapi::http::field_source<T, name> == source_type::cookie)
-        void append_response_field(reflective::schema_view schemaView) {
+        void append_response_field(reflective::schema_view) {
             static_assert(uopenapi::http::field_source<T, name> != source_type::query, "openapi 3.0 didnt support cookie in response");
         }
 
