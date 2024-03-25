@@ -1,0 +1,62 @@
+name: CI
+
+'on':
+  pull_request:
+  push:
+    branches:
+      - develop
+
+env:
+  UBSAN_OPTIONS: print_stacktrace=1
+
+jobs:
+  posix:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            type: Debug
+            info: [debug] clang-15
+            compiler: clang
+            version: 15
+
+    name: '${{matrix.os}}: ${{matrix.info}}'
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: add Postgres package repository
+        run: |
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
+      - name: Install packages
+        run: |
+          sudo apt update
+          sudo apt install --allow-downgrades -y pep8 $(cat userver/scripts/docs/en/deps/${{matrix.os}}.md | tr '\n' ' ')
+      - name: install compiler
+        run: |
+          sudo make install-compiler compiler=${{matrix.compiler}} version=${{matrix.version}}
+          export CXX=$(make get-compiler-path compiler=${{matrix.compiler}} version=${{matrix.version}})
+      - name: Reuse ccache directory
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache
+          key: '${{matrix.os}} ${{matrix.info}} ccache-dir ${{github.ref}} run-${{github.run_number}}'
+          restore-keys: |
+            ${{matrix.os}} ${{matrix.info}} ccache-dir ${{github.ref}} run-'
+            ${{matrix.os}} ${{matrix.info}} ccache-
+
+      - name: Setup ccache
+        run: |
+          ccache -M 2.0GB
+          ccache -s
+
+      - name: Run ${{matrix.make}}
+        run: |
+          cmake -B _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}} -DCMAKE_BUILD_TYPE={{matrix.type}}
+          (test -t 1 && GTEST_COLOR=1 PYTEST_ADDOPTS="--color=yes" ctest -V) || ctest -V

@@ -18,3 +18,26 @@ add-eol:
             echo >> "$$file"; \
         fi \
     done
+
+.PHONY: instal-compiler
+install-compiler:
+	@if [ "$(compiler)" = "clang" ]; then \
+            wget https://apt.llvm.org/llvm.sh; \
+            chmod +x llvm.sh; \
+            sudo ./llvm.sh $(version); \
+            rm llvm.sh;\
+    elif [ "$(compiler)" = "gcc" ]; then \
+      	echo "hi linux"; \
+  	else \
+      echo "Unknown compiler"; \
+  	fi
+
+.PHONY: get-compiler-path
+get-compiler-path:
+	@if [ "$(compiler)" = "clang" ]; then \
+        echo "/usr/bin/clang-$(version)"; \
+      elif [ "$(compiler)" = "gcc" ]; then \
+        echo "hi linux"; \
+      else \
+        echo "Unknown compiler"; \
+      fi
