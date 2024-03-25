@@ -1,4 +1,5 @@
 #pragma once
+#include <uopenapi/reflective/schema/appender.hpp>
 
 #define MOCK_APPENDER(TYPE, OPENAPI_TYPE_NAME) \
 namespace uopenapi::reflective{ \
