@@ -54,6 +54,7 @@ jobs:
         run: |
           sudo make install-compiler compiler=${{matrix.compiler}} version=${{matrix.version}}
           export CXX=$(make get-compiler-path compiler=${{matrix.compiler}} version=${{matrix.version}})
+          printenv | grep CXX
       - name: Reuse ccache directory
         uses: actions/cache@v2
         with:
