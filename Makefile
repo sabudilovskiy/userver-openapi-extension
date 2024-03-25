@@ -10,3 +10,11 @@ check-git-status:
 	else \
 		echo "All files are committed to git."; \
 	fi
+
+.PHONY: add-eol
+add-eol:
+	@find $(P) -type f | while read file; do \
+        if ! tail -c1 "$$file" | grep -q "^$$"; then \
+            echo >> "$$file"; \
+        fi \
+    done
