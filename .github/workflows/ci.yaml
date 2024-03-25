@@ -17,21 +17,23 @@ jobs:
         include:
           - os: ubuntu-22.04
             type: Debug
-            info: [debug] clang-15
+            title: debug clang-15
             compiler: clang
             version: 15
+
           - os: ubuntu-22.04
             type: Debug
-            info: [ debug ] clang-16
+            title: debug clang-16
             compiler: clang
             version: 16
+
           - os: ubuntu-22.04
             type: Debug
-            info: [ debug ] clang-17
+            title: debug clang-17
             compiler: clang
             version: 17
 
-    name: '${{matrix.os}}: ${{matrix.info}}'
+    name: '${{matrix.os}}: ${{matrix.title}}'
     runs-on: ${{matrix.os}}
 
     steps:
@@ -56,10 +58,10 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.ccache
-          key: '${{matrix.os}} ${{matrix.info}} ccache-dir ${{github.ref}} run-${{github.run_number}}'
+          key: '${{matrix.os}} ${{matrix.title}} ccache-dir ${{github.ref}} run-${{github.run_number}}'
           restore-keys: |
-            ${{matrix.os}} ${{matrix.info}} ccache-dir ${{github.ref}} run-'
-            ${{matrix.os}} ${{matrix.info}} ccache-
+            ${{matrix.os}} ${{matrix.title}} ccache-dir ${{github.ref}} run-'
+            ${{matrix.os}} ${{matrix.title}} ccache-
 
       - name: Setup ccache
         run: |
