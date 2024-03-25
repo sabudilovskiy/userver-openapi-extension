@@ -37,7 +37,8 @@ jobs:
         run: |
           python3.10 scripts/generate_all_headers.py library/uopenapi uopenapi
           python3.10 scripts/format_includes.py library boost uopenapi checks
-          find benchs -name '*pp' -type f | xargs clang-format-15 -i
+          find checks -name '*pp' -type f | xargs clang-format-15 -i
+          find library -name '*pp' -type f | xargs clang-format-15 -i
       - name: Check format sources
         run: |
           make check-git-status
