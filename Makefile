@@ -19,6 +19,14 @@ add-eol:
         fi \
     done
 
+.PHONY: add-eol-root
+add-eol-root:
+	@find . -maxdepth 1 -type f | while read file; do \
+		if ! tail -c1 "$$file" | grep -q "^$$"; then \
+			echo >> "$$file"; \
+		fi \
+    done
+
 .PHONY: instal-compiler
 install-compiler:
 	@if [ "$(compiler)" = "clang" ]; then \
