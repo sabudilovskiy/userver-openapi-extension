@@ -69,4 +69,7 @@ format:
 	find library -name '*pp' -type f | xargs clang-format-15 -i
 	make add-eol P=checks
 	make add-eol P=library
+	make add-eol P=CMake
+	make add-eol P=.github
+	make add-eol P=scripts
 	make add-eol-root
