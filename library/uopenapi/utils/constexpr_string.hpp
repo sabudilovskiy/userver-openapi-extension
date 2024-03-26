@@ -3,6 +3,7 @@
 #include <array>
 #include <cstddef>
 #include <string_view>
+#include <stdexcept>
 
 namespace uopenapi::utils::ce {
 constexpr std::size_t k_len_fixed_string = UOPENAPI_FIXED_STRING_SIZE;
