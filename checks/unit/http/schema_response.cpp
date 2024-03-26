@@ -5,7 +5,7 @@
 
 using namespace uopenapi::http;
 
-inline namespace tests_response_http_schema {
+namespace tests_response_http_schema {
 struct TestBody {
     some_enum first;
     some_enum second;
@@ -15,6 +15,9 @@ struct TestReq {
     TestBody body;
 };
 }  // namespace tests_response_http_schema
+
+using tests_response_http_schema::TestReq;
+
 UOPENAPI_SOURCE_TYPE(TestReq, header_enum, header);
 
 UTEST(openapi_schema, BasicResponse) {

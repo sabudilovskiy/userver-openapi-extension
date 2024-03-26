@@ -6,7 +6,7 @@
 
 using namespace uopenapi::http;
 
-inline namespace tests_request_http {
+namespace tests_request_http {
 struct TestBodyResp {
     some_enum first;
     some_enum second;
@@ -17,6 +17,8 @@ struct TestResp {
     TestBodyResp body;
 };
 }  // namespace tests_request_http
+using tests_request_http::TestResp;
+using tests_request_http::TestBodyResp;
 
 UOPENAPI_SOURCE_TYPE(TestResp, header_enum, header);
 UOPENAPI_SOURCE_TYPE(TestResp, cookie_enum, cookie);

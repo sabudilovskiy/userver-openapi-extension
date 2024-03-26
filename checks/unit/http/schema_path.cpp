@@ -5,7 +5,7 @@
 
 using namespace uopenapi::http;
 
-inline namespace tests_path_http_schema {
+namespace tests_path_http_schema {
 struct TestReqBody {
     some_enum first;
     some_enum second;
@@ -25,6 +25,10 @@ struct TestResp {
     TestRespBody body;
 };
 }  // namespace tests_path_http_schema
+
+using tests_path_http_schema::TestReq;
+using tests_path_http_schema::TestResp;
+
 UOPENAPI_SOURCE_TYPE(TestReq, header_enum, header);
 UOPENAPI_SOURCE_TYPE(TestReq, query_items, query);
 UOPENAPI_SOURCE_TYPE(TestReq, cookie_enum, cookie);
