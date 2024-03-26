@@ -19,7 +19,7 @@ constexpr void visit_struct_helper(auto&& functor,
 }
 }  // namespace details
 
-//Field, Info
+// Field, Info
 template <typename U>
 constexpr void visit_struct(auto&& functor) {
     using T = std::remove_cvref_t<U>;

@@ -4,8 +4,6 @@
 
 #pragma once
 
-namespace uopenapi::http{
-    enum struct source_type {
-        body, query, header, cookie
-    };
+namespace uopenapi::http {
+enum struct source_type { body, query, header, cookie };
 }

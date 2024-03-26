@@ -7,8 +7,8 @@ namespace uopenapi::reflective {
 template <typename T>
 concept is_validate_result = requires(T&& t, void (*some_bool_function)(bool)) {
                                  { some_bool_function((T &&) t) };
-                                 { t.error_message()};
-                                 {t.has_error()} -> std::convertible_to<bool>;
+                                 { t.error_message() };
+                                 { t.has_error() } -> std::convertible_to<bool>;
                              };
 struct validate_result {
     static validate_result error(std::exception& exc) {
@@ -23,9 +23,7 @@ struct validate_result {
     }
     static validate_result ok() { return validate_result{.has_error_ = false}; }
     operator bool() const { return !has_error_; }
-    bool has_error() const{
-        return has_error_;
-    }
+    bool has_error() const { return has_error_; }
     auto&& error_message() & { return error_message_; }
 
     auto&& error_message() const& { return error_message_; }

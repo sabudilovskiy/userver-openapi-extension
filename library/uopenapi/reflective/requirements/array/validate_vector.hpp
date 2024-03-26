@@ -10,7 +10,8 @@
 
 namespace uopenapi::reflective {
 template <typename T, array_requirements req>
-validate_result validate(const std::vector<T>& value, utils::nttp_adl<array_requirements, req>) {
+validate_result validate(const std::vector<T>& value,
+                         utils::nttp_adl<array_requirements, req>) {
     if (req.min_items && *req.min_items > value.size()) {
         return validate_result::error(
             "array has size: [{}] less than min_items: [{}]", value.size(),
@@ -33,7 +34,8 @@ validate_result validate(const std::vector<T>& value, utils::nttp_adl<array_requ
                     std::find(value.begin(), value.end(), item) - value.begin();
                 auto second_index = &item - value.data();
                 return validate_result::error(
-                    "array has non-unique items. first_index: [{}], second_index: [{}]",
+                    "array has non-unique items. first_index: [{}], "
+                    "second_index: [{}]",
                     first_index, second_index);
             }
         }

@@ -39,9 +39,9 @@ concept field_exist_rt_append =
 
 template <typename T, utils::ce::string name, typename appender>
 concept field_exist_nttp_append =
-requires(schema_view schema) {
-    appender::template append<requirements_field<T, name>>(schema);
-};
+    requires(schema_view schema) {
+        appender::template append<requirements_field<T, name>>(schema);
+    };
 
 template <typename T, typename appender>
 concept exist_rt_append = requires(schema_view schema) {
@@ -52,13 +52,14 @@ template <typename T, utils::ce::string name, typename F>
 void call_append(schema_view schema) {
     using appender = schema_appender<F, requirements_field_t<T, name>>;
     if constexpr (nttp_requirements_field<T, name>) {
-        static_assert(field_exist_nttp_append<T, name, appender>, "static void append<req>(schema) missing");
+        static_assert(field_exist_nttp_append<T, name, appender>,
+                      "static void append<req>(schema) missing");
         return appender::template append<requirements_field<T, name>>(schema);
     } else if constexpr (field_exist_rt_append<T, name, appender>) {
         return appender::append(schema, requirements_field<T, name>);
     } else {
         static_assert(
-                field_exist_rt_append<T, name, appender>,
+            field_exist_rt_append<T, name, appender>,
             "Не найдена специализация appender с передачей requirements как "
             "нешаблонного аргумента."
             "Это возможно в трех случаях: "

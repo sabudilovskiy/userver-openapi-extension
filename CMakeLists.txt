@@ -1,8 +1,12 @@
-cmake_minimum_required(VERSION 3.27)
-include(CreatePart.cmake)
-include(InitializeCppMacro.cmake)
+cmake_minimum_required(VERSION 3.20)
+
 set(CMAKE_CXX_STANDARD 20)
 project(openapi-extension-userver)
+
+include(CTest)
+include(CreatePart.cmake)
+include(InitializeCppMacro.cmake)
+enable_testing()
 
 # Adding userver dependency
 add_subdirectory(userver)
@@ -19,10 +23,10 @@ target_link_libraries(${library_module} PUBLIC userver-core)
 
 CreateTrivialExe(
     name "unit_tests"
-    path "/tests-unit"
+    path "/checks/unit"
 )
 
-set(${CURRENT_PROJECT}_FIXED_STRING_SIZE 128)
+#set(${CURRENT_PROJECT}_FIXED_STRING_SIZE 128)
 
 InitializeCppMacro(
         target ${library_module}
@@ -48,20 +52,11 @@ InitializeCppMacro(
 
 target_link_libraries(${unit_tests_exe} PUBLIC ${library_module})
 target_link_libraries(${unit_tests_exe} PUBLIC userver-utest)
+target_compile_options(${unit_tests_exe} PRIVATE "-Wno-missing-field-initializers")
 
 add_google_tests(${unit_tests_exe})
 
-#CreateTrivialPart(
-#        name "service_src"
-#        path "/tests-service/src"
-#)
-
-CreateTrivialExe(
-        name "test_service"
-        path "/tests-service/service"
-)
-
-target_link_libraries(${test_service_exe} PUBLIC ${library_module})
+add_subdirectory(checks/service)
 
 unset (library_module)
 unset (unit_tests_exe)

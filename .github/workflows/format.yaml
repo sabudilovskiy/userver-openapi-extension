@@ -1,0 +1,41 @@
+name: format
+
+'on':
+  pull_request:
+  push:
+    branches:
+      - trunk
+
+env:
+  UBSAN_OPTIONS: print_stacktrace=1
+
+jobs:
+  posix:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+
+    name: 'format'
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Install dependencies
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 15
+          rm llvm.sh
+          sudo apt install python3
+      - name: Format
+        run: |
+          make format
+      - name: Check format sources
+        run: |
+          make check-git-status

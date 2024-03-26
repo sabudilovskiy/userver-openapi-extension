@@ -1,0 +1,100 @@
+name: CI
+
+'on':
+  pull_request:
+  push:
+    branches:
+      - trunk
+
+env:
+  UBSAN_OPTIONS: print_stacktrace=1
+
+jobs:
+  posix:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            type: Debug
+            title: debug clang-15
+            compiler: clang
+            version: 15
+
+          - os: ubuntu-22.04
+            type: Debug
+            title: debug clang-16
+            compiler: clang
+            version: 16
+
+          - os: ubuntu-22.04
+            type: Debug
+            title: debug clang-17
+            compiler: clang
+            version: 17
+
+          - os: ubuntu-22.04
+            type: Debug
+            title: debug gcc-11
+            compiler: gcc
+            version: 11
+
+          - os: ubuntu-22.04
+            type: Debug
+            title: debug gcc-12
+            compiler: gcc
+            version: 12
+
+    name: '${{matrix.os}}: ${{matrix.title}}'
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: add Postgres package repository
+        run: |
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
+      - name: Install packages
+        run: |
+          sudo apt update
+          sudo apt install --allow-downgrades -y pep8 $(cat userver/scripts/docs/en/deps/${{matrix.os}}.md | tr '\n' ' ')
+      - name: install compiler
+        run: |
+          sudo make install-compiler compiler=${{matrix.compiler}} version=${{matrix.version}}
+      - name: Reuse ccache directory
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache
+          key: '${{matrix.os}} ${{matrix.title}} ccache-dir ${{github.ref}} run-${{github.run_number}}'
+          restore-keys: |
+            ${{matrix.os}} ${{matrix.title}} ccache-dir ${{github.ref}} run-'
+            ${{matrix.os}} ${{matrix.title}} ccache-
+
+      - name: Setup ccache
+        run: |
+          ccache -M 2.0GB
+          ccache -s
+
+      - name: Configure cmake project
+        run: >
+          cmake 
+          -B _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}} 
+          -DCMAKE_BUILD_TYPE={{matrix.type}} 
+          -DCMAKE_C_COMPILER=$(make find-c-compiler compiler=${{matrix.compiler}} version=${{matrix.version}})
+          -DCMAKE_CXX_COMPILER=$(make find-cxx-compiler compiler=${{matrix.compiler}} version=${{matrix.version}})
+
+      - name: Build project
+        run: >
+          cmake 
+          --build _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}}
+          -j 6
+          --target all
+
+      - name: Run ${{matrix.make}}
+        run: | 
+          cd _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}}
+          (test -t 1 && GTEST_COLOR=1 PYTEST_ADDOPTS="--color=yes" ctest -V) || ctest -V

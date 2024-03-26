@@ -2,12 +2,11 @@
 
 #include <userver/yaml_config/merge_schemas.hpp>
 
-namespace uopenapi::http{
-    userver::yaml_config::Schema openapi_descriptor::GetStaticConfigSchema()
-    {
-        return userver::yaml_config::MergeSchemas<
-                userver::server::handlers::HttpHandlerBase>(
-                R"(
+namespace uopenapi::http {
+userver::yaml_config::Schema openapi_descriptor::GetStaticConfigSchema() {
+    return userver::yaml_config::MergeSchemas<
+        userver::server::handlers::HttpHandlerBase>(
+        R"(
 type: object
 description: Class describe by openapi server
 additionalProperties: true
@@ -35,5 +34,5 @@ properties:
         description: info_version
     additionalProperties: true
 )");
-    }
 }
+}  // namespace uopenapi::http

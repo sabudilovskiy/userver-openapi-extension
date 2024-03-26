@@ -24,8 +24,8 @@ struct schema_appender<std::vector<T>, array_requirements> {
             field_node["uniqueItems"] = true;
         }
         auto items_node = field_node["items"];
-        schema_appender<T, none_requirements>::template append<none_requirements{}>(
-            schema.from_node(items_node));
+        schema_appender<T, none_requirements>::template append<
+            none_requirements{}>(schema.from_node(items_node));
     }
 };
 template <typename T>
@@ -38,8 +38,8 @@ struct schema_appender<std::vector<T>, none_requirements> {
         }
         field_node["type"] = "array";
         auto items_node = field_node["items"];
-        schema_appender<T, none_requirements>::template append<none_requirements{}>(
-            schema.from_node(items_node));
+        schema_appender<T, none_requirements>::template append<
+            none_requirements{}>(schema.from_node(items_node));
     }
 };
 }  // namespace uopenapi::reflective
