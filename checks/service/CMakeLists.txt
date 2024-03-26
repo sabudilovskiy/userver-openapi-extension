@@ -1,7 +1,7 @@
 project(check_service)
 set(CMAKE_CXX_STANDARD 20)
 
-include(../../CreatePart.cmake)
+include(../../CMake/CreatePart.cmake)
 
 add_executable(${PROJECT_NAME} main/main.cpp)
 
