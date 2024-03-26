@@ -12,7 +12,7 @@ struct OperationBody {
     std::int64_t right;
 };
 
-UOPENAPI_DECLARE_ENUM(Operation, int, sum, div, sub, prod );
+UOPENAPI_DECLARE_ENUM(Operation, int, sum, div, sub, prod);
 
 struct OperationRequest {
     OperationBody body;
