@@ -35,9 +35,10 @@ install-compiler:
             sudo ./llvm.sh $(version); \
             rm llvm.sh;\
     elif [ "$(compiler)" = "gcc" ]; then \
-      	echo "hi linux"; \
+      	sudo apt install -y g++-$(version); \
+      	sudo apt install -y gcc-$(version); \
   	else \
-      echo "Unknown compiler"; \
+      echo "Unknown compiler" >&2; \
   	fi
 
 .PHONY: find-cxx-compiler
@@ -45,7 +46,7 @@ find-cxx-compiler:
 	@if [ "$(compiler)" = "clang" ]; then \
         echo "/usr/bin/clang++-$(version)"; \
       elif [ "$(compiler)" = "gcc" ]; then \
-        echo "Gcc compiler" >&2; \
+        echo "/usr/bin/g++-$(version)"; \
       else \
         echo "Unknown compiler" >&2; \
       fi
@@ -55,7 +56,7 @@ find-c-compiler:
 	@if [ "$(compiler)" = "clang" ]; then \
         echo "/usr/bin/clang-$(version)"; \
       elif [ "$(compiler)" = "gcc" ]; then \
-        echo "Gcc compiler" >&2;  \
+        echo "/usr/bin/gcc-$(version)"; \
       else \
         echo "Unknown compiler" >&2;  \
       fi
