@@ -4,11 +4,40 @@ set(CMAKE_CXX_STANDARD 20)
 project(openapi-extension-userver)
 
 include(CTest)
-include(CreatePart.cmake)
-include(InitializeCppMacro.cmake)
+include(CMake/CreatePart.cmake)
+include(CMake/InitializeCppMacro.cmake)
+include(CMake/CreateVariable.cmake)
 enable_testing()
 
-# Adding userver dependency
+#size of constexpr strings
+CreateVariable(
+        variable FIXED_STRING_SIZE
+        value 64
+)
+
+#declare macros or not
+CreateVariable(
+        variable CREATE_MACROS
+        value 1
+)
+
+#Should aggregate types be considered reflective
+CreateVariable(
+        variable DEFAULT_REFLECTIVABLE
+        value 1
+)
+
+CreateVariable(
+        variable BUILD_UNIT_TESTS
+        value 1
+)
+
+CreateVariable(
+        variable BUILD_TEST_SERVICES
+        value 1
+)
+
+
 add_subdirectory(userver)
 userver_setup_environment()
 
@@ -18,47 +47,50 @@ CreateTrivialPart(
 )
 
 target_compile_options(${library_module} PRIVATE "-Wno-missing-field-initializers")
-
 target_link_libraries(${library_module} PUBLIC userver-core)
-
-CreateTrivialExe(
-    name "unit_tests"
-    path "/checks/unit"
-)
-
-#set(${CURRENT_PROJECT}_FIXED_STRING_SIZE 128)
 
 InitializeCppMacro(
         target ${library_module}
         name_macro UOPENAPI_FIXED_STRING_SIZE
         variable FIXED_STRING_SIZE
-        default 64
 )
 
 InitializeCppMacro(
         target ${library_module}
         name_macro UOPENAPI_CREATE_MACROS
         variable CREATE_MACROS
-        default 1
 )
 
 InitializeCppMacro(
         target ${library_module}
         name_macro UOPENAPI_DEFAULT_REFLECTIVABLE
         variable DEFAULT_REFLECTIVABLE
-        default true
 )
 
+if (${PROJECT_NAME}_BUILD_UNIT_TESTS)
+    message(STATUS "UOPENAPI BUILD UNIT TESTS : enabled")
+    CreateTrivialExe(
+            name "unit_tests"
+            path "/checks/unit"
+    )
+    target_link_libraries(${unit_tests_exe} PUBLIC ${library_module})
+    target_link_libraries(${unit_tests_exe} PUBLIC userver-utest)
+    target_compile_options(${unit_tests_exe} PRIVATE "-Wno-missing-field-initializers")
 
-target_link_libraries(${unit_tests_exe} PUBLIC ${library_module})
-target_link_libraries(${unit_tests_exe} PUBLIC userver-utest)
-target_compile_options(${unit_tests_exe} PRIVATE "-Wno-missing-field-initializers")
+    add_google_tests(${unit_tests_exe})
+    unset (unit_tests_exe)
+else ()
+    message(STATUS "UOPENAPI BUILD UNIT TESTS : disabled")
+endif ()
 
-add_google_tests(${unit_tests_exe})
-
-add_subdirectory(checks/service)
+if (${PROJECT_NAME}_BUILD_TEST_SERVICES)
+    message(STATUS "UOPENAPI BUILD TEST SERVICES : enabled")
+    add_subdirectory(checks/service)
+    unset (test_service_exe)
+else ()
+    message(STATUS "UOPENAPI BUILD TEST SERVICES : disabled")
+endif ()
 
 unset (library_module)
-unset (unit_tests_exe)
-unset (test_service_exe)
+
 
