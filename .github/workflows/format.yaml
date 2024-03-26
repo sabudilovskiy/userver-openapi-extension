@@ -28,6 +28,7 @@ jobs:
           submodules: true
       - name: Install dependencies
         run: |
+          sudo make install-compiler compiler=clang version=17
           sudo apt install clang-format-17
           sudo apt install python3
       - name: Format
