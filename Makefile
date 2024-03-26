@@ -65,8 +65,8 @@ find-c-compiler:
 format:
 	python3.10 scripts/generate_all_headers.py library/uopenapi uopenapi
 	python3.10 scripts/format_includes.py library boost uopenapi checks
-	find checks -name '*pp' -type f | xargs clang-format-15 -i
-	find library -name '*pp' -type f | xargs clang-format-15 -i
+	find checks -name '*pp' -type f | xargs clang-format-17 -i
+	find library -name '*pp' -type f | xargs clang-format-17 -i
 	make add-eol P=checks
 	make add-eol P=library
 	make add-eol P=CMake

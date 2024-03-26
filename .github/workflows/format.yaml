@@ -28,10 +28,7 @@ jobs:
           submodules: true
       - name: Install dependencies
         run: |
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh 15
-          rm llvm.sh
+          sudo apt install clang-format-17
           sudo apt install python3
       - name: Format
         run: |

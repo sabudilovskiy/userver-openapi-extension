@@ -11,8 +11,6 @@ struct converter {
 
 template <typename From, typename To>
 concept can_convert = requires(const From& from) {
-                          {
-                              converter<From, To>::convert(from)
-                              } -> std::convertible_to<To>;
-                      };
+    { converter<From, To>::convert(from) } -> std::convertible_to<To>;
+};
 }  // namespace uopenapi::utils

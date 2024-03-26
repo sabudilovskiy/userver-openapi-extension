@@ -11,10 +11,9 @@ concept field_exist_validate =
     requires(const F& f) { validate(f, requirements_field<T, name>); };
 
 template <typename T, utils::ce::string name, typename F>
-concept field_exist_nttp_validate =
-    requires(const F& f) {
-        validate(f, utils::create_nttp_adl<requirements_field<T, name>>());
-    };
+concept field_exist_nttp_validate = requires(const F& f) {
+    validate(f, utils::create_nttp_adl<requirements_field<T, name>>());
+};
 
 template <typename T, none_requirements req>
 validate_result validate(const T&, utils::nttp_adl<none_requirements, req>) {

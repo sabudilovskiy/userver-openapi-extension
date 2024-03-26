@@ -12,51 +12,7 @@ struct OperationBody {
     std::int64_t right;
 };
 
-enum struct Operation { sum, div, sub, prod };
-
-namespace uopenapi::utils {
-template <>
-struct converter<std::string_view, Operation> {
-    static Operation convert(std::string_view text) {
-        if (text == "+") {
-            return Operation::sum;
-        } else if (text == "-") {
-            return Operation::sub;
-        } else if (text == "/") {
-            return Operation::div;
-        } else if (text == "*") {
-            return Operation::prod;
-        } else {
-            throw utils::formatted_exception(
-                "Unknowned value [{}] try to convert to Operation", text);
-        }
-    }
-};
-}  // namespace uopenapi::utils
-
-namespace uopenapi::reflective {
-template <>
-struct schema_appender<Operation, none_requirements> {
-    template <none_requirements>
-    static void append(schema_view schemaView) {
-        place_ref_to_type<Operation>(schemaView.cur_place);
-        auto type_node =
-            schemaView
-                .root["components"]["schemas"][schema_type_name<Operation>()];
-        if (type_node.IsObject()) {
-            return;
-        }
-        type_node = userver::formats::yaml::Type::kObject;
-        type_node["type"] = "string";
-        auto enum_node = type_node["enum"];
-        enum_node = userver::formats::yaml::Type::kArray;
-        enum_node.PushBack("+");
-        enum_node.PushBack("/");
-        enum_node.PushBack("*");
-        enum_node.PushBack("-");
-    }
-};
-}  // namespace uopenapi::reflective
+UOPENAPI_DECLARE_ENUM(Operation, int, sum, div, sub, prod );
 
 struct OperationRequest {
     OperationBody body;

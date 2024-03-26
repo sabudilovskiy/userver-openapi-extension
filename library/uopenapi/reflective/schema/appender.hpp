@@ -32,21 +32,19 @@ struct schema_appender {
 };
 
 template <typename T, utils::ce::string name, typename appender>
-concept field_exist_rt_append =
-    requires(schema_view schema) {
-        appender::append(schema, requirements_field<T, name>);
-    };
+concept field_exist_rt_append = requires(schema_view schema) {
+    appender::append(schema, requirements_field<T, name>);
+};
 
 template <typename T, utils::ce::string name, typename appender>
-concept field_exist_nttp_append =
-    requires(schema_view schema) {
-        appender::template append<requirements_field<T, name>>(schema);
-    };
+concept field_exist_nttp_append = requires(schema_view schema) {
+    appender::template append<requirements_field<T, name>>(schema);
+};
 
 template <typename T, typename appender>
 concept exist_rt_append = requires(schema_view schema) {
-                              appender::append(schema, requirements_type<T>);
-                          };
+    appender::append(schema, requirements_type<T>);
+};
 
 template <typename T, utils::ce::string name, typename F>
 void call_append(schema_view schema) {
