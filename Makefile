@@ -43,7 +43,7 @@ install-compiler:
 .PHONY: find-cxx-compiler
 find-cxx-compiler:
 	@if [ "$(compiler)" = "clang" ]; then \
-        echo "/usr/bin/clang-$(version)"; \
+        echo "/usr/bin/clang++-$(version)"; \
       elif [ "$(compiler)" = "gcc" ]; then \
         echo "Gcc compiler" >&2; \
       else \
