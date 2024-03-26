@@ -60,3 +60,13 @@ find-c-compiler:
       else \
         echo "Unknown compiler" >&2;  \
       fi
+
+.PHONY: format
+format:
+	python3.10 scripts/generate_all_headers.py library/uopenapi uopenapi
+	python3.10 scripts/format_includes.py library boost uopenapi checks
+	find checks -name '*pp' -type f | xargs clang-format-15 -i
+	find library -name '*pp' -type f | xargs clang-format-15 -i
+	make add-eol P=checks
+	make add-eol P=library
+	make add-eol-root

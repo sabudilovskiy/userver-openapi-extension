@@ -17,8 +17,8 @@ struct TestResp {
     TestBodyResp body;
 };
 }  // namespace tests_request_http
-using tests_request_http::TestResp;
 using tests_request_http::TestBodyResp;
+using tests_request_http::TestResp;
 
 UOPENAPI_SOURCE_TYPE(TestResp, header_enum, header);
 UOPENAPI_SOURCE_TYPE(TestResp, cookie_enum, cookie);

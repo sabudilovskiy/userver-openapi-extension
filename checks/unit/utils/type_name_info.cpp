@@ -2,9 +2,9 @@
 #include <uopenapi/utils/name_type.hpp>
 #include <userver/utest/utest.hpp>
 
-namespace utils_tests::name_type{
-    struct Tests{};
-}
+namespace utils_tests::name_type {
+struct Tests {};
+}  // namespace utils_tests::name_type
 
 using utils_tests::name_type::Tests;
 
