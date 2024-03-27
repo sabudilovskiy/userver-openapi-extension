@@ -2,19 +2,19 @@
 #include <userver/utest/utest.hpp>
 
 namespace enum_tests {
-    UOPENAPI_DECLARE_ENUM(Color, int, red, green, blue);
+UOPENAPI_DECLARE_ENUM(Color, int, red, green, blue);
 
-    UOPENAPI_DECLARE_ENUM(AnotherColor, int, red = 1, green = 5, blue = 7);
-}
-using enum_tests::Color;
+UOPENAPI_DECLARE_ENUM(AnotherColor, int, red = 1, green = 5, blue = 7);
+}  // namespace enum_tests
 using enum_tests::AnotherColor;
+using enum_tests::Color;
 static_assert(uopenapi::has_introspector<Color>);
 static_assert(uopenapi::has_introspector<AnotherColor>);
 
 UTEST(EnumTests, BasicDeclare) {
     using introspector = uopenapi::enum_introspector<Color>;
     auto names = introspector::names;
-    auto values= introspector ::values;
+    auto values = introspector ::values;
     ASSERT_EQ(names.size(), 3);
     ASSERT_EQ(values.size(), 3);
     ASSERT_EQ(names[0], "red");
@@ -28,7 +28,7 @@ UTEST(EnumTests, BasicDeclare) {
 UTEST(EnumTests, BasicDeclareWithValues) {
     using introspector = uopenapi::enum_introspector<AnotherColor>;
     auto names = introspector::names;
-    auto values= introspector ::values;
+    auto values = introspector ::values;
     ASSERT_EQ(names.size(), 3);
     ASSERT_EQ(values.size(), 3);
     ASSERT_EQ(names[0], "red");
