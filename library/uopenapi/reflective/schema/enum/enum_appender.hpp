@@ -5,7 +5,7 @@
 
 namespace uopenapi::reflective {
 template <typename Enum>
-requires HasIntrospector<Enum>
+requires has_introspector<Enum>
 struct schema_appender<Enum, none_requirements> {
     template <none_requirements>
     static void append(schema_view schema) {

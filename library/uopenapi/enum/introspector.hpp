@@ -3,11 +3,12 @@
 
 namespace uopenapi {
 template <typename T>
-concept HasIntrospector = requires {
+concept has_introspector = requires {
     { get_enum_introspector(std::type_identity<T>{}) };
 };
 
 template <typename T>
-using enum_introspector = std::remove_pointer_t<decltype(get_enum_introspector(
-    std::type_identity<T>{}))>;
+requires has_introspector<T>
+using enum_introspector =
+    decltype(get_enum_introspector(std::type_identity<T>{}));
 }  // namespace uopenapi

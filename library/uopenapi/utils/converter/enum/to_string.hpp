@@ -8,7 +8,7 @@
 
 namespace uopenapi::utils {
 template <typename Enum>
-requires std::is_enum_v<Enum> && HasIntrospector<Enum>
+requires has_introspector<Enum>
 struct converter<Enum, std::string> {
     static std::string convert(Enum value) {
         auto stringView = enum_to_string_view(value);
@@ -22,7 +22,7 @@ struct converter<Enum, std::string> {
     }
 };
 template <typename Enum>
-requires std::is_enum_v<Enum> && HasIntrospector<Enum>
+requires has_introspector<Enum>
 struct converter<Enum, std::string_view> {
     static std::string_view convert(Enum value) {
         auto stringView = enum_to_string_view(value);
