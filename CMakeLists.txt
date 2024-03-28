@@ -38,6 +38,7 @@ CreateVariable(
 )
 
 set(USERVER_FEATURE_POSTGRESQL ON CACHE BOOL "" FORCE)
+set (USERVER_FEATURE_PATCH_LIBPQ OFF CACHE BOOL "" FORCE)
 add_subdirectory(userver)
 userver_setup_environment()
 
