@@ -2,6 +2,7 @@
 #include <uopenapi/reflective/schema/appender.hpp>
 #include <uopenapi/reflective/schema/array/all.hpp>
 #include <uopenapi/reflective/schema/boolean/all.hpp>
+#include <uopenapi/reflective/schema/enum/all.hpp>
 #include <uopenapi/reflective/schema/number/all.hpp>
 #include <uopenapi/reflective/schema/object/all.hpp>
 #include <uopenapi/reflective/schema/schema.hpp>

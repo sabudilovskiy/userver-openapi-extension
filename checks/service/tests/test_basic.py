@@ -13,7 +13,7 @@ async def test_operation(service_client):
             'left': 10,
             'right': 20
         },
-        params={'op': '*'},
+        params={'op': 'prod'},
     )
     assert response.status == 200
     assert response.json() == {
@@ -70,10 +70,10 @@ components:
     Operation:
       type: string
       enum:
-        - +
-        - /
-        - "*"
-        - "-"
+        - sum
+        - div
+        - sub
+        - prod
     ResponseBody:
       type: object
       properties:
