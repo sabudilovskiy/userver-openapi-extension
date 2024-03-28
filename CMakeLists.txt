@@ -37,7 +37,7 @@ CreateVariable(
         value 1
 )
 
-
+set(USERVER_FEATURE_POSTGRESQL ON CACHE BOOL "" FORCE)
 add_subdirectory(userver)
 userver_setup_environment()
 
@@ -47,7 +47,7 @@ CreateTrivialPart(
 )
 
 target_compile_options(${library_module} PRIVATE "-Wno-missing-field-initializers")
-target_link_libraries(${library_module} PUBLIC userver-core)
+target_link_libraries(${library_module} PUBLIC userver-core userver-postgresql)
 
 InitializeCppMacro(
         target ${library_module}
