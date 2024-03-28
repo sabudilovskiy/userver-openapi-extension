@@ -48,3 +48,16 @@ pattern: "[a-z]"
     auto got = ToString(s.v.ExtractValue());
     EXPECT_EQ(got, expected);
 }
+
+UTEST(openapi_schema_appenders, Uuid) {
+    using appender = schema_appender<boost::uuids::uuid, none_requirements>;
+    schema s;
+    auto view = schema_view::from_schema(s);
+    appender::append<none_requirements{}>(view);
+    auto expected = UOPENAPI_RAW_STRING(R"(
+type: string
+format: uuid
+)");
+    auto got = ToString(s.v.ExtractValue());
+    EXPECT_EQ(got, expected);
+}
