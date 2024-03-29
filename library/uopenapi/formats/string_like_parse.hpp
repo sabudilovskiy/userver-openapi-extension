@@ -1,14 +1,14 @@
 #pragma once
 #include <uopenapi/utils/converter/converter.hpp>
-#include <userver/formats/json/value.hpp>
+#include <userver/formats/parse/to.hpp>
 
 namespace userver::formats::json {
 
-template <typename T>
+template <typename T, typename Value>
 requires uopenapi::utils::can_convert<std::string, T>
-T Parse(const formats::json::Value& value, userver::formats::parse::To<T>) {
+T Parse(const Value& value, userver::formats::parse::To<T>) {
     using converter = uopenapi::utils::converter<std::string, T>;
-    auto tmp = value.As<std::string>();
+    auto tmp = value.template As<std::string>();
     return converter::convert(tmp);
 }
 }  // namespace userver::formats::json

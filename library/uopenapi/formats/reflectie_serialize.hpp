@@ -5,15 +5,14 @@
 #include <uopenapi/reflective/requirements/requirements_field.hpp>
 #include <uopenapi/reflective/requirements/validate.hpp>
 #include <uopenapi/utils/formatted_exception.hpp>
-#include <userver/formats/json.hpp>
+#include <userver/formats/serialize/to.hpp>
 
 namespace userver::formats::serialize {
 
-template <typename T>
+template <typename T, typename Value>
 requires uopenapi::reflective::reflectivable<T>
-formats::json::Value Serialize(
-    const T& t, userver::formats::serialize::To<formats::json::Value>) {
-    formats::json::ValueBuilder json;
+Value Serialize(const T& t, userver::formats::serialize::To<Value>) {
+    typename Value::Builder builder;
     auto one_field = [&]<typename Info>(auto& field) {
         auto name = Info::name.AsString();
         auto result =
@@ -24,9 +23,9 @@ formats::json::Value Serialize(
                 "{}, message: {}",
                 name, result.error_message());
         }
-        json[name] = field;
+        builder[name] = field;
     };
     uopenapi::pfr_extension::for_each_named_field(t, one_field);
-    return json.ExtractValue();
+    return builder.ExtractValue();
 }
 }  // namespace userver::formats::serialize

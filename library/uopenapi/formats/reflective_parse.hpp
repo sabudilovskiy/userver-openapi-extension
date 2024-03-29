@@ -5,14 +5,13 @@
 #include <uopenapi/reflective/requirements/requirements_field.hpp>
 #include <uopenapi/reflective/requirements/validate.hpp>
 #include <uopenapi/utils/formatted_exception.hpp>
-#include <userver/formats/json.hpp>
+#include <userver/formats/parse/to.hpp>
 
 namespace userver::formats::parse {
 
-template <typename T>
+template <typename Value, typename T>
 requires uopenapi::reflective::reflectivable<T>
-T Parse(const userver::formats::json::Value& value,
-        userver::formats::parse::To<T>) {
+T Parse(const Value& value, userver::formats::parse::To<T>) {
     T t;
     auto one_field = [&]<typename Info>(auto& field) {
         using F = std::remove_cvref_t<decltype(field)>;
