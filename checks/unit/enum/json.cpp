@@ -1,7 +1,8 @@
 #include <uopenapi/enum/declare.hpp>
-#include <uopenapi/json/string_like_parse.hpp>
-#include <uopenapi/json/string_like_serialize.hpp>
+#include <uopenapi/formats  //string_like_serialize.hpp>
+#include <uopenapi/formats/string_like_parse.hpp>
 #include <uopenapi/utils/converter/enum/all.hpp>
+#include <userver/formats/json.hpp>
 #include <userver/utest/utest.hpp>
 
 namespace enum_tests {
