@@ -62,9 +62,9 @@ format: uuid
     EXPECT_EQ(got, expected);
 }
 
-
 UTEST(openapi_schema_appenders, UserverDate) {
-    using appender = schema_appender<userver::utils::datetime::Date, none_requirements>;
+    using appender =
+        schema_appender<userver::utils::datetime::Date, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
     appender::append<none_requirements{}>(view);
