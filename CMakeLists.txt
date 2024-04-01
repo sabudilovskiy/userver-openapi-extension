@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
-set(CMAKE_CXX_STANDARD 20)
 project(openapi-extension-userver)
+set(CMAKE_CXX_STANDARD 20)
 
 include(CTest)
 include(CMake/CreatePart.cmake)
@@ -37,8 +37,12 @@ CreateVariable(
         value 1
 )
 
-set(USERVER_FEATURE_POSTGRESQL ON CACHE BOOL "" FORCE)
-set (USERVER_FEATURE_PATCH_LIBPQ OFF CACHE BOOL "" FORCE)
+if (NOT DEFINED USERVER_FEATURE_POSTGRESQL)
+    set(USERVER_FEATURE_POSTGRESQL ON CACHE BOOL "" FORCE)
+endif ()
+if (NOT DEFINED USERVER_FEATURE_PATCH_LIBPQ)
+    set(USERVER_FEATURE_PATCH_LIBPQ OFF CACHE BOOL "" FORCE)
+endif ()
 add_subdirectory(userver)
 userver_setup_environment()
 

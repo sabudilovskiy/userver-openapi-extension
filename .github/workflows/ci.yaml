@@ -68,11 +68,11 @@ jobs:
       - name: Reuse ccache directory
         uses: actions/cache@v2
         with:
-          path: ~/.ccache
-          key: '${{matrix.os}} ${{matrix.title}} ccache-dir ${{github.ref}} run-${{github.run_number}}'
+          path: ~/.cache/ccache
+          key: '${{matrix.os}} ${{matrix.title}} ccache ${{github.ref}} run-${{github.run_number}}'
           restore-keys: |
-            ${{matrix.os}} ${{matrix.title}} ccache-dir ${{github.ref}} run-'
-            ${{matrix.os}} ${{matrix.title}} ccache-
+            ${{matrix.os}} ${{matrix.title}} ccache ${{github.ref}} run-'
+            ${{matrix.os}} ${{matrix.title}} ccache
 
       - name: Setup ccache
         run: |
@@ -82,19 +82,19 @@ jobs:
       - name: Configure cmake project
         run: >
           cmake 
-          -B _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}} 
-          -DCMAKE_BUILD_TYPE={{matrix.type}} 
+          -B cmake_build
+          -G Ninja
+          -DCMAKE_BUILD_TYPE=${{matrix.type}} 
           -DCMAKE_C_COMPILER=$(make find-c-compiler compiler=${{matrix.compiler}} version=${{matrix.version}})
           -DCMAKE_CXX_COMPILER=$(make find-cxx-compiler compiler=${{matrix.compiler}} version=${{matrix.version}})
 
       - name: Build project
         run: >
           cmake 
-          --build _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}}
-          -j 6
+          --build cmake_build
           --target all
 
       - name: Run ${{matrix.make}}
         run: | 
-          cd _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}}
+          cd cmake_build
           (test -t 1 && GTEST_COLOR=1 PYTEST_ADDOPTS="--color=yes" ctest -V) || ctest -V
