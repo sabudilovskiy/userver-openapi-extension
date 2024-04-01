@@ -31,12 +31,12 @@ concept nttp_requirements_field =
 }  // namespace uopenapi::reflective
 
 #ifdef UOPENAPI_CREATE_MACROS
-#define REQUIREMENTS_UOPENAPI(TYPE, FIELD)           \
-    template <>                                      \
-    auto ::uopenapi::reflective::requirements_field< \
+#define REQUIREMENTS_UOPENAPI(TYPE, FIELD)                  \
+    template <>                                             \
+    inline auto ::uopenapi::reflective::requirements_field< \
         TYPE, (decltype(std::declval<TYPE>().FIELD, #FIELD)) #FIELD>
-#define REQUIREMENTS_CE_UOPENAPI(TYPE, FIELD)                  \
-    template <>                                                \
-    constexpr auto ::uopenapi::reflective::requirements_field< \
+#define REQUIREMENTS_CE_UOPENAPI(TYPE, FIELD)                         \
+    template <>                                                       \
+    inline constexpr auto ::uopenapi::reflective::requirements_field< \
         TYPE, (decltype(std::declval<TYPE>().FIELD, #FIELD)) #FIELD>
 #endif
