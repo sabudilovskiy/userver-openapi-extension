@@ -82,7 +82,7 @@ jobs:
       - name: Configure cmake project
         run: >
           cmake 
-          -B _cmake_build_{{matrix.compiler}}_{{matrix.version}}_{{matrix.type}} 
+          -B cmake_build
           -G Ninja
           -DCMAKE_BUILD_TYPE={{matrix.type}} 
           -DCMAKE_C_COMPILER=$(make find-c-compiler compiler=${{matrix.compiler}} version=${{matrix.version}})

@@ -68,8 +68,6 @@ InitializeCppMacro(
         variable DEFAULT_REFLECTIVABLE
 )
 
-option()
-
 if (${PROJECT_NAME}_BUILD_UNIT_TESTS)
     message(STATUS "UOPENAPI BUILD UNIT TESTS : enabled")
     CreateTrivialExe(
