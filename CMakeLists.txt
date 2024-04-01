@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
-set(CMAKE_CXX_STANDARD 20)
 project(openapi-extension-userver)
+set(CMAKE_CXX_STANDARD 20)
 
 include(CTest)
 include(CMake/CreatePart.cmake)
@@ -67,6 +67,8 @@ InitializeCppMacro(
         name_macro UOPENAPI_DEFAULT_REFLECTIVABLE
         variable DEFAULT_REFLECTIVABLE
 )
+
+option()
 
 if (${PROJECT_NAME}_BUILD_UNIT_TESTS)
     message(STATUS "UOPENAPI BUILD UNIT TESTS : enabled")
