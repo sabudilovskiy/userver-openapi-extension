@@ -84,7 +84,7 @@ jobs:
           cmake 
           -B cmake_build
           -G Ninja
-          -DCMAKE_BUILD_TYPE={{matrix.type}} 
+          -DCMAKE_BUILD_TYPE=${{matrix.type}} 
           -DCMAKE_C_COMPILER=$(make find-c-compiler compiler=${{matrix.compiler}} version=${{matrix.version}})
           -DCMAKE_CXX_COMPILER=$(make find-cxx-compiler compiler=${{matrix.compiler}} version=${{matrix.version}})
 
