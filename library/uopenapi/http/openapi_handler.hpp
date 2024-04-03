@@ -38,13 +38,13 @@ struct openapi_handler : userver::server::handlers::HttpHandlerBase {
     static response_info perform_r400(std::string msg) {
         return response_info{
             .body = std::move(msg),
-            .content_type = userver::http::content_type::kTextPlain,
+            .content_type = userver::http::content_type::kApplicationJson,
             .status_code = status_code_v<400>};
     }
     static response_info perform_r500(std::string msg) {
         return response_info{
             .body = std::move(msg),
-            .content_type = userver::http::content_type::kTextPlain,
+            .content_type = userver::http::content_type::kApplicationJson,
             .status_code = status_code_v<500>};
     }
 
@@ -58,7 +58,7 @@ struct openapi_handler : userver::server::handlers::HttpHandlerBase {
                 make_request_info(httpReq, mapQuery));
         } catch (std::exception& exc) {
             std::string body_error = fmt::format(
-                R"("message" : "Some error happens where server tried to parse request: [{}]")",
+                R"({{ "message" : "Some error happens where server tried to parse request: [{}]"}})",
                 exc.what());
             respInfo.emplace(perform_r400(std::move(body_error)));
             return std::nullopt;
@@ -80,7 +80,7 @@ struct openapi_handler : userver::server::handlers::HttpHandlerBase {
                 [](auto& r) { return serialize_response_info(r); }, resp);
         } catch (std::exception& exc) {
             LOG_ERROR() << "Unexpected error from serialize: " << exc.what();
-            return perform_r500("");
+            return perform_r500(R"({"message" : "service unavailable"})");
         }
     }
     std::string HandleRequestThrow(

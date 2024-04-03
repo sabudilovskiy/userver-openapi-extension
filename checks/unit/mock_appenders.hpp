@@ -53,11 +53,11 @@ template <>
 inline constexpr bool is_optional<MockOptionalInteger> = true;
 
 template <>
-struct optional_getter<MockOptionalInteger>{
+struct optional_getter<MockOptionalInteger> {
     using value_type = MockInteger;
 };
 template <>
-struct optional_getter<MockOptionalString>{
+struct optional_getter<MockOptionalString> {
     using value_type = MockString;
 };
 }  // namespace uopenapi::utils

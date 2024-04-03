@@ -48,8 +48,8 @@ struct Handler : Base {
     response handle(Request req) const override {
         Resp200 resp200;
         resp200().body = req.body;
-        auto& field = [&]() -> std::optional<std::vector<std::int64_t >>& {
-            switch (req.index_add){
+        auto& field = [&]() -> std::optional<std::vector<std::int64_t>>& {
+            switch (req.index_add) {
                 case 1:
                     return resp200().body.first;
                 case 2:
@@ -60,7 +60,7 @@ struct Handler : Base {
                     throw std::runtime_error("invariant");
             }
         }();
-        if (!field){
+        if (!field) {
             field.emplace();
         }
         field->push_back(req.value_add);

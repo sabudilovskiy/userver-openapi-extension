@@ -1,7 +1,7 @@
 import pytest
 
 from testsuite.databases import pgsql
-
+import yaml
 
 # Start the tests via `make test-debug` or `make test-release`
 
@@ -13,7 +13,7 @@ from testsuite.databases import pgsql
             {'first': [1, 2], 'second': [1, 2], 'thirst': [1, 2, 3]}
     )]
 )
-async def test_req_validation(service_client, request_body, expected_resp_code, expected_resp_body):
+async def test_req_validation_happy_path(service_client, request_body, expected_resp_code, expected_resp_body):
     response = await service_client.post(
         '/handler',
         json=request_body,
@@ -23,74 +23,54 @@ async def test_req_validation(service_client, request_body, expected_resp_code, 
     assert response.json() == expected_resp_body
 
 
-async def test_openapi(service_client):
+K_MESSAGE_FIRST_MIN_ITEMS = ('Some error happens where server tried to parse request: [An error occurred while parsing '
+                             'the field on path: [/]. Field name: [first], message: [array has size: [1] less than '
+                             'min_items: [2]]]')
+K_MESSAGE_SECOND_MAX_ITEMS = ('Some error happens where server tried to parse request: [An error occurred while '
+                              'parsing the field on path: [/]. Field name: [second], message: [array has size: [3] '
+                              'greater than max_items: [2]]]')
+
+K_MESSAGE_THIRST_UNIQUE_ITEMS = ('Some error happens where server tried to parse request: [An error occurred while '
+                                 'parsing the field on path: [/]. Field name: [thirst], message: [array has '
+                                 'non-unique items. first_index: [0], second_index: [1]]]')
+
+
+@pytest.mark.parametrize(
+    'request_body, expected_resp_code, expected_resp_message',
+    [
+        (
+                {'first': [1]},
+                400,
+                K_MESSAGE_FIRST_MIN_ITEMS
+        ),
+        (
+                {'second': [1, 2, 3]},
+                400,
+                K_MESSAGE_SECOND_MAX_ITEMS
+        ),
+        (
+                {'thirst': [1, 1]},
+                400,
+                K_MESSAGE_THIRST_UNIQUE_ITEMS
+        )
+    ],
+    ids=['fail_min_items', 'fail_max_items', 'fail_unique_items']
+)
+async def test_req_validation_fail_body(service_client, request_body, expected_resp_code, expected_resp_message):
+    response = await service_client.post(
+        '/handler',
+        json=request_body,
+        params={'index_add': 3, 'value_add': 3},
+    )
+    assert response.status == expected_resp_code
+    assert response.json()['message'] == expected_resp_message
+
+
+async def test_openapi(service_client, load_yaml):
     response = await service_client.get(
         '/openapi',
     )
     assert response.status == 200
-    assert response.text == """info:
-  title: Some Server Doc
-  description: Some server
-  version: 1.0.0
-openapi: 3.0.0
-servers:
-  - description: stable
-    url: top_secret
-paths:
-  /handler:
-    post:
-      description: Request
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Body"
-      parameters:
-        - in: query
-          name: index_add
-          required: false
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            maximum: 3
-        - in: query
-          name: value_add
-          required: false
-          schema:
-            type: integer
-            format: int64
-      responses:
-        200:
-          $ref: "#/components/responses/Response"
-components:
-  schemas:
-    Body:
-      type: object
-      properties:
-        first:
-          type: array
-          minItems: 2
-          items:
-            type: integer
-            format: int64
-        second:
-          type: array
-          maxItems: 2
-          items:
-            type: integer
-            format: int64
-        thirst:
-          type: array
-          uniqueItems: true
-          items:
-            type: integer
-            format: int64
-  responses:
-    Response:
-      description: ""
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/Body\""""
+    got_schema = yaml.safe_load(response.text)
+    expected_schema = load_yaml('schema.yaml')
+    assert got_schema == expected_schema
