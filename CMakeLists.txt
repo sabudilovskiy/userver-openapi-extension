@@ -90,7 +90,7 @@ endif ()
 
 if (${PROJECT_NAME}_BUILD_TEST_SERVICES)
     message(STATUS "UOPENAPI BUILD TEST SERVICES : enabled")
-    add_subdirectory(checks/service)
+    add_subdirectory(checks/examples)
     unset (test_service_exe)
 else ()
     message(STATUS "UOPENAPI BUILD TEST SERVICES : disabled")
