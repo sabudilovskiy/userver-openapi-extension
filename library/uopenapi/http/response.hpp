@@ -27,6 +27,9 @@ struct response {
     value_type& operator()() noexcept { return value; }
     const value_type& operator()() const noexcept { return value; }
 
+    value_type* operator->() noexcept { return &value; }
+    const value_type* operator->() const noexcept { return &value; }
+
    public:
     T value;
 };
