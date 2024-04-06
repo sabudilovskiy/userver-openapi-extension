@@ -37,6 +37,7 @@ components:
   schemas:
     Data:
       type: object
+      additionalProperties: false
       properties:
         a:
           type: integer

@@ -38,6 +38,7 @@ components:
   schemas:
     Body:
       type: object
+      additionalProperties: false
       properties:
         first:
           type: array
@@ -51,7 +52,7 @@ components:
           items:
             type: integer
             format: int64
-        thirst:
+        third:
           type: array
           uniqueItems: true
           items:

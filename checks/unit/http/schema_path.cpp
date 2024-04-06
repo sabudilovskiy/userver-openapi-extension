@@ -89,6 +89,7 @@ components:
         - D
     tests_path_http_schema.TestReqBody:
       type: object
+      additionalProperties: false
       properties:
         first:
           $ref: "#/components/schemas/some_enum"
@@ -99,6 +100,7 @@ components:
         - second
     tests_path_http_schema.TestRespBody:
       type: object
+      additionalProperties: false
       properties:
         first:
           $ref: "#/components/schemas/some_enum"

@@ -29,6 +29,7 @@ components:
   schemas:
     OperationBody:
       type: object
+      additionalProperties: false
       properties:
         left:
           type: integer
@@ -48,6 +49,7 @@ components:
         - prod
     ResponseBody:
       type: object
+      additionalProperties: false
       properties:
         result:
           type: integer

@@ -19,6 +19,7 @@ struct schema_appender<T, none_requirements> {
         }
         type_node = userver::formats::common::Type::kObject;
         type_node["type"] = "object";
+        type_node["additionalProperties"] = "false";
         auto required_visiter = [&]<typename F, typename Info>() {
             std::string name = Info::name.AsString();
             auto field_node = type_node["properties"][name];

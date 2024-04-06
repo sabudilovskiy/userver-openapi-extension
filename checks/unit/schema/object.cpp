@@ -35,6 +35,7 @@ components:
   schemas:
     BasicObject:
       type: object
+      additionalProperties: false
       properties:
         f1:
           type: string
@@ -57,6 +58,7 @@ components:
   schemas:
     BasicObjectOpt:
       type: object
+      additionalProperties: false
       properties:
         f1:
           type: string
@@ -100,6 +102,7 @@ components:
   schemas:
     BasicObjectReqFields:
       type: object
+      additionalProperties: false
       properties:
         f1:
           type: string

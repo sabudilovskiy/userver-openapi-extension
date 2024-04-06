@@ -14,7 +14,7 @@ using namespace uopenapi::reflective;
 struct Body {
     std::optional<std::vector<std::int64_t>> first;
     std::optional<std::vector<std::int64_t>> second;
-    std::optional<std::vector<std::int64_t>> thirst;
+    std::optional<std::vector<std::int64_t>> third;
 };
 
 REQUIREMENTS_CE_UOPENAPI(Body, first) = array_requirements{.min_items = 2};
@@ -22,12 +22,12 @@ REQUIREMENTS_CE_UOPENAPI(Body, first) = array_requirements{.min_items = 2};
 REQUIREMENTS_CE_UOPENAPI(Body, second) = array_requirements{.max_items = 2};
 
 REQUIREMENTS_CE_UOPENAPI(Body,
-                         thirst) = array_requirements{.unique_items = true};
+                         third) = array_requirements{.unique_items = true};
 
 struct Request {
     Body body;
-    int index_add;
-    std::int64_t value_add;
+    int index_add = 0;
+    std::int64_t value_add = 0;
 };
 
 REQUIREMENTS_CE_UOPENAPI(Request, index_add) = number_requirements<int>{
@@ -40,11 +40,13 @@ struct Response {
 using Resp200 = uopenapi::http::response<Response, 200>;
 
 using Base = uopenapi::http::openapi_handler<Request, Resp200>;
+
 struct Handler : Base {
     static constexpr std::string_view kName = "test-handler";
     Handler(const userver::components::ComponentConfig& cfg,
             const userver::components::ComponentContext& ctx)
         : Base(cfg, ctx) {}
+
     response handle(Request req) const override {
         Resp200 resp200;
         auto& resp_body = resp200->body;
@@ -56,7 +58,7 @@ struct Handler : Base {
                 case 2:
                     return resp_body.second;
                 case 3:
-                    return resp_body.thirst;
+                    return resp_body.third;
                 default:
                     throw std::runtime_error("invariant");
             }

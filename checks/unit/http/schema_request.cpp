@@ -74,6 +74,7 @@ components:
         - D
     tests_request_http_schema.TestBody:
       type: object
+      additionalProperties: false
       properties:
         first:
           $ref: "#/components/schemas/some_enum"

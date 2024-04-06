@@ -35,15 +35,19 @@ struct openapi_handler : userver::server::handlers::HttpHandlerBase {
         append_path<request, responses...>(schema, handlerInfo);
     }
     virtual response handle(request) const = 0;
-    static response_info perform_r400(std::string msg) {
+    static response_info perform_r400(std::string_view msg) {
+        userver::formats::json::ValueBuilder json;
+        json["message"] = msg;
         return response_info{
-            .body = std::move(msg),
+            .body = ToString(json.ExtractValue()),
             .content_type = userver::http::content_type::kApplicationJson,
             .status_code = status_code_v<400>};
     }
-    static response_info perform_r500(std::string msg) {
+    static response_info perform_r500(std::string_view msg) {
+        userver::formats::json::ValueBuilder json;
+        json["message"] = msg;
         return response_info{
-            .body = std::move(msg),
+            .body = ToString(json.ExtractValue()),
             .content_type = userver::http::content_type::kApplicationJson,
             .status_code = status_code_v<500>};
     }
@@ -57,10 +61,9 @@ struct openapi_handler : userver::server::handlers::HttpHandlerBase {
             return parse_from_request<request>(
                 make_request_info(httpReq, mapQuery));
         } catch (std::exception& exc) {
-            std::string body_error = fmt::format(
-                R"({{ "message" : "Some error happens where server tried to parse request: [{}]"}})",
-                exc.what());
-            respInfo.emplace(perform_r400(std::move(body_error)));
+            respInfo.emplace(perform_r400(fmt::format(
+                "Some error happens where server tried to parse request: [{}]",
+                exc.what())));
             return std::nullopt;
         }
     }
@@ -80,7 +83,7 @@ struct openapi_handler : userver::server::handlers::HttpHandlerBase {
                 [](auto& r) { return serialize_response_info(r); }, resp);
         } catch (std::exception& exc) {
             LOG_ERROR() << "Unexpected error from serialize: " << exc.what();
-            return perform_r500(R"({"message" : "service unavailable"})");
+            return perform_r500("service unavailable");
         }
     }
     std::string HandleRequestThrow(
