@@ -5,8 +5,8 @@
 
 namespace uopenapi::reflective {
 template <typename T>
-concept is_validate_result = requires(T&& t, void (*some_bool_function)(bool)) {
-    { some_bool_function((T&&) t) };
+concept is_validate_result = requires(T&& t) {
+    { t ? 0 : 0 };
     { t.error_message() };
     { t.has_error() } -> std::convertible_to<bool>;
 };
