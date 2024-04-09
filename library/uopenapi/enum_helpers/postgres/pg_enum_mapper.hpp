@@ -1,10 +1,10 @@
 #pragma once
 
-#include <uopenapi/enum/postgres/enumerator_func.hpp>
+#include <uopenapi/enum_helpers/postgres/enumerator_func.hpp>
 #include <uopenapi/utils/constexpr_string.hpp>
 #include <userver/storages/postgres/io/enum_types.hpp>
 
-namespace uopenapi {
+namespace uopenapi::enum_helpers {
 template <typename T, utils::ce::string PostgresName>
 requires has_introspector<T>
 struct pg_enum_mapper : userver::storages::postgres::io::EnumMappingBase<T> {
@@ -14,4 +14,4 @@ struct pg_enum_mapper : userver::storages::postgres::io::EnumMappingBase<T> {
         create_enumerator_func<T>();
 };
 
-}  // namespace uopenapi
+}  // namespace uopenapi::enum_helpers

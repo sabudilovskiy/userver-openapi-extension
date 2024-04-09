@@ -1,9 +1,9 @@
 #pragma once
-#include <uopenapi/enum/introspector.hpp>
+#include <uopenapi/enum_helpers/introspector.hpp>
 #include <userver/utils/trivial_map.hpp>
 #include <utility>
 
-namespace uopenapi {
+namespace uopenapi::enum_helpers {
 namespace details {
 template <typename Selector>
 struct Helper {
@@ -39,4 +39,4 @@ constexpr auto create_enumerator_func() {
     return details::create_enumerator_helper<T>(seq);
 }
 
-}  // namespace uopenapi
+}  // namespace uopenapi::enum_helpers

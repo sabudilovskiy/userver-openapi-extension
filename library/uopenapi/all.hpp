@@ -1,5 +1,6 @@
 #pragma once
-#include <uopenapi/enum/all.hpp>
+#include <uopenapi/components/all.hpp>
+#include <uopenapi/enum_helpers/all.hpp>
 #include <uopenapi/formats/all.hpp>
 #include <uopenapi/http/all.hpp>
 #include <uopenapi/pfr_extension/all.hpp>

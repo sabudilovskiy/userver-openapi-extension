@@ -1,6 +1,5 @@
 #pragma once
-#include <uopenapi/http/openapi_descriptor.h>
-
+#include <uopenapi/components/schema/schema_storage.hpp>
 #include <uopenapi/http/parse_request_info.hpp>
 #include <uopenapi/http/schema_path.hpp>
 #include <uopenapi/http/serialize_response_info.hpp>
@@ -11,18 +10,18 @@
 #include <userver/server/http/http_status.hpp>
 #include <variant>
 
-namespace uopenapi::http {
+namespace uopenapi::components {
 template <typename request, typename... responses>
 struct openapi_handler : userver::server::handlers::HttpHandlerBase {
     using response = std::variant<responses...>;
     openapi_handler(const userver::components::ComponentConfig& cfg,
                     const userver::components::ComponentContext& ctx)
         : userver::server::handlers::HttpHandlerBase(cfg, ctx) {
-        auto descriptor = ctx.FindComponentOptional<openapi_descriptor>();
-        if (!descriptor) {
+        auto pStorage = ctx.FindComponentOptional<components::schema_storage>();
+        if (!pStorage) {
             return;
         }
-        auto& schema = descriptor->get_schema();
+        auto& schema = pStorage->get_schema();
         append_to_schema(schema);
     }
     void append_to_schema(reflective::schema& schema) {
@@ -30,36 +29,36 @@ struct openapi_handler : userver::server::handlers::HttpHandlerBase {
         if (config.path.index() == 1) {
             return;
         }
-        handler_info handlerInfo{.path = std::get<0>(config.path),
-                                 .method = config.method};
+        http::handler_info handlerInfo{.path = std::get<0>(config.path),
+                                       .method = config.method};
         append_path<request, responses...>(schema, handlerInfo);
     }
     virtual response handle(request) const = 0;
-    static response_info perform_r400(std::string_view msg) {
+    static http::response_info perform_r400(std::string_view msg) {
         userver::formats::json::ValueBuilder json;
         json["message"] = msg;
-        return response_info{
+        return http::response_info{
             .body = ToString(json.ExtractValue()),
             .content_type = userver::http::content_type::kApplicationJson,
-            .status_code = status_code_v<400>};
+            .status_code = http::status_code_v<400>};
     }
-    static response_info perform_r500(std::string_view msg) {
+    static http::response_info perform_r500(std::string_view msg) {
         userver::formats::json::ValueBuilder json;
         json["message"] = msg;
-        return response_info{
+        return http::response_info{
             .body = ToString(json.ExtractValue()),
             .content_type = userver::http::content_type::kApplicationJson,
-            .status_code = status_code_v<500>};
+            .status_code = http::status_code_v<500>};
     }
 
     static std::optional<request> to_request(
         const userver::server::http::HttpRequest& httpReq,
-        std::optional<response_info>& respInfo) {
+        std::optional<http::response_info>& respInfo) {
         try {
-            auto mapQuery = build_query_map(httpReq);
+            auto mapQuery = http::build_query_map(httpReq);
             // may throw, if throw must return 400
             return parse_from_request<request>(
-                make_request_info(httpReq, mapQuery));
+                http::make_request_info(httpReq, mapQuery));
         } catch (std::exception& exc) {
             respInfo.emplace(perform_r400(fmt::format(
                 "Some error happens where server tried to parse request: [{}]",
@@ -69,7 +68,8 @@ struct openapi_handler : userver::server::handlers::HttpHandlerBase {
     }
 
     static std::string write_response(
-        const userver::server::http::HttpRequest& req, response_info& info) {
+        const userver::server::http::HttpRequest& req,
+        http::response_info& info) {
         auto& resp = req.GetHttpResponse();
         move_to_response(resp, info);
         resp.SetStatus(info.status_code);
@@ -77,7 +77,7 @@ struct openapi_handler : userver::server::handlers::HttpHandlerBase {
     }
 
    private:
-    static response_info serialize_response(const response& resp) {
+    static http::response_info serialize_response(const response& resp) {
         try {
             return std::visit(
                 [](auto& r) { return serialize_response_info(r); }, resp);
@@ -89,7 +89,7 @@ struct openapi_handler : userver::server::handlers::HttpHandlerBase {
     std::string HandleRequestThrow(
         const userver::server::http::HttpRequest& http_req,
         userver::server::request::RequestContext&) const override {
-        std::optional<response_info> resp_info;
+        std::optional<http::response_info> resp_info;
         auto req = to_request(http_req, resp_info);
         if (resp_info) {
             return write_response(http_req, *resp_info);
@@ -100,4 +100,4 @@ struct openapi_handler : userver::server::handlers::HttpHandlerBase {
     }
 };
 
-}  // namespace uopenapi::http
+}  // namespace uopenapi::components

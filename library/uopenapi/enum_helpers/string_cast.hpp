@@ -1,9 +1,9 @@
 #pragma once
 #include <optional>
 #include <string_view>
-#include <uopenapi/enum/introspector.hpp>
+#include <uopenapi/enum_helpers/introspector.hpp>
 
-namespace uopenapi {
+namespace uopenapi::enum_helpers {
 template <typename T>
 requires has_introspector<T>
 constexpr std::optional<std::string_view> enum_to_string_view(const T& t) {
@@ -37,4 +37,4 @@ constexpr std::optional<T> enum_from_string_view(std::string_view sv) {
     else
         return values[index];
 }
-}  // namespace uopenapi
+}  // namespace uopenapi::enum_helpers

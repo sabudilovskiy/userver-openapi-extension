@@ -29,7 +29,7 @@ struct Response {
 
 using Resp200 = uopenapi::http::response<Response, 200>;
 
-using Base = uopenapi::http::openapi_handler<OperationRequest, Resp200>;
+using Base = uopenapi::components::openapi_handler<OperationRequest, Resp200>;
 struct OperationHandler : Base {
     static constexpr std::string_view kName = "operation-handler";
     OperationHandler(const userver::components::ComponentConfig& cfg,
@@ -69,7 +69,8 @@ int main(int argc, char* argv[]) {
             .Append<userver::clients::dns::Component>()
             .Append<userver::server::handlers::TestsControl>();
     component_list.Append<OperationHandler>();
-    component_list.Append<uopenapi::http::openapi_descriptor>();
+    component_list.Append<uopenapi::components::schema_storage>();
+    component_list.Append<uopenapi::components::schema_http_distributor>();
 
     return userver::utils::DaemonMain(argc, argv, component_list);
 }

@@ -1,11 +1,11 @@
 #pragma once
-#include <uopenapi/enum/introspector.hpp>
+#include <uopenapi/enum_helpers/introspector.hpp>
 #include <uopenapi/reflective/schema/appender.hpp>
 #include <uopenapi/reflective/schema/schema.hpp>
 
 namespace uopenapi::reflective {
 template <typename Enum>
-requires has_introspector<Enum>
+requires enum_helpers::has_introspector<Enum>
 struct schema_appender<Enum, none_requirements> {
     template <none_requirements>
     static void append(schema_view schema) {
@@ -21,7 +21,7 @@ struct schema_appender<Enum, none_requirements> {
         type_node["type"] = "string";
         auto enum_node = type_node["enum"];
         enum_node = userver::formats::common::Type::kArray;
-        for (auto name : enum_introspector<Enum>::names) {
+        for (auto name : enum_helpers::enum_introspector<Enum>::names) {
             enum_node.PushBack(name);
         }
     }

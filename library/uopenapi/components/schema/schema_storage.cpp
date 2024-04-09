@@ -1,11 +1,11 @@
-#include "openapi_descriptor.h"
+#include "schema_storage.hpp"
 
 #include <userver/yaml_config/merge_schemas.hpp>
 
-namespace uopenapi::http {
-userver::yaml_config::Schema openapi_descriptor::GetStaticConfigSchema() {
+namespace uopenapi::components {
+userver::yaml_config::Schema schema_storage::GetStaticConfigSchema() {
     return userver::yaml_config::MergeSchemas<
-        userver::server::handlers::HttpHandlerBase>(
+        userver::components::LoggableComponentBase>(
         R"(
 type: object
 description: Class describe by openapi server
@@ -35,4 +35,4 @@ properties:
     additionalProperties: true
 )");
 }
-}  // namespace uopenapi::http
+}  // namespace uopenapi::components

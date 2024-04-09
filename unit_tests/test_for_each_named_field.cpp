@@ -18,13 +18,13 @@ struct Data {
     std::string test;
 };
 
-REQUIREMENTS_CE_UOPENAPI(Data, a) = number_requirements<int>{.minimum = 1,
+UOPENAPI_CE_REQUIREMENTS(Data, a) = number_requirements<int>{.minimum = 1,
                                                              .maximum = 10};
 
-REQUIREMENTS_CE_UOPENAPI(Data, b) = number_requirements<int>{
+UOPENAPI_CE_REQUIREMENTS(Data, b) = number_requirements<int>{
     .minimum = 1, .exclusive_minimum = true};
 
-REQUIREMENTS_CE_UOPENAPI(Data, test) = string_requirements<"date-time">{
+UOPENAPI_CE_REQUIREMENTS(Data, test) = string_requirements<"date-time">{
     .pattern = "f$"};
 
 UTEST(Openapi_json_Parse, SomeStruct) {

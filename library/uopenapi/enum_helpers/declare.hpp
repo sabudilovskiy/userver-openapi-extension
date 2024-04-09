@@ -4,11 +4,10 @@
 #include <limits>
 #include <string_view>
 #include <type_traits>
-#include <uopenapi/enum/introspector.hpp>
+#include <uopenapi/enum_helpers/introspector.hpp>
 #include <uopenapi/utils/constexpr_string.hpp>
 
-namespace uopenapi {
-namespace detail {
+namespace uopenapi::enum_helpers::detail {
 template <utils::ce::string str>
 constexpr auto count_borders() {
     std::size_t res = 0;
@@ -136,21 +135,20 @@ constexpr std::array<std::string_view, N> get_names(
     return names;
 }
 
-}  // namespace detail
+}  // namespace uopenapi::enum_helpers::detail
 
-}  // namespace uopenapi
-
-#define UOPENAPI_DECLARE_ENUM(NAME, TYPE, ...)                               \
-    enum struct NAME : TYPE { __VA_ARGS__ };                                 \
-    struct enum_introspector_##NAME {                                        \
-        static constexpr auto tokens =                                       \
-            ::uopenapi::detail::split_tokens<#__VA_ARGS__>();                \
-        static constexpr auto names = ::uopenapi::detail::get_names(tokens); \
-        static constexpr auto values =                                       \
-            ::uopenapi::detail::get_values<NAME>(tokens);                    \
-    };                                                                       \
-    consteval enum_introspector_##NAME get_enum_introspector(                \
-        std::type_identity<NAME>) {                                          \
-        return {};                                                           \
-    }                                                                        \
+#define UOPENAPI_DECLARE_ENUM(NAME, TYPE, ...)                              \
+    enum struct NAME : TYPE { __VA_ARGS__ };                                \
+    struct enum_introspector_##NAME {                                       \
+        static constexpr auto tokens =                                      \
+            ::uopenapi::enum_helpers::detail::split_tokens<#__VA_ARGS__>(); \
+        static constexpr auto names =                                       \
+            ::uopenapi::enum_helpers::detail::get_names(tokens);            \
+        static constexpr auto values =                                      \
+            ::uopenapi::enum_helpers::detail::get_values<NAME>(tokens);     \
+    };                                                                      \
+    consteval enum_introspector_##NAME get_enum_introspector(               \
+        std::type_identity<NAME>) {                                         \
+        return {};                                                          \
+    }                                                                       \
     struct enum_introspector_##NAME\

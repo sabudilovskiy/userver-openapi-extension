@@ -1,5 +1,0 @@
-#pragma once
-#include <uopenapi/enum/declare.hpp>
-#include <uopenapi/enum/introspector.hpp>
-#include <uopenapi/enum/postgres/all.hpp>
-#include <uopenapi/enum/string_cast.hpp>

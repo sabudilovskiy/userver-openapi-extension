@@ -54,16 +54,16 @@ components_manager:
             path: /handler
             method: POST
             task_processor: main-task-processor
-        openapi-descriptor:
+        schema-storage:
             servers:
                 - description: stable
                   url: top_secret
             load-enabled: true
-            path: /openapi
             info:
                 title: Some Server Doc
                 description: Some server
                 version: 1.0.0
+        schema-http-distributor:
             method: GET
+            path: /openapi
             task_processor: main-task-processor
-

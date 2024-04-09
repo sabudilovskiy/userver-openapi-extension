@@ -1,8 +1,7 @@
-#include <uopenapi/http/openapi_descriptor.h>
-
 #include <mock_converters.hpp>
 #include <raw_string.hpp>
 #include <uopenapi/all.hpp>
+#include <uopenapi/http/schema_request.hpp>
 #include <userver/utest/utest.hpp>
 
 using namespace uopenapi::http;

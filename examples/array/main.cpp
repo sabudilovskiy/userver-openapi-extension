@@ -33,11 +33,11 @@ struct Body {
 Let's put requirements on each field.
 */
 
-REQUIREMENTS_CE_UOPENAPI(Body, first) = array_requirements{.min_items = 2};
+UOPENAPI_CE_REQUIREMENTS(Body, first) = array_requirements{.min_items = 2};
 
-REQUIREMENTS_CE_UOPENAPI(Body, second) = array_requirements{.max_items = 2};
+UOPENAPI_CE_REQUIREMENTS(Body, second) = array_requirements{.max_items = 2};
 
-REQUIREMENTS_CE_UOPENAPI(Body,
+UOPENAPI_CE_REQUIREMENTS(Body,
                          third) = array_requirements{.unique_items = true};
 
 /*
@@ -65,7 +65,7 @@ For this we will use number_requirements.
 
 */
 
-REQUIREMENTS_CE_UOPENAPI(Request, index_add) = number_requirements<std::int64_t>{
+UOPENAPI_CE_REQUIREMENTS(Request, index_add) = number_requirements<std::int64_t>{
     .minimum = 1, .maximum = 3};
 
 struct Response {
@@ -78,7 +78,7 @@ Let's now declare the response and the handler.
 
 using Resp200 = uopenapi::http::response<Response, 200>;
 
-using Base = uopenapi::http::openapi_handler<Request, Resp200>;
+using Base = uopenapi::components::openapi_handler<Request, Resp200>;
 
 struct Handler : Base {
     static constexpr std::string_view kName = "test-handler";
@@ -119,7 +119,8 @@ int main(int argc, char* argv[]) {
             .Append<userver::clients::dns::Component>()
             .Append<userver::server::handlers::TestsControl>();
     component_list.Append<Handler>();
-    component_list.Append<uopenapi::http::openapi_descriptor>();
+    component_list.Append<uopenapi::components::schema_storage>();
+    component_list.Append<uopenapi::components::schema_http_distributor>();
 
     return userver::utils::DaemonMain(argc, argv, component_list);
 }

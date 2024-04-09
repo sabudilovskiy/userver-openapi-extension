@@ -1,4 +1,4 @@
-#include <uopenapi/enum/declare.hpp>
+#include <uopenapi/enum_helpers/declare.hpp>
 #include <uopenapi/formats/string_like_parse.hpp>
 #include <uopenapi/formats/string_like_serialize.hpp>
 #include <uopenapi/utils/converter/enum/all.hpp>

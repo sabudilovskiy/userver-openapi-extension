@@ -19,7 +19,7 @@ consteval SomeEnumInrospector get_enum_introspector(
 using schema_enum_test::SomeEnum;
 using namespace uopenapi::reflective;
 
-static_assert(uopenapi::has_introspector<SomeEnum>);
+static_assert(uopenapi::enum_helpers::has_introspector<SomeEnum>);
 
 MOCK_OPENAPI_NAME(SomeEnum);
 
