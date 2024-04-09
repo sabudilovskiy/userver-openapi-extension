@@ -57,7 +57,7 @@ using resp200 = uopenapi::http::response<Response, 200>;
 Now we can declare a handler for endpoint:
 
 ```c++
-using base = uopenapi::http::openapi_handler<Request,Response200,Response400 >;
+using base = uopenapi::components::openapi_handler<Request,Response200,Response400 >;
 struct handler : base{
         static constexpr std::string_view kName = "login_handler";
         handler(const userver::components::ComponentConfig& cfg,
@@ -87,7 +87,7 @@ struct handler : base{
 - `aggregate types`
 - `userver::utils::datetime::Date`
 - `std::is_arithmetic<T>`
-- `enum`
+- [`enum`](docs/enum.md)
 - `boost::uuid::uuid`
 
 ## Full list of supporting by default openapi features
