@@ -119,6 +119,7 @@ int main(int argc, char* argv[]) {
             .Append<userver::clients::dns::Component>()
             .Append<userver::server::handlers::TestsControl>();
     component_list.Append<Handler>();
+    //append schemas components
     component_list.Append<uopenapi::components::schema_storage>();
     component_list.Append<uopenapi::components::schema_http_distributor>();
 

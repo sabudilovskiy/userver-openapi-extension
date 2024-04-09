@@ -3,6 +3,9 @@ They affect schema generation, as well as validation during parsing/serializatio
 
 In general, the entire system is designed in such a way as to support both requirements whose values are completely constexpr and those that are not.
 
+Note that using constexpr requirements will allow the compiler to generate unique validation functions 
+if it does not consider it necessary to inline the call, which in turn will reduce the number of unnecessary checks.
+
 ### Array Requirements
 
 <details>

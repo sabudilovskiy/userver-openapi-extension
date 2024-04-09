@@ -9,8 +9,7 @@ std::string schema_type_name() {
                   "overload schema_type_name() if your type placed in "
                   "anonymous namespaces");
     static_assert(!utils::is_template<T>(),
-                  "overload schema_type_name() if your type placed in "
-                  "anonymous namespaces");
+                  "overload schema_type_name() if your type has template args");
     constexpr std::size_t N = decltype(info)::count_ns;
     std::size_t need_len = N;
     for (std::size_t i = 0; i < N; i++) {

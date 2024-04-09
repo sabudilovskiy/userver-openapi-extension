@@ -1,4 +1,6 @@
-Ok, let's now send a request to the server and look at the response.
+## Responses from server
+
+This example uses arrays and the requirements for them. What and how to do it is described in the server configs and in main.cpp.
 
 <details>
 <summary>Empty body and empty queries</summary>
@@ -66,39 +68,6 @@ Ok, let's now send a request to the server and look at the response.
 ```json
 {
   "message": "Some error happens where server tried to parse request: [An error occurred while parsing the field on path: [/]. Field name: [third], message: [array has non-unique items. first_index: [0], second_index: [1]]]"
-}
-```
-</details>
-
-Fairly clear and high-quality error messages. 
-The status code 400 is natural for all cases. 
-Okay, let's write a simple logic that will use the fields from the query in order to modify the body of the request (and the response, respectively).
-
-<details>
-<summary>Added code</summary>
-
-```c++
-response handle(Request req) const override {
-    Resp200 resp200;
-    auto& resp_body = resp200->body;
-    resp_body = req.body;
-    auto& field = [&]() -> std::optional<std::vector<std::int64_t>>& {
-        switch (req.index_add) {
-            case 1:
-                return resp_body.first;
-            case 2:
-                return resp_body.second;
-            case 3:
-                return resp_body.third;
-            default:
-                throw std::runtime_error("invariant");
-        }
-    }();
-    if (!field) {
-        field.emplace();
-    }
-    field->push_back(req.value_add);
-    return resp200;
 }
 ```
 </details>

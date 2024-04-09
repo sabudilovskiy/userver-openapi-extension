@@ -73,13 +73,53 @@ struct handler : base{
 ## Features
 
 - Imposing [requirements](docs/requirements.md) the outside on the [fields](docs/field%20requirements.md) of structures
+- [Validate](docs/validate.md) fields of types
 - Auto-generation of the [schema](docs/schema.md) of the entire service, at least for those endpoints that are created using the library.
 - Supports basic OpenApi types: number, array, string, object.
 - Supports header, cookie, query and json body.
 - Auxiliary things for enams that allow you to generate their schemes, as well as parse them.
 - Schema generation, validation, parsing and serialization are fully extensible, both due to new types and new requirements
 
+## Full list of supporting by default c++ types
+
+- `std::string`
+- `boost::optional<T>`/`std::optional<T>` if T is supported
+- `aggregate types`
+- `userver::utils::datetime::Date`
+- `std::is_arithmetic<T>`
+- `enum`
+- `boost::uuid::uuid`
+
+## Full list of supporting by default openapi features
+
+- `string`
+  - `minLength`
+  - `maxLength`
+  - `format`
+    - `date-time`
+    - `uuid` (boost::uuid::uuid)
+    - `date` (userver::utils::datetime::Date)
+  - `pattern`
+- `array`
+  - `minimum`
+  - `maximum`
+  - `exclusiveMinimum`
+  - `exclusiveMaximum`
+  - `multipleOf`
+- `number`
+  - `minimum`
+  - `maximum`
+  - `exclusiveMinimum`
+  - `exclusiveMaximum`
+  - `multipleOf`
+- `object`
+  - `additionalProperties: false`
 
 ## Examples
+
+- Enum [here](examples/enum)
+- Array + array_requirements [here](examples/array)
+
+
 
 

@@ -55,15 +55,18 @@ components_manager:
             method: POST
             task_processor: main-task-processor
         schema-storage:
+            #required to OAS 3.0.0 schema
             servers:
                 - description: stable
                   url: top_secret
             load-enabled: true
+            #required to OAS 3.0.0 schema
             info:
                 title: Some Server Doc
                 description: Some server
                 version: 1.0.0
         schema-http-distributor:
             method: GET
+            #generated schema can be get on this path
             path: /openapi
             task_processor: main-task-processor
