@@ -1,4 +1,6 @@
-## UserverOpenapiExtension
+# UserverOpenapiExtension
+
+## Description
 
 This library is an extension for the [userver](userver.tech) library and its task is to provide opportunities for declarative description of endpoint: requests, responses and other things. 
 The current API is extremely unstable and I cannot give great guarantees for its immutability, but I will not break it unnecessarily.
@@ -8,7 +10,11 @@ Accordingly, there are certain requirements for compilers and versions of the st
 
 The library aims in many ways to emulate OpenAPI and be compatible with it, so some abstractions are an attempt to embody some of its features.
 
-### Basic Example
+- [Basic Example](#basic-example)
+- [Features](#features)
+- [Examples](#examples)
+
+## Basic Example
 
 Let's say we want to make some kind of super stupid endpoint that accepts 
 login and password in the request body and returns a token. 
@@ -64,29 +70,16 @@ struct handler : base{
 };
 ```
 
-### Requirements
+## Features
+
+- Imposing [requirements](docs/requirements.md) the outside on the [fields](docs/field%20requirements.md) of structures
+- Auto-generation of the [schema](docs/schema.md) of the entire service, at least for those endpoints that are created using the library.
+- Supports basic OpenApi types: number, array, string, object.
+- Supports header, cookie, query and json body.
+- Auxiliary things for enams that allow you to generate their schemes, as well as parse them.
+- Schema generation, validation, parsing and serialization are fully extensible, both due to new types and new requirements
 
 
-Requirements are the embodiment of type properties in OpenAPI. 
-For example, the following restrictions can be imposed on arrays:
-
-<details>
-<summary>Array requirements</summary>
-
-```c++
-struct array_requirements {
-    utils::ce::optional<std::size_t> min_items;
-    utils::ce::optional<std::size_t> max_items;
-    bool unique_items = false;
-};
-```
-
-</details>
-
-Constraints can be set externally on any type field 
-and then they will be checked during parsing and serialization. 
-Accordingly, in the context of request processing, 
-non-compliance with restrictions in the request is a parsing error and 400, 
-and non-compliance with restrictions in the response is 500.
+## Examples
 
 

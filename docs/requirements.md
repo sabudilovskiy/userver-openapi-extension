@@ -47,3 +47,58 @@ The fields correspond to the corresponding restrictions on values from OpenApi.
 * `exclusive_maximum` Do not include the maximum in the acceptable range
 * `multiple_of` The value must be completely divisible by this number (the concept is completely applicable to fractional numbers, but they should be handled with extreme caution)
 
+### String requirements
+
+<details>
+<summary>Declaration of number_requirements</summary>
+
+```c++
+template <utils::ce::string Format = "">
+struct string_requirements {
+    utils::ce::optional<std::size_t> min_length;
+    utils::ce::optional<std::size_t> max_length;
+    utils::ce::string pattern;
+    static constexpr auto format = Format;
+};
+```
+</details>
+
+* `min_length` Minimum length of string(exclusive)
+* `max_length` Maximum length of string(exclusive)
+* `pattern` The regular expression(ECMA standard) that the value must match
+* `Format` The name of the format that the value should satisfy
+
+<details>
+<summary>Declaration of string_validator</summary>
+
+```c++
+template <utils::ce::string Format = "">
+template <utils::ce::string Format>
+struct string_validator {
+    // must have static validate_result validate(std::string_view)
+};
+```
+</details>
+
+<details>
+<summary>Declaration of noop validator</summary>
+
+```c++
+template <>
+struct string_validator<""> {
+    static validate_result validate(std::string_view) {
+        return validate_result::ok();
+    }
+};
+
+```
+</details>
+
+The format check is performed as follows: called `string_validator<Format>::validate(str)`
+
+validate must return type which satisfy `is_validate_result<T>`
+
+Supported formats:
+
+* `date-time`
+

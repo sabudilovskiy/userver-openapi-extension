@@ -76,7 +76,7 @@ if (${PROJECT_NAME}_BUILD_UNIT_TESTS)
     message(STATUS "UOPENAPI BUILD UNIT TESTS : enabled")
     CreateTrivialExe(
             name "unit_tests"
-            path "/checks/unit"
+            path "/unit_tests"
     )
     target_link_libraries(${unit_tests_exe} PUBLIC ${library_module})
     target_link_libraries(${unit_tests_exe} PUBLIC userver-utest)
@@ -90,7 +90,7 @@ endif ()
 
 if (${PROJECT_NAME}_BUILD_TEST_SERVICES)
     message(STATUS "UOPENAPI BUILD TEST SERVICES : enabled")
-    add_subdirectory(checks/examples)
+    add_subdirectory(examples)
     unset (test_service_exe)
 else ()
     message(STATUS "UOPENAPI BUILD TEST SERVICES : disabled")

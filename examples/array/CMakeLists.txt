@@ -1,9 +1,7 @@
-project(example_enum)
+project(example_array)
 set(CMAKE_CXX_STANDARD 20)
 
-include(../../../CMake/CreatePart.cmake)
-
-add_executable(${PROJECT_NAME} main/main.cpp)
+add_executable(${PROJECT_NAME} main.cpp)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${library_module})
 
