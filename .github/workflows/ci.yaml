@@ -57,7 +57,7 @@ jobs:
       - name: install based dependencies
         run: |
           sudo apt install cmake
-          sudo apt install ninja
+          sudo apt install ninja-build
           sudo make install-compiler compiler=${{matrix.compiler}} version=${{matrix.version}}
       - name: add Postgres package repository
         run: |
