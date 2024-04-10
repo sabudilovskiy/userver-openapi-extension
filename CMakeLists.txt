@@ -7,6 +7,21 @@ include(CTest)
 include(CMake/CreatePart.cmake)
 include(CMake/InitializeCppMacro.cmake)
 include(CMake/CreateVariable.cmake)
+
+CreateVariable(
+        variable USERVER_VERSION
+        value 72408adfccf2b68da3ad58b7a1cf29c8e51676c3
+)
+
+include(FetchContent)
+FetchContent_Declare(
+        userver
+        GIT_REPOSITORY https://github.com/userver-framework/userver
+        GIT_TAG ${${PROJECT_NAME}_USERVER_VERSION}
+)
+
+FetchContent_MakeAvailable(userver)
+
 enable_testing()
 
 #size of constexpr strings
@@ -43,7 +58,7 @@ endif ()
 if (NOT DEFINED USERVER_FEATURE_PATCH_LIBPQ)
     set(USERVER_FEATURE_PATCH_LIBPQ OFF CACHE BOOL "" FORCE)
 endif ()
-add_subdirectory(userver)
+
 userver_setup_environment()
 
 CreateTrivialPart(
