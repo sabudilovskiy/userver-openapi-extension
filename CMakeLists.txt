@@ -20,7 +20,8 @@ FetchContent_Declare(
         GIT_TAG ${${PROJECT_NAME}_USERVER_VERSION}
 )
 
-FetchContent_MakeAvailable(userver)
+FetchContent_Populate(userver)
+add_subdirectory("${userver_SOURCE_DIR}")
 
 enable_testing()
 
