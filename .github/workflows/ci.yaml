@@ -89,7 +89,9 @@ jobs:
         run: |
           ccache -M 2.0GB
           ccache -s
-
+      - name: Drop build folder
+        run: |
+          rm -rf cmake_build
       - name: Configure cmake project
         run: >
           cmake 
