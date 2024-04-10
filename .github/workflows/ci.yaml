@@ -76,7 +76,7 @@ jobs:
       - name: Install packages
         run: |
           sudo apt update
-          sudo apt install --allow-downgrades -y pep8 $(cat userver/scripts/docs/en/deps/${{matrix.os}}.md | tr '\n' ' ')
+          sudo apt install --allow-downgrades -y pep8 $(cat cmake_build/_deps/userver-src/scripts/docs/en/deps/${{matrix.os}}.md | tr '\n' ' ')
       - name: Reuse ccache directory
         uses: actions/cache@v2
         with:
