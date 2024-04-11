@@ -4,9 +4,9 @@ macro(CreateProjectVariable)
     set(options "")
     cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    IF(NOT DEFINED ${CMAKE_PROJECT_NAME}_${ARG_variable})
+    IF(NOT DEFINED ${PROJECT_NAME}_${ARG_variable})
         IF (DEFINED ARG_value)
-            SET(${CMAKE_PROJECT_NAME}_${ARG_variable} ${ARG_value})
+            SET(${PROJECT_NAME}_${ARG_variable} ${ARG_value})
         endif ()
     endif ()
 
