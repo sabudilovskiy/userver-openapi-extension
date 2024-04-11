@@ -1,0 +1,67 @@
+info:
+  description: Some server
+  title: Some Server Doc
+  version: 1.0.0
+openapi: 3.0.0
+servers:
+  - description: stable
+    url: top_secret
+paths:
+  /handler:
+    post:
+      description: Request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Body"
+      parameters:
+        - in: query
+          name: index_add
+          required: false
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+            maximum: 3
+        - in: query
+          name: value_add
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          $ref: "#/components/responses/Response"
+components:
+  schemas:
+    Body:
+      type: object
+      additionalProperties: false
+      properties:
+        first:
+          type: array
+          minItems: 2
+          items:
+            type: integer
+            format: int64
+        second:
+          type: array
+          maxItems: 2
+          items:
+            type: integer
+            format: int64
+        third:
+          type: array
+          uniqueItems: true
+          items:
+            type: integer
+            format: int64
+  responses:
+    Response:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Body"

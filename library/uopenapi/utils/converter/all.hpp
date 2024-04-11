@@ -2,5 +2,6 @@
 #include <uopenapi/utils/converter/array/all.hpp>
 #include <uopenapi/utils/converter/converter.hpp>
 #include <uopenapi/utils/converter/enum/all.hpp>
+#include <uopenapi/utils/converter/number/all.hpp>
 #include <uopenapi/utils/converter/string/all.hpp>
 #include <uopenapi/utils/converter/uuid/all.hpp>

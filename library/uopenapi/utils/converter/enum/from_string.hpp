@@ -1,17 +1,17 @@
 #pragma once
 #include <string>
 #include <type_traits>
-#include <uopenapi/enum/string_cast.hpp>
+#include <uopenapi/enum_helpers/string_cast.hpp>
 #include <uopenapi/reflective/schema/schema_type_name.hpp>
 #include <uopenapi/utils/converter/converter.hpp>
 #include <uopenapi/utils/formatted_exception.hpp>
 
 namespace uopenapi::utils {
 template <typename Enum>
-requires has_introspector<Enum>
+requires enum_helpers::has_introspector<Enum>
 struct converter<std::string, Enum> {
     static Enum convert(const std::string& str) {
-        auto value = enum_from_string_view<Enum>(str);
+        auto value = enum_helpers::enum_from_string_view<Enum>(str);
         if (!value) {
             throw utils::formatted_exception(
                 "Try to convert unknown value: [{}] to [{}]", str,
@@ -21,10 +21,10 @@ struct converter<std::string, Enum> {
     }
 };
 template <typename Enum>
-requires has_introspector<Enum>
+requires enum_helpers::has_introspector<Enum>
 struct converter<std::string_view, Enum> {
     static Enum convert(std::string_view str) {
-        auto value = enum_from_string_view<Enum>(str);
+        auto value = enum_helpers::enum_from_string_view<Enum>(str);
         if (!value) {
             throw utils::formatted_exception(
                 "Try to convert unknown value: [{}] to [{}]", str,

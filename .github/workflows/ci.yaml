@@ -54,17 +54,28 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
+      - name: install based dependencies
+        run: |
+          sudo apt install cmake
+          sudo apt install ninja-build
+          sudo make install-compiler compiler=${{matrix.compiler}} version=${{matrix.version}}
       - name: add Postgres package repository
         run: |
           sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
           wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
+      - name: Fetch userver
+        continue-on-error: true
+        run: >
+          cmake 
+          -B cmake_build
+          -G Ninja
+          -DCMAKE_BUILD_TYPE=${{matrix.type}} 
+          -DCMAKE_C_COMPILER=$(make find-c-compiler compiler=${{matrix.compiler}} version=${{matrix.version}})
+          -DCMAKE_CXX_COMPILER=$(make find-cxx-compiler compiler=${{matrix.compiler}} version=${{matrix.version}})
       - name: Install packages
         run: |
           sudo apt update
-          sudo apt install --allow-downgrades -y pep8 $(cat userver/scripts/docs/en/deps/${{matrix.os}}.md | tr '\n' ' ')
-      - name: install compiler
-        run: |
-          sudo make install-compiler compiler=${{matrix.compiler}} version=${{matrix.version}}
+          sudo apt install --allow-downgrades -y pep8 $(cat cmake_build/_deps/userver-src/scripts/docs/en/deps/${{matrix.os}}.md | tr '\n' ' ')
       - name: Reuse ccache directory
         uses: actions/cache@v2
         with:
@@ -72,13 +83,15 @@ jobs:
           key: '${{matrix.os}} ${{matrix.title}} ccache ${{github.ref}} run-${{github.run_number}}'
           restore-keys: |
             ${{matrix.os}} ${{matrix.title}} ccache ${{github.ref}} run-'
-            ${{matrix.os}} ${{matrix.title}} ccache
+            ${{matrix.os}} ${{matrix.title}} ccache'
 
       - name: Setup ccache
         run: |
           ccache -M 2.0GB
           ccache -s
-
+      - name: Drop build folder
+        run: |
+          rm -rf cmake_build
       - name: Configure cmake project
         run: >
           cmake 

@@ -1,9 +1,8 @@
 #pragma once
-#include <uopenapi/http/schema_request.h>
-#include <uopenapi/http/schema_response.h>
-
 #include <string>
 #include <uopenapi/http/response.hpp>
+#include <uopenapi/http/schema_request.hpp>
+#include <uopenapi/http/schema_response.hpp>
 
 namespace uopenapi::http {
 struct handler_info {

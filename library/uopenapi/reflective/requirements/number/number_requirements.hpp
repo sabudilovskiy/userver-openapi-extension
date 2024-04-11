@@ -11,11 +11,8 @@ template <typename T>
 struct number_requirements {
     utils::ce::optional<T> minimum;
     utils::ce::optional<T> maximum;
-    // exclusiveMinimum
     bool exclusive_minimum = false;
-    // exclusiveMaximum
     bool exclusive_maximum = false;
-    // multipleOf
     utils::ce::optional<T> multiple_of;
 };
 
