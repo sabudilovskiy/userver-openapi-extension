@@ -151,5 +151,4 @@ constexpr std::array<std::string_view, N> get_names(
         std::type_identity<NAME>) {                                         \
         return {};                                                          \
     }                                                                       \
-    struct enum_introspector_##NAME                                         \
-
+    struct enum_introspector_##NAME
