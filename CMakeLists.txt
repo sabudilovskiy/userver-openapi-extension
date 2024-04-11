@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(openapi-extension-userver)
-set(
-        CMAKE_DEBUG_TARGET_PROPERTIES
-        INCLUDE_DIRECTORIES
-)
 set(CMAKE_CXX_STANDARD 20)
 
 include(CTest)
