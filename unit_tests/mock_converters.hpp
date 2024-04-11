@@ -64,6 +64,7 @@ struct converter<some_enum, std::string_view> {
             case some_enum::D:
                 return "D";
         }
+        throw std::runtime_error("corrupted value");
     }
 };
 template <>
@@ -81,6 +82,7 @@ struct converter<some_enum, std::string> {
             case some_enum::D:
                 return "D";
         }
+        throw std::runtime_error("corrupted value");
     }
 };
 

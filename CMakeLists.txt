@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(openapi-extension-userver)
+set(
+        CMAKE_DEBUG_TARGET_PROPERTIES
+        INCLUDE_DIRECTORIES
+)
 set(CMAKE_CXX_STANDARD 20)
 
 include(CTest)
@@ -13,15 +17,20 @@ CreateVariable(
         value 72408adfccf2b68da3ad58b7a1cf29c8e51676c3
 )
 
+if (NOT DEFINED USERVER_FEATURE_POSTGRESQL)
+    set(USERVER_FEATURE_POSTGRESQL ON CACHE BOOL "" FORCE)
+endif ()
+if (NOT DEFINED USERVER_FEATURE_PATCH_LIBPQ)
+    set(USERVER_FEATURE_PATCH_LIBPQ OFF CACHE BOOL "" FORCE)
+endif ()
+
 include(FetchContent)
 FetchContent_Declare(
         userver
         GIT_REPOSITORY https://github.com/userver-framework/userver
         GIT_TAG ${${PROJECT_NAME}_USERVER_VERSION}
 )
-
-FetchContent_Populate(userver)
-add_subdirectory("${userver_SOURCE_DIR}")
+FetchContent_MakeAvailable(userver)
 
 enable_testing()
 
@@ -53,12 +62,10 @@ CreateVariable(
         value 1
 )
 
-if (NOT DEFINED USERVER_FEATURE_POSTGRESQL)
-    set(USERVER_FEATURE_POSTGRESQL ON CACHE BOOL "" FORCE)
-endif ()
-if (NOT DEFINED USERVER_FEATURE_PATCH_LIBPQ)
-    set(USERVER_FEATURE_PATCH_LIBPQ OFF CACHE BOOL "" FORCE)
-endif ()
+CreateVariable(
+        variable COMPILE_OPTIONS_VISIBLE
+        value PUBLIC
+)
 
 userver_setup_environment()
 
@@ -67,8 +74,8 @@ CreateTrivialPart(
         path "/library"
 )
 
-target_compile_options(${library_module} PRIVATE "-Wno-missing-field-initializers")
-target_link_libraries(${library_module} PUBLIC userver-core userver-postgresql)
+target_compile_options(${library_module} ${${PROJECT_NAME}_COMPILE_OPTIONS_VISIBLE} "-Wno-missing-field-initializers")
+target_link_libraries(${library_module} PUBLIC "userver-core" "userver-postgresql")
 
 InitializeCppMacro(
         target ${library_module}
@@ -96,7 +103,6 @@ if (${PROJECT_NAME}_BUILD_UNIT_TESTS)
     )
     target_link_libraries(${unit_tests_exe} PUBLIC ${library_module})
     target_link_libraries(${unit_tests_exe} PUBLIC userver-utest)
-    target_compile_options(${unit_tests_exe} PRIVATE "-Wno-missing-field-initializers")
 
     add_google_tests(${unit_tests_exe})
     unset (unit_tests_exe)
