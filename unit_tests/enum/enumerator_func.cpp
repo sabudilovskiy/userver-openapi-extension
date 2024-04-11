@@ -1,4 +1,4 @@
-#include <uopenapi/enum_helpers//declare.hpp>
+#include <uopenapi/enum_helpers/declare.hpp>
 #include <uopenapi/enum_helpers/postgres/enumerator_func.hpp>
 #include <userver/utest/utest.hpp>
 

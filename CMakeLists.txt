@@ -21,7 +21,7 @@ enable_testing()
 
 userver_setup_environment()
 
-add_subdirectory(library)
+include(Library.cmake)
 
 if (${PROJECT_NAME}_BUILD_UNIT_TESTS)
     message(STATUS "UOPENAPI BUILD UNIT TESTS : enabled")

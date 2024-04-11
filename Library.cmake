@@ -1,6 +1,6 @@
 CreateTrivialPart(
         name "library"
-        path ""
+        path "/library"
 )
 
 target_compile_options(${library_module} ${${PROJECT_NAME}_COMPILE_OPTIONS_VISIBLE} "-Wno-missing-field-initializers")
