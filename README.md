@@ -134,12 +134,13 @@ FetchContent_Declare(
   GIT_TAG "origin/trunk"
 )
 FetchContent_MakeAvailable(uopenapi)
-target_link_libraries(service public openapi-extension-userver_library)
+target_link_libraries(service PUBLIC openapi-extension-userver_library)
 ```
 
 Subdirectory:
 
-Clone this repository into folder with your project 2. Add these lines to it's CMakeLists.txt
+- Clone this repository into folder with your project 
+- Add these lines to it's CMakeLists.txt
 
 ```cmake
 add_subdirectory(uopenapi)
