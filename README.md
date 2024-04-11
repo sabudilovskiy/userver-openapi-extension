@@ -13,6 +13,8 @@ The library aims in many ways to emulate OpenAPI and be compatible with it, so s
 - [Basic Example](#basic-example)
 - [Features](#features)
 - [Examples](#examples)
+- [Using with CMake](#using-with-cmake)
+- [CMakeOptions](#cmake-options)
 
 ## Basic Example
 
@@ -119,7 +121,46 @@ struct handler : base{
 
 - Enum [here](examples/enum)
 - Array + array_requirements [here](examples/array)
+- Test service [here](https://github.com/sabudilovskiy/uopenapi-service)
+
+## Using with CMake
+
+Fetch content: 
+```CMake
+include(FetchContent)
+FetchContent_Declare(
+  uopenapi
+  GIT_REPOSITORY https://github.com/sabudilovskiy/userver-openapi-extension
+  GIT_TAG "origin/trunk"
+)
+FetchContent_MakeAvailable(uopenapi)
+target_link_libraries(service public openapi-extension-userver_library)
+```
+
+Subdirectory:
+
+Clone this repository into folder with your project 2. Add these lines to it's CMakeLists.txt
+
+```cmake
+add_subdirectory(uopenapi)
+target_link_libraries(service PUBLIC openapi-extension-userver_library)
+```
 
 
+## CMake Options
 
+All options had predicate `openapi-extension-userver_`.
+The options must be set before `FetchContent_MakeAvailable` or `add_subdirectory`.
 
+Example of set: 
+
+```cmake
+set(openapi-extension-userver_BUILD_UNIT_TESTS false)
+```
+
+* `FIXED_STRING_SIZE` - The size of the `utils::ce::string`. The string cannot exceed this size. They are used to convey the names of parameters, within the requirements framework, and so on. Default: 64
+* `CREATE_MACROS` - Whether the library will create macros. Default: `true`
+* `DEFAULT_REFLECTIVABLE` - The standard meaning for the concept of reflexivity. If set to true, then all aggregates are considered reflective. Default: `true`
+* `BUILD_UNIT_TESTS` - Whether to build unit tests of the library. By default: `true`
+* `BUILD_TEST_SERVICES` - Whether to build examples of the library. By default: `true`
+* `COMPILE_OPTIONS_VISIBLE` - Visibility of library compilation options. At the moment, there is only -Wno-missing-field-initializers to suppress unnecessary warnings for the lack of initialization of all fields in aggregates. Default: `PUBLIC`
