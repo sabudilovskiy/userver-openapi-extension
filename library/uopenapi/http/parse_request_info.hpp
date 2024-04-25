@@ -20,10 +20,17 @@ T parse_from_request(const request_info& req_info) {
         using parser = request_parser<Field, st>;
         f = parser::parse(req_info, Info::name.AsStringView());
         if constexpr (utils::is_optional<T>) {
-            if (!utils::optional_getter<T>::has_value(f)){
+            if (!utils::optional_getter<T>::has_value(f)) {
                 return;
             }
-            reflective::field_call_validate<T, Info::name>(utils::optional_getter<T>::value(f));
+            reflective::is_validate_result auto validateResult =
+                reflective::field_call_validate<T, Info::name>(
+                    utils::optional_getter<T>::value(f));
+            if (validateResult.has_error()) {
+                throw utils::formatted_exception(
+                    "Failed validate {} field. Error: [{}].",
+                    to_string_view(st), validateResult.error_message());
+            }
         } else {
             reflective::field_call_validate<T, Info::name>(f);
         }

@@ -18,6 +18,7 @@ struct response_serializator<T, source_type::body_JSON> {
         if (!utils::optional_getter<T>::has_value(t)) {
             return;
         }
+        r_info.content_type = userver::http::content_type::kApplicationJson;
         auto& value = utils::optional_getter<T>::value(t);
         r_info.body = ToString(
             userver::formats::json::ValueBuilder{value}.ExtractValue());
@@ -33,6 +34,7 @@ struct response_serializator<T, source_type::body_JSON> {
             throw utils::formatted_exception(
                 "Detected multiply bodies. Second body: [{}]", fieldName);
         }
+        r_info.content_type = userver::http::content_type::kApplicationJson;
         r_info.body =
             ToString(userver::formats::json::ValueBuilder{t}.ExtractValue());
     }

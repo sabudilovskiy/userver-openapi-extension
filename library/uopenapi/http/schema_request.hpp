@@ -11,10 +11,9 @@ namespace details {
 
 template <source_type SourceType>
 constexpr std::string_view get_in_string() {
-    if constexpr (SourceType == source_type::body_JSON){
+    if constexpr (SourceType == source_type::body_JSON) {
         static_assert(SourceType != source_type::body_JSON, "unreachable");
-    }
-    else {
+    } else {
         return to_string_view(SourceType);
     }
 }

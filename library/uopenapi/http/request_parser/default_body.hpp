@@ -18,8 +18,8 @@ struct request_parser<Field, source_type::body_JSON> {
         if constexpr (utils::is_optional<Field>) {
             return utils::optional_getter<Field>::make_none();
         } else {
-            throw utils::formatted_exception("Not founded body. Name field: [{}]",
-                                             fieldName);
+            throw utils::formatted_exception(
+                "Not founded body. Name field: [{}]", fieldName);
         }
     }
     static Field parse(const http::request_info& requestInfo,

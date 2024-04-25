@@ -31,7 +31,8 @@ struct request_parser<std::vector<F>, source_type::query> {
 
 template <typename Field>
 struct request_parser<Field, source_type::query> {
-    using raw_type = std::conditional_t<utils::is_optional<Field>, utils::optional_getter_t<Field>, Field>;
+    using raw_type = std::conditional_t<utils::is_optional<Field>,
+                                        utils::optional_getter_t<Field>, Field>;
     static void assert_quantity(const std::vector<std::string>& queries,
                                 std::string_view fieldName) {
         if (queries.size() != 1) {

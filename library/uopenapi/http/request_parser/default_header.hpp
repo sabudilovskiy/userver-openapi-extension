@@ -13,7 +13,8 @@
 namespace uopenapi::http {
 template <typename Field>
 struct request_parser<Field, source_type::header> {
-    using raw_type = std::conditional_t<utils::is_optional<Field>, utils::optional_getter_t<Field>, Field>;
+    using raw_type = std::conditional_t<utils::is_optional<Field>,
+                                        utils::optional_getter_t<Field>, Field>;
     static Field missing(std::string_view fieldName) {
         if constexpr (utils::is_optional<Field>) {
             return utils::optional_getter<Field>::make_none();
@@ -33,6 +34,5 @@ struct request_parser<Field, source_type::header> {
         return utils::converter<std::string, raw_type>::convert(header);
     }
 };
-
 
 }  // namespace uopenapi::http
