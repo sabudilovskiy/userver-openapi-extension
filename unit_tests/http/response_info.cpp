@@ -23,7 +23,7 @@ using tests_request_http::TestResp;
 UOPENAPI_SOURCE_TYPE(TestResp, header_enum, header);
 UOPENAPI_SOURCE_TYPE(TestResp, cookie_enum, cookie);
 
-UTEST(openapi_validates, HttpSerializeResponseInfo) {
+UTEST(http_response_serialize, HttpSerializeResponseInfo) {
     //    uopenapi::http::response_serializator<some_enum,
     //    uopenapi::http::source_type::header>::serialize();
     TestResp resp{

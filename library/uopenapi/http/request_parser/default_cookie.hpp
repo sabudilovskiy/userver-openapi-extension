@@ -12,27 +12,25 @@
 
 namespace uopenapi::http {
 template <typename Field>
-requires(!utils::is_optional<Field>)
 struct request_parser<Field, source_type::cookie> {
-    static Field missing(std::string_view field_name) {
-        throw utils::formatted_exception("Not founded cookie with name: [{}]",
-                                         field_name);
+    using raw_type = std::conditional_t<utils::is_optional<Field>, utils::optional_getter_t<Field>, Field>;
+    static Field missing(std::string_view fieldName) {
+        if constexpr (utils::is_optional<Field>) {
+            return utils::optional_getter<Field>::make_none();
+        } else {
+            throw utils::formatted_exception(
+                "Not founded cookie with name: [{}]", fieldName);
+        }
     }
-    static Field parse(std::string_view text, std::string_view) {
-        return utils::converter<std::string_view, Field>::convert(text);
-    }
-};
-
-template <typename Field>
-requires(utils::is_optional<Field>)
-struct request_parser<Field, source_type::cookie> {
-    static Field missing(std::string_view) {
-        return utils::optional_getter<Field>::make_none();
-    }
-
-    static Field parse(std::string_view text, std::string_view) {
-        using raw_type = utils::optional_getter_t<Field>;
-        return utils::converter<std::string_view, raw_type>::convert(text);
+    static Field parse(const http::request_info& requestInfo,
+                       std::string_view fieldName) {
+        auto& c = requestInfo.cookies;
+        auto it = c.find(std::string{fieldName});
+        if (it == c.end()) {
+            return missing(fieldName);
+        }
+        auto& cookie = it->second;
+        return utils::converter<std::string, raw_type>::convert(cookie);
     }
 };
 }  // namespace uopenapi::http

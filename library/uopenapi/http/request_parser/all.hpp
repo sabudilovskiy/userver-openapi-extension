@@ -1,4 +1,5 @@
 #pragma once
+#include <uopenapi/http/request_parser/default_body.hpp>
 #include <uopenapi/http/request_parser/default_cookie.hpp>
 #include <uopenapi/http/request_parser/default_header.hpp>
 #include <uopenapi/http/request_parser/default_query.hpp>
