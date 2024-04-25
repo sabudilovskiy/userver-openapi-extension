@@ -1,7 +1,3 @@
-//
-// Created by sabudilovskiy on 3/12/24.
-//
-
 #pragma once
 #include <uopenapi/http/source_type.hpp>
 

@@ -1,7 +1,3 @@
-//
-// Created by sabudilovskiy on 3/12/24.
-//
-
 #pragma once
 #include <string_view>
 #include <uopenapi/http/request_parser/parser.hpp>
