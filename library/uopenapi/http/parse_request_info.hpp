@@ -19,20 +19,21 @@ T parse_from_request(const request_info& req_info) {
         constexpr source_type st = field_source<T, Info::name>;
         using parser = request_parser<Field, st>;
         f = parser::parse(req_info, Info::name.AsStringView());
-        if constexpr (utils::is_optional<T>) {
-            if (!utils::optional_getter<T>::has_value(f)) {
-                return;
-            }
-            reflective::is_validate_result auto validateResult =
-                reflective::field_call_validate<T, Info::name>(
+        reflective::is_validate_result auto validateResult = [&]() {
+            if constexpr (utils::is_optional<T>) {
+                if (!utils::optional_getter<T>::has_value(f)) {
+                    return reflective::validate_result::ok();
+                }
+                return reflective::field_call_validate<T, Info::name>(
                     utils::optional_getter<T>::value(f));
-            if (validateResult.has_error()) {
-                throw utils::formatted_exception(
-                    "Failed validate {} field. Error: [{}].",
-                    to_string_view(st), validateResult.error_message());
+            } else {
+                return reflective::field_call_validate<T, Info::name>(f);
             }
-        } else {
-            reflective::field_call_validate<T, Info::name>(f);
+        }();
+        if (validateResult.has_error()) {
+            throw utils::formatted_exception(
+                "Failed validate {} field. Error: [{}].", to_string_view(st),
+                validateResult.error_message());
         }
     };
     pfr_extension::for_each_named_field(t, visit_all);
