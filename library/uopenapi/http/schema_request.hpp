@@ -10,20 +10,16 @@ namespace uopenapi::http {
 namespace details {
 
 template <source_type SourceType>
-std::string get_in_string() {
-    if constexpr (SourceType == source_type::header) {
-        return "header";
-    } else if constexpr (SourceType == source_type::cookie) {
-        return "cookie";
-    } else if constexpr (SourceType == source_type::query) {
-        return "query";
+constexpr std::string_view get_in_string() {
+    if constexpr (SourceType == source_type::body_JSON) {
+        static_assert(SourceType != source_type::body_JSON, "unreachable");
     } else {
-        static_assert(SourceType != source_type::body, "wtf");
+        return to_string_view(SourceType);
     }
 }
 
 template <typename T, utils::ce::string name>
-requires(uopenapi::http::field_source<T, name> != source_type::body)
+requires(uopenapi::http::field_source<T, name> != source_type::body_JSON)
 void append_request_field(reflective::schema_view schemaView) {
     using F = pfr_extension::tuple_element_name_t<T, name>;
     auto& [root, cur] = schemaView;
@@ -50,7 +46,7 @@ void append_request_field(reflective::schema_view schemaView) {
 }
 
 template <typename T, utils::ce::string name>
-requires(uopenapi::http::field_source<T, name> == source_type::body)
+requires(uopenapi::http::field_source<T, name> == source_type::body_JSON)
 void append_request_field(reflective::schema_view schemaView) {
     using F = pfr_extension::tuple_element_name_t<T, name>;
     auto& [root, cur] = schemaView;

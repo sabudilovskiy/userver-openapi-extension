@@ -22,7 +22,7 @@ validate_result validate(const T&, utils::nttp_adl<none_requirements, req>) {
 
 template <typename T, utils::ce::string name, typename F>
 requires(!utils::is_optional<F>)
-is_validate_result auto field_call_validate(const F& f) {
+[[nodiscard]] is_validate_result auto field_call_validate(const F& f) {
     if constexpr (nttp_requirements_field<T, name> &&
                   field_exist_nttp_validate<T, name, F>) {
         return validate(f,

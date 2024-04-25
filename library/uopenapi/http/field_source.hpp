@@ -8,7 +8,7 @@ template <typename T, utils::ce::string name>
 constexpr source_type field_source = source_type::query;
 
 template <typename T>
-constexpr source_type field_source<T, "body"> = source_type::body;
+constexpr source_type field_source<T, "body"> = source_type::body_JSON;
 }  // namespace uopenapi::http
 
 #ifdef UOPENAPI_CREATE_MACROS

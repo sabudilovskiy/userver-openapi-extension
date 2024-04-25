@@ -4,6 +4,7 @@
 #include <uopenapi/utils/constexpr_optional.hpp>
 #include <uopenapi/utils/constexpr_string.hpp>
 #include <uopenapi/utils/converter/all.hpp>
+#include <uopenapi/utils/fallback_type.hpp>
 #include <uopenapi/utils/formatted_exception.hpp>
 #include <uopenapi/utils/forward_like.hpp>
 #include <uopenapi/utils/indirect_comparator.hpp>

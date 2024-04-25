@@ -41,7 +41,7 @@ void append_response_field(reflective::schema_view) {
 }
 
 template <typename T, utils::ce::string name>
-requires(uopenapi::http::field_source<T, name> == source_type::body)
+requires(uopenapi::http::field_source<T, name> == source_type::body_JSON)
 void append_response_field(reflective::schema_view schemaView) {
     using F = pfr_extension::tuple_element_name_t<T, name>;
     auto& [root, cur] = schemaView;

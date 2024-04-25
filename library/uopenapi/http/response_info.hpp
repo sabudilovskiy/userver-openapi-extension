@@ -11,7 +11,8 @@ struct response_info {
     headers_map headers;
     cookies_map cookies;
     std::string body;
-    const userver::http::ContentType& content_type;
+    userver::http::ContentType content_type =
+        userver::http::content_type::kTextPlain;
     userver::server::http::HttpStatus status_code =
         userver::server::http::HttpStatus::kOk;
 };
