@@ -21,10 +21,10 @@
             ],
         },
         {
-            "name": "[example_array][gdb] attach",
+            "name": "[example_enum][gdb] attach",
             "type": "cppdbg",
             "request": "attach",
-            "program": "${workspaceFolder}/build_debug/examples/array/example_array",
+            "program": "${workspaceFolder}/build_debug/examples/enum/example_enum",
             "MIMode": "gdb",
             "setupCommands": [
                 {
