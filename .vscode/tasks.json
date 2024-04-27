@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "start enum server",
+            "command": "${workspaceFolder}/build_debug/examples/enum/runtests-testsuite-example_enum --service-logs-pretty --service-runner-mode -vvs ${workspaceFolder}/examples/enum/tests",
+            "type": "shell",
+            "group": "build",
+        },
+        {
+            "label": "start array server",
+            "command": "${workspaceFolder}/build_debug/examples/array/runtests-testsuite-example_array --service-logs-pretty --service-runner-mode -vvs ${workspaceFolder}/examples/array/tests",
+            "type": "shell",
+            "group": "build",
+        },
+    ]
+}
