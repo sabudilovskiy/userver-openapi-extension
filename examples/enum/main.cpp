@@ -35,7 +35,8 @@ struct OperationHandler : Base {
     OperationHandler(const userver::components::ComponentConfig& cfg,
                      const userver::components::ComponentContext& ctx)
         : Base(cfg, ctx) {}
-    //response = std::variant<Responses...>; In this case response = std::variant<Resp200>;
+    // response = std::variant<Responses...>; In this case response =
+    // std::variant<Resp200>;
     response handle(OperationRequest req) const override {
         if (!req.op) {
             req.op = Operation::sum;

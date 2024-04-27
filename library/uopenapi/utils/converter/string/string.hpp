@@ -5,16 +5,12 @@
 namespace uopenapi::utils {
 template <>
 struct converter<std::string, std::string> {
-    using source_type = std::string;
-    using result_type = std::string;
-    static result_type convert(const source_type& source) { return source; };
+    static std::string convert(const std::string& source) { return source; };
 };
 template <>
 struct converter<std::string_view, std::string> {
-    using source_type = std::string_view;
-    using result_type = std::string;
-    static result_type convert(source_type source) {
-        return result_type{source};
+    static std::string convert(std::string_view source) {
+        return std::string{source};
     };
 };
 }  // namespace uopenapi::utils

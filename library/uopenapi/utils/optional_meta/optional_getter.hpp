@@ -1,4 +1,5 @@
 #pragma once
+#include <type_traits>
 #include <uopenapi/utils/fallback_type.hpp>
 
 namespace uopenapi::utils {
@@ -22,4 +23,8 @@ struct optional_getter {
 
 template <typename T>
 using optional_getter_t = typename optional_getter<T>::value_type;
+
+template <typename T, typename ValueType>
+constexpr bool opt_underlying_of =
+    std::is_same_v<optional_getter_t<T>, ValueType>;
 }  // namespace uopenapi::utils

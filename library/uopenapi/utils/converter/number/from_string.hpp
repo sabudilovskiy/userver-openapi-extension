@@ -9,6 +9,8 @@ namespace uopenapi::utils {
 template <typename Number>
 requires std::is_arithmetic_v<Number>
 struct converter<std::string, Number> {
+    static constexpr auto type = convert_type::weak;
+
     static Number convert(const std::string& str) {
         return userver::utils::FromString<Number>(str);
         ;

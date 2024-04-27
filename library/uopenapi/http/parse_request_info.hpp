@@ -15,7 +15,9 @@ template <typename T>
 T parse_from_request(const request_info& req_info) {
     static_assert(count_bodies<T>() <= 1, "maximum one body in request");
     T t;
-    auto visit_all = [&]<typename Info, typename Field>(Field& f) {
+    auto visit_all = [&]<typename Info, typename Field>(Field& f) requires(
+                         has_request_parser<Field, field_source<T, Info::name>>)
+    {
         constexpr source_type st = field_source<T, Info::name>;
         using parser = request_parser<Field, st>;
         f = parser::parse(req_info, Info::name.AsStringView());

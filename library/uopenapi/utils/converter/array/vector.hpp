@@ -4,7 +4,10 @@
 
 namespace uopenapi::utils {
 template <typename From, typename To>
+requires(has_any_converter<From, To>)
 struct converter<std::vector<From>, std::vector<To>> {
+    static constexpr auto type = converter_type<From, To>;
+
     static std::vector<To> convert(const std::vector<From>& from) {
         std::vector<To> result;
         result.reserve(from.size());
