@@ -82,7 +82,7 @@ jobs:
           path: ~/.cache/ccache
           key: '${{matrix.os}} ${{matrix.title}} ccache ${{github.ref}} run-${{github.run_number}}'
           restore-keys: |
-            ${{matrix.os}} ${{matrix.title}} ccache ${{github.ref}} run-
+            ${{matrix.os}} ${{matrix.title}} ccache ${{github.ref}}
             ${{matrix.os}} ${{matrix.title}} ccache
 
       - name: Setup ccache
