@@ -73,5 +73,6 @@ format:
 	make add-eol P=library
 	make add-eol P=CMake
 	make add-eol P=.github
+	make add-eol P=.vscode
 	make add-eol P=scripts
 	make add-eol-root
