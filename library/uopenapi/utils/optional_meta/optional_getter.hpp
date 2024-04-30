@@ -10,6 +10,7 @@ struct optional_getter {
     static bool has_value(const T&) {
         static_assert(sizeof(T) == 0,
                       "Fallback has_value(). Write specialization");
+        return true;
     }
     template <typename U>
     requires std::is_same_v<std::remove_cvref_t<U>, T>
@@ -19,6 +20,7 @@ struct optional_getter {
     static T make_none() {
         static_assert(sizeof(T) == 0,
                       "Fallback make_none(). Write specialization");
+        return T{};
     }
 };
 
