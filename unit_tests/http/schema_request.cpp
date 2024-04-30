@@ -19,7 +19,6 @@ struct TestReq {
 };
 }  // namespace tests_request_http_schema
 
-using tests_request_http_schema::TestBody;
 using tests_request_http_schema::TestReq;
 
 UOPENAPI_SOURCE_TYPE(TestReq, query_items, query);
