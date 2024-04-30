@@ -16,7 +16,6 @@ struct optional_getter<boost::optional<T>> {
     static decltype(auto) value(U&& u) {
         return boost::forward<decltype(u)>(u).value();
     }
-
     static boost::optional<T> make_none() { return boost::none; }
 };
 }  // namespace uopenapi::utils

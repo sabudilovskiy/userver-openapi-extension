@@ -8,6 +8,7 @@
 #include <uopenapi/http/response.hpp>
 #include <uopenapi/http/response_info.hpp>
 #include <uopenapi/http/response_serializator/all.hpp>
+#include <uopenapi/http/schema/all.hpp>
 #include <uopenapi/http/schema_path.hpp>
 #include <uopenapi/http/schema_request.hpp>
 #include <uopenapi/http/schema_response.hpp>

@@ -1,14 +1,14 @@
 #pragma once
 #include <uopenapi/reflective/schema/appender.hpp>
 #include <uopenapi/utils/optional_meta/is_optional.hpp>
+#include <uopenapi/utils/optional_meta/optional_getter.hpp>
 #include <userver/utils/overloaded.hpp>
 
 namespace uopenapi::reflective {
 template <typename T>
 requires uopenapi::reflective::reflectivable<T>
 struct schema_appender<T, none_requirements> {
-    template <none_requirements>
-    static void append(schema_view schema) {
+    static void append(schema_view schema, none_requirements = {}) {
         if (!schema.is_root()) {
             place_ref_to_type<T>(schema.cur_place);
         }

@@ -87,8 +87,7 @@ struct converter<some_enum, std::string> {
 namespace uopenapi::reflective {
 template <>
 struct schema_appender<some_enum, none_requirements> {
-    template <none_requirements>
-    static void append(schema_view schemaView) {
+    static void append(schema_view schemaView, none_requirements = {}) {
         place_ref_to_type<some_enum>(schemaView.cur_place);
         auto type_node =
             schemaView

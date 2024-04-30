@@ -10,8 +10,7 @@ namespace uopenapi::reflective {
 template <typename T>
 requires std::is_integral_v<T>
 struct schema_appender<T, none_requirements> {
-    template <none_requirements>
-    static void append(schema_view schema) {
+    static void append(schema_view schema, none_requirements = {}) {
         auto& field_node = schema.cur_place;
         if (!field_node.IsObject()) {
             field_node = userver::formats::common::Type::kObject;
@@ -24,13 +23,9 @@ struct schema_appender<T, none_requirements> {
 
 template <typename T>
 struct schema_appender<T, number_requirements<T>> {
-    template <number_requirements<T> req>
-    static void append(schema_view schema) {
+    static void append(schema_view schema, const number_requirements<T>& req) {
         auto& field_node = schema.cur_place;
-        if (!field_node.IsObject()) {
-            field_node = userver::formats::common::Type::kObject;
-        }
-        field_node["type"] = "integer";
+        schema_appender<T, none_requirements>::append(schema);
         if (req.minimum) {
             field_node["minimum"] = *req.minimum;
         } else {

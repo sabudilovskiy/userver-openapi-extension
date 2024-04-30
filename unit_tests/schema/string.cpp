@@ -8,7 +8,7 @@ UTEST(openapi_schema_appenders, StringNone) {
     using appender = schema_appender<std::string, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
-    appender::append<none_requirements{}>(view);
+    appender::append(view, none_requirements{});
     auto expected = UOPENAPI_RAW_STRING(R"(
 type: string
 )");
@@ -19,8 +19,9 @@ UTEST(openapi_schema_appenders, StringAllEmptyFormat) {
     using appender = schema_appender<std::string, string_requirements<>>;
     schema s;
     auto view = schema_view::from_schema(s);
-    appender::append<string_requirements<>{
-        .min_length = 1, .max_length = 5, .pattern = "[a-z]"}>(view);
+    appender::append(view,
+                     string_requirements<>{
+                         .min_length = 1, .max_length = 5, .pattern = "[a-z]"});
     auto expected = UOPENAPI_RAW_STRING(R"(
 type: string
 minLength: 1
@@ -36,8 +37,9 @@ UTEST(openapi_schema_appenders, StringAll) {
         schema_appender<std::string, string_requirements<"date_time">>;
     schema s;
     auto view = schema_view::from_schema(s);
-    appender::append<string_requirements<"date_time">{
-        .min_length = 1, .max_length = 5, .pattern = "[a-z]"}>(view);
+    appender::append(view,
+                     string_requirements<"date_time">{
+                         .min_length = 1, .max_length = 5, .pattern = "[a-z]"});
     auto expected = UOPENAPI_RAW_STRING(R"(
 type: string
 format: date_time
@@ -53,7 +55,7 @@ UTEST(openapi_schema_appenders, Uuid) {
     using appender = schema_appender<boost::uuids::uuid, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
-    appender::append<none_requirements{}>(view);
+    appender::append(view, none_requirements{});
     auto expected = UOPENAPI_RAW_STRING(R"(
 type: string
 format: uuid
@@ -67,7 +69,7 @@ UTEST(openapi_schema_appenders, UserverDate) {
         schema_appender<userver::utils::datetime::Date, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
-    appender::append<none_requirements{}>(view);
+    appender::append(view, none_requirements{});
     auto expected = UOPENAPI_RAW_STRING(R"(
 type: string
 format: date

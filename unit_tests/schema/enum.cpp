@@ -27,7 +27,7 @@ UTEST(openapi_schema_appenders, EnumBasic) {
     using appender = schema_appender<SomeEnum, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
-    appender::append<none_requirements{}>(view);
+    appender::append(view, none_requirements{});
     auto expected = UOPENAPI_RAW_STRING(R"(
 components:
   schemas:

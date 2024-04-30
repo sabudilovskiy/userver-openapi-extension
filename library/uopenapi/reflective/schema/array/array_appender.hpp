@@ -7,8 +7,7 @@
 namespace uopenapi::reflective {
 template <typename T>
 struct schema_appender<std::vector<T>, array_requirements> {
-    template <array_requirements requirements>
-    static void append(schema_view schema) {
+    static void append(schema_view schema, array_requirements requirements) {
         auto& field_node = schema.cur_place;
         if (!field_node.IsObject()) {
             field_node = userver::formats::common::Type::kObject;
@@ -24,22 +23,21 @@ struct schema_appender<std::vector<T>, array_requirements> {
             field_node["uniqueItems"] = true;
         }
         auto items_node = field_node["items"];
-        schema_appender<T, none_requirements>::template append<
-            none_requirements{}>(schema.from_node(items_node));
+        schema_appender<T, none_requirements>::append(
+            schema.from_node(items_node), none_requirements{});
     }
 };
 template <typename T>
 struct schema_appender<std::vector<T>, none_requirements> {
-    template <none_requirements>
-    static void append(schema_view schema) {
+    static void append(schema_view schema, none_requirements) {
         auto& field_node = schema.cur_place;
         if (!field_node.IsObject()) {
             field_node = userver::formats::common::Type::kObject;
         }
         field_node["type"] = "array";
         auto items_node = field_node["items"];
-        schema_appender<T, none_requirements>::template append<
-            none_requirements{}>(schema.from_node(items_node));
+        schema_appender<T, none_requirements>::append(
+            schema.from_node(items_node), none_requirements{});
     }
 };
 }  // namespace uopenapi::reflective

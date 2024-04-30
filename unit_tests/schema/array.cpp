@@ -2,6 +2,8 @@
 #include <uopenapi/all.hpp>
 #include <userver/utest/utest.hpp>
 
+#include "uopenapi/reflective/requirements/none_requirements.hpp"
+
 using namespace uopenapi::reflective;
 
 namespace {
@@ -13,8 +15,7 @@ struct MockType {};
 namespace uopenapi::reflective {
 template <>
 struct schema_appender<MockType, none_requirements> {
-    template <none_requirements req>
-    static void append(schema_view view) {
+    static void append(schema_view view, none_requirements = {}) {
         auto& item_node = view.cur_place;
         if (item_node.IsObject()) {
             item_node = userver::formats::yaml::Type::kObject;
@@ -28,7 +29,7 @@ UTEST(openapi_schema_appenders, ArrayNone) {
     using appender = schema_appender<std::vector<MockType>, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
-    appender::append<none_requirements{}>(view);
+    appender::append(view, none_requirements{});
     auto expected = UOPENAPI_RAW_STRING(R"(
 type: array
 items:
@@ -41,8 +42,9 @@ UTEST(openapi_schema_appenders, ArrayFull) {
     using appender = schema_appender<std::vector<MockType>, array_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
-    appender::append<array_requirements{
-        .min_items = 1, .max_items = 5, .unique_items = true}>(view);
+    appender::append(view,
+                     array_requirements{
+                         .min_items = 1, .max_items = 5, .unique_items = true});
     auto expected = UOPENAPI_RAW_STRING(R"(
 type: array
 minItems: 1
