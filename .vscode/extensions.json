@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "sanaajani.taskrunnercode",
+        "llvm-vs-code-extensions.vscode-clangd",
+        "twxs.cmake",
+        "ms-vscode.cmake-tools",
+        "matepek.vscode-catch2-test-adapter",
+        "ms-vscode.cpptools"
+    ]
+}

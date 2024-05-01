@@ -116,7 +116,7 @@ components:
         header_enum:
           schema:
             $ref: "#/components/schemas/some_enum"
-            required: true
+          required: true
       content:
         application/json:
           schema:

@@ -65,12 +65,14 @@ find-c-compiler:
 format:
 	python3.10 scripts/generate_all_headers.py library/uopenapi uopenapi
 	python3.10 scripts/format_includes.py library boost uopenapi checks
-	find checks -name '*pp' -type f | xargs clang-format-17 -i
+	find examples -name '*pp' -type f | xargs clang-format-17 -i
 	find library -name '*pp' -type f | xargs clang-format-17 -i
+	find unit_tests -name '*pp' -type f | xargs clang-format-17 -i
 	make add-eol P=unit_tests
 	make add-eol P=examples
 	make add-eol P=library
 	make add-eol P=CMake
 	make add-eol P=.github
+	make add-eol P=.vscode
 	make add-eol P=scripts
 	make add-eol-root

@@ -4,12 +4,14 @@
 
 #pragma once
 #include <string_view>
+#include <uopenapi/http/request_info.hpp>
 #include <uopenapi/http/request_parser/parser.hpp>
 #include <uopenapi/reflective/reflectivable.hpp>
 #include <uopenapi/utils/converter/converter.hpp>
 #include <uopenapi/utils/formatted_exception.hpp>
 #include <uopenapi/utils/optional_meta/is_optional.hpp>
 #include <uopenapi/utils/optional_meta/optional_getter.hpp>
+#include <userver/formats/json/value.hpp>
 
 namespace uopenapi::http {
 template <typename Field>

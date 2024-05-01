@@ -10,6 +10,7 @@ namespace uopenapi::utils {
 template <typename Enum>
 requires enum_helpers::has_introspector<Enum>
 struct converter<std::string, Enum> {
+    static constexpr auto type = convert_type::strong;
     static Enum convert(const std::string& str) {
         auto value = enum_helpers::enum_from_string_view<Enum>(str);
         if (!value) {
@@ -23,6 +24,7 @@ struct converter<std::string, Enum> {
 template <typename Enum>
 requires enum_helpers::has_introspector<Enum>
 struct converter<std::string_view, Enum> {
+    static constexpr auto type = convert_type::strong;
     static Enum convert(std::string_view str) {
         auto value = enum_helpers::enum_from_string_view<Enum>(str);
         if (!value) {

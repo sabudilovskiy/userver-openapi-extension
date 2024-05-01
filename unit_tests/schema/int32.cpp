@@ -8,7 +8,7 @@ UTEST(openapi_schema_appenders, Int32None) {
     using appender = schema_appender<std::int32_t, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
-    appender::append<none_requirements{}>(view);
+    appender::append(view, none_requirements{});
     auto expected = UOPENAPI_RAW_STRING(R"(
 type: integer
 format: int32
@@ -28,7 +28,7 @@ UTEST(openapi_schema_appenders, Int32Full) {
         schema_appender<std::int32_t, number_requirements<std::int32_t>>;
     schema s;
     auto view = schema_view::from_schema(s);
-    appender::append<req>(view);
+    appender::append(view, req);
     auto expected = UOPENAPI_RAW_STRING(R"(
 type: integer
 format: int32

@@ -30,9 +30,9 @@ struct OptionalCookie {
     std::optional<some_enum> cookie_enum;
 };
 
-struct CORS{};
+struct CORS {};
 
-struct RespWithCors{
+struct RespWithCors {
     CORS cors;
     Body body;
 };
@@ -44,32 +44,35 @@ UOPENAPI_SOURCE_TYPE(OptionalHeader, header_enum, header);
 UOPENAPI_SOURCE_TYPE(RequiredCookie, cookie_enum, cookie);
 UOPENAPI_SOURCE_TYPE(OptionalCookie, cookie_enum, cookie);
 
-
-namespace uopenapi::http{
-    template <>
-    struct response_serializator<CORS, source_type::header>{
-        static void serialize(const CORS&, response_info& r_info, std::string_view){
-            auto add_header = [&](std::string_view name_header, std::string_view value){
-                auto [it, emplaced] = r_info.headers.emplace(name_header, value);
-                if (!emplaced){
-                    throw utils::formatted_exception("Detected multiply value of header [{}], first value: [{}], second value: [{}]", name_header, it->second, value);
-                }
-            };
-            add_header("Access-Control-Allow-Methods", "GET, POST");
-            add_header("Access-Control-Allow-Origin", "*");
-            add_header("Access-Control-Allow-Credentials", "true");
-            add_header("Access-Control-Allow-Headers", "GET, POST");
-            add_header("Access-Control-Expose-Headers", "*");
-        }
-    };
-}
+namespace uopenapi::http {
+template <>
+struct response_serializator<CORS, source_type::header> {
+    static void serialize(const CORS&, response_info& r_info,
+                          std::string_view) {
+        auto add_header = [&](std::string_view name_header,
+                              std::string_view value) {
+            auto [it, emplaced] = r_info.headers.emplace(name_header, value);
+            if (!emplaced) {
+                throw utils::formatted_exception(
+                    "Detected multiply value of header [{}], first value: "
+                    "[{}], second value: [{}]",
+                    name_header, it->second, value);
+            }
+        };
+        add_header("Access-Control-Allow-Methods", "GET, POST");
+        add_header("Access-Control-Allow-Origin", "*");
+        add_header("Access-Control-Allow-Credentials", "true");
+        add_header("Access-Control-Allow-Headers", "GET, POST");
+        add_header("Access-Control-Expose-Headers", "*");
+    }
+};
+}  // namespace uopenapi::http
 
 UTEST(http_response_serialize, RequiredBodyExist) {
     RequiredBody resp{
         .body = Body{.first = some_enum::A, .second = some_enum::B},
     };
     auto resp_info = serialize_response_info(resp);
-    using RespInfo = decltype(resp_info);
     EXPECT_EQ(resp_info.content_type,
               userver::http::content_type::kApplicationJson);
     EXPECT_EQ(resp_info.body, R"({"first":"A","second":"B"})");
@@ -86,65 +89,49 @@ UTEST(http_response_serialize, OptionalBodyExist) {
 }
 
 UTEST(http_response_serialize, RequiredHeaderExist) {
-    RequiredHeader resp{
-        .header_enum = some_enum::C
-    };
+    RequiredHeader resp{.header_enum = some_enum::C};
     auto resp_info = serialize_response_info(resp);
-    EXPECT_EQ(resp_info.content_type,
-              userver::http::content_type::kTextPlain);
+    EXPECT_EQ(resp_info.content_type, userver::http::content_type::kTextPlain);
     using RespInfo = decltype(resp_info);
     EXPECT_EQ(resp_info.headers, (RespInfo::headers_map{{"header_enum", "C"}}));
 }
 
 UTEST(http_response_serialize, OptionalHeaderExist) {
-    OptionalHeader resp{
-        .header_enum = some_enum::C
-    };
+    OptionalHeader resp{.header_enum = some_enum::C};
     auto resp_info = serialize_response_info(resp);
-    EXPECT_EQ(resp_info.content_type,
-              userver::http::content_type::kTextPlain);
+    EXPECT_EQ(resp_info.content_type, userver::http::content_type::kTextPlain);
     using RespInfo = decltype(resp_info);
     EXPECT_EQ(resp_info.headers, (RespInfo::headers_map{{"header_enum", "C"}}));
 }
 
 UTEST(http_response_serialize, OptionalHeaderMissing) {
-    OptionalHeader resp{
-    };
+    OptionalHeader resp{};
     auto resp_info = serialize_response_info(resp);
-    EXPECT_EQ(resp_info.content_type,
-              userver::http::content_type::kTextPlain);
+    EXPECT_EQ(resp_info.content_type, userver::http::content_type::kTextPlain);
     using RespInfo = decltype(resp_info);
     EXPECT_EQ(resp_info.headers, (RespInfo::headers_map{}));
 }
 
 UTEST(http_response_serialize, RequiredCookieExist) {
-    RequiredCookie resp{
-        .cookie_enum = some_enum::C
-    };
+    RequiredCookie resp{.cookie_enum = some_enum::C};
     auto resp_info = serialize_response_info(resp);
-    EXPECT_EQ(resp_info.content_type,
-              userver::http::content_type::kTextPlain);
+    EXPECT_EQ(resp_info.content_type, userver::http::content_type::kTextPlain);
     using RespInfo = decltype(resp_info);
     EXPECT_EQ(resp_info.cookies, (RespInfo::cookies_map{{"cookie_enum", "C"}}));
 }
 
 UTEST(http_response_serialize, OptionalCookieExist) {
-    OptionalCookie resp{
-        .cookie_enum = some_enum::C
-    };
+    OptionalCookie resp{.cookie_enum = some_enum::C};
     auto resp_info = serialize_response_info(resp);
-    EXPECT_EQ(resp_info.content_type,
-              userver::http::content_type::kTextPlain);
+    EXPECT_EQ(resp_info.content_type, userver::http::content_type::kTextPlain);
     using RespInfo = decltype(resp_info);
     EXPECT_EQ(resp_info.cookies, (RespInfo::cookies_map{{"cookie_enum", "C"}}));
 }
 
 UTEST(http_response_serialize, OptionalCookieMissing) {
-    OptionalCookie resp{
-    };
+    OptionalCookie resp{};
     auto resp_info = serialize_response_info(resp);
-    EXPECT_EQ(resp_info.content_type,
-              userver::http::content_type::kTextPlain);
+    EXPECT_EQ(resp_info.content_type, userver::http::content_type::kTextPlain);
     using RespInfo = decltype(resp_info);
     EXPECT_EQ(resp_info.cookies, (RespInfo::cookies_map{}));
 }
@@ -160,11 +147,12 @@ UTEST(http_response_serialize, AddCORS) {
     EXPECT_EQ(resp_info.content_type,
               userver::http::content_type::kApplicationJson);
     EXPECT_EQ(resp_info.body, R"({"first":"A","second":"B"})");
-    EXPECT_EQ(resp_info.headers, (RespInfo::headers_map{
-                                     {"Access-Control-Allow-Methods", "GET, POST"},
-                                     {"Access-Control-Allow-Origin", "*"},
-                                     {"Access-Control-Allow-Credentials", "true"},
-                                     {"Access-Control-Allow-Headers", "GET, POST"},
-                                     {"Access-Control-Expose-Headers", "*"},
-                                 }));
+    EXPECT_EQ(resp_info.headers,
+              (RespInfo::headers_map{
+                  {"Access-Control-Allow-Methods", "GET, POST"},
+                  {"Access-Control-Allow-Origin", "*"},
+                  {"Access-Control-Allow-Credentials", "true"},
+                  {"Access-Control-Allow-Headers", "GET, POST"},
+                  {"Access-Control-Expose-Headers", "*"},
+              }));
 }

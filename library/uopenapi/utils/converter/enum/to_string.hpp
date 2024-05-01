@@ -10,6 +10,8 @@ namespace uopenapi::utils {
 template <typename Enum>
 requires enum_helpers::has_introspector<Enum>
 struct converter<Enum, std::string> {
+    static constexpr auto type = convert_type::strong;
+
     static std::string convert(Enum value) {
         auto stringView = enum_helpers::enum_to_string_view(value);
         if (!stringView) {
@@ -24,9 +26,11 @@ struct converter<Enum, std::string> {
 template <typename Enum>
 requires enum_helpers::has_introspector<Enum>
 struct converter<Enum, std::string_view> {
+    static constexpr auto type = convert_type::strong;
+
     static std::string_view convert(Enum value) {
         auto stringView = enum_helpers::enum_to_string_view(value);
-        if (!value) {
+        if (!stringView) {
             auto underlying_value = (std::underlying_type_t<Enum>) value;
             throw utils::formatted_exception(
                 "Try to convert corrupted value: [{}] which type is [{}]",

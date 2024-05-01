@@ -5,9 +5,11 @@
 namespace uopenapi::reflective {
 template <>
 struct schema_appender<userver::utils::datetime::Date, none_requirements> {
-    template <none_requirements>
-    static void append(schema_view schemaView) {
+    static void append(schema_view schemaView, none_requirements = {}) {
         auto& cur = schemaView.cur_place;
+        if (!cur.IsObject()) {
+            cur = userver::formats::common::Type::kObject;
+        }
         cur["type"] = "string";
         cur["format"] = "date";
     }

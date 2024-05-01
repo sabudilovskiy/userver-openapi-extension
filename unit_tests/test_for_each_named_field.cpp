@@ -30,7 +30,7 @@ UOPENAPI_CE_REQUIREMENTS(Data, test) = string_requirements<"date-time">{
 UTEST(Openapi_json_Parse, SomeStruct) {
     schema s;
     auto view = schema_view::from_schema(s);
-    schema_appender<Data, none_requirements>::append<none_requirements{}>(view);
+    schema_appender<Data, none_requirements>::append(view, none_requirements{});
     auto result = ToString(s.v.ExtractValue());
     EXPECT_EQ(result, UOPENAPI_RAW_STRING(R"(
 components:

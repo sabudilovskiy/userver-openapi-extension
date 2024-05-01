@@ -1,5 +1,4 @@
 #pragma once
-#include <type_traits>
 #include <uopenapi/pfr_extension/for_each_named_field.hpp>
 #include <uopenapi/reflective/reflectivable.hpp>
 #include <uopenapi/reflective/requirements/requirements_field.hpp>

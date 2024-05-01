@@ -5,8 +5,7 @@
 namespace uopenapi::reflective {
 template <>
 struct schema_appender<bool, none_requirements> {
-    template <none_requirements>
-    static void append(schema_view schema) {
+    static void append(schema_view schema, none_requirements) {
         if (!schema.cur_place.IsObject()) {
             schema.cur_place = userver::formats::yaml::Type::kObject;
         }

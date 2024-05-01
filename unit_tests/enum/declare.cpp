@@ -26,7 +26,8 @@ UTEST(EnumTests, BasicDeclare) {
 }
 
 UTEST(EnumTests, BasicDeclareWithValues) {
-    using introspector = uopenapi::enum_helpers::enum_introspector<AnotherColor>;
+    using introspector =
+        uopenapi::enum_helpers::enum_introspector<AnotherColor>;
     auto names = introspector::names;
     auto values = introspector ::values;
     ASSERT_EQ(names.size(), 3);

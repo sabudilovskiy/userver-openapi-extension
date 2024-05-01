@@ -1,7 +1,11 @@
 #include <mock_converters.hpp>
+#include <optional>
 #include <raw_string.hpp>
 #include <uopenapi/all.hpp>
 #include <userver/utest/utest.hpp>
+
+#include "uopenapi/http/request_parser/parser.hpp"
+#include "uopenapi/http/source_type.hpp"
 
 using namespace uopenapi::http;
 
@@ -45,6 +49,37 @@ UOPENAPI_SOURCE_TYPE(OptionalHeader, header_enum, header);
 UOPENAPI_SOURCE_TYPE(RequiredCookie, cookie_enum, cookie);
 UOPENAPI_SOURCE_TYPE(OptionalCookie, cookie_enum, cookie);
 
+static_assert(uopenapi::http::has_request_parser<
+                  some_enum, uopenapi::http::source_type::header>,
+              "test");
+static_assert(uopenapi::http::has_request_parser<
+                  some_enum, uopenapi::http::source_type::cookie>,
+              "test");
+static_assert(uopenapi::http::has_request_parser<
+                  some_enum, uopenapi::http::source_type::query>,
+              "test");
+static_assert(
+    uopenapi::http::has_request_parser<std::optional<some_enum>,
+                                       uopenapi::http::source_type::header>,
+    "test");
+static_assert(
+    uopenapi::http::has_request_parser<std::optional<some_enum>,
+                                       uopenapi::http::source_type::cookie>,
+    "test");
+static_assert(uopenapi::http::has_request_parser<
+                  std::optional<some_enum>, uopenapi::http::source_type::query>,
+              "test");
+static_assert(uopenapi::http::has_request_parser<
+                  std::vector<some_enum>, uopenapi::http::source_type::query>,
+              "test");
+static_assert(uopenapi::http::has_request_parser<
+                  TestBody, uopenapi::http::source_type::body_JSON>,
+              "test");
+static_assert(
+    uopenapi::http::has_request_parser<std::optional<TestBody>,
+                                       uopenapi::http::source_type::body_JSON>,
+    "test");
+
 UTEST(http_request_parse, OptionalBodyMissing) {
     test_request req{.body = ""};
     auto test_req = parse_from_request<OptionalBody>(make_request_info(req));
@@ -52,8 +87,7 @@ UTEST(http_request_parse, OptionalBodyMissing) {
 }
 
 UTEST(http_request_parse, OptionalBodyExist) {
-    test_request req{
-        .body = R"(
+    test_request req{.body = R"(
 {
    "first": "A",
    "second" : "D"
@@ -67,13 +101,14 @@ UTEST(http_request_parse, OptionalBodyExist) {
 
 UTEST(http_request_parse, RequiredBodyMissing) {
     test_request req{.body = ""};
-    auto test = [&](){parse_from_request<RequiredBody>(make_request_info(req));};
+    auto test = [&]() {
+        parse_from_request<RequiredBody>(make_request_info(req));
+    };
     EXPECT_THROW(test(), std::runtime_error);
 }
 
 UTEST(http_request_parse, RequiredBodyExist) {
-    test_request req{
-        .body = R"(
+    test_request req{.body = R"(
 {
    "first": "A",
    "second" : "D"
@@ -86,128 +121,113 @@ UTEST(http_request_parse, RequiredBodyExist) {
 
 UTEST(http_request_parse, RequiredHeaderMissing) {
     test_request req{};
-    auto test = [&](){parse_from_request<RequiredHeader>(make_request_info(req));};
+    auto test = [&]() {
+        parse_from_request<RequiredHeader>(make_request_info(req));
+    };
     EXPECT_THROW(test(), std::runtime_error);
 }
 
 UTEST(http_request_parse, RequiredHeaderExist) {
-    test_request req{
-        .headers = {{"header_enum", "A"}}
-    };
+    test_request req{.headers = {{"header_enum", "A"}}};
     auto value = parse_from_request<RequiredHeader>(make_request_info(req));
     EXPECT_EQ(value.header_enum, some_enum::A);
 }
 
 UTEST(http_request_parse, OptionalHeaderMissing) {
-    test_request req{
-    };
+    test_request req{};
     auto value = parse_from_request<OptionalHeader>(make_request_info(req));
     EXPECT_EQ(value.header_enum, std::nullopt);
 }
 
 UTEST(http_request_parse, OptionalHeaderExist) {
-    test_request req{
-        .headers = {{"header_enum", "A"}}
-    };
+    test_request req{.headers = {{"header_enum", "A"}}};
     auto value = parse_from_request<OptionalHeader>(make_request_info(req));
     EXPECT_EQ(value.header_enum, some_enum::A);
 }
 
 UTEST(http_request_parse, RequiredCookieMissing) {
     test_request req{};
-    auto test = [&](){parse_from_request<RequiredCookie>(make_request_info(req));};
+    auto test = [&]() {
+        parse_from_request<RequiredCookie>(make_request_info(req));
+    };
     EXPECT_THROW(test(), std::runtime_error);
 }
 
 UTEST(http_request_parse, RequiredCookieExist) {
-    test_request req{
-        .cookies = {{"cookie_enum", "A"}}
-    };
+    test_request req{.cookies = {{"cookie_enum", "A"}}};
     auto value = parse_from_request<RequiredCookie>(make_request_info(req));
     EXPECT_EQ(value.cookie_enum, some_enum::A);
 }
 
 UTEST(http_request_parse, OptionalCookieMissing) {
-    test_request req{
-    };
+    test_request req{};
     auto value = parse_from_request<OptionalCookie>(make_request_info(req));
     EXPECT_EQ(value.cookie_enum, std::nullopt);
 }
 
 UTEST(http_request_parse, OptionalCookieExist) {
-    test_request req{
-        .cookies = {{"cookie_enum", "A"}}
-    };
+    test_request req{.cookies = {{"cookie_enum", "A"}}};
     auto value = parse_from_request<OptionalCookie>(make_request_info(req));
     EXPECT_EQ(value.cookie_enum, some_enum::A);
 }
 
 UTEST(http_request_parse, RequiredQueryMissing) {
     test_request req{};
-    auto test = [&](){parse_from_request<RequiredQuery>(make_request_info(req));};
+    auto test = [&]() {
+        parse_from_request<RequiredQuery>(make_request_info(req));
+    };
     EXPECT_THROW(test(), std::runtime_error);
 }
 
 UTEST(http_request_parse, RequiredQueryExist) {
-    test_request req{
-        .queries = {{"query_enum",{"A"}}}
-    };
+    test_request req{.queries = {{"query_enum", {"A"}}}};
     auto value = parse_from_request<RequiredQuery>(make_request_info(req));
     EXPECT_EQ(value.query_enum, some_enum::A);
 }
 
 UTEST(http_request_parse, RequiredQueryMore) {
-    test_request req{
-        .queries = {{"query_enum",{"A", "B"}}}
+    test_request req{.queries = {{"query_enum", {"A", "B"}}}};
+    auto test = [&]() {
+        parse_from_request<RequiredQuery>(make_request_info(req));
     };
-    auto test = [&](){parse_from_request<RequiredQuery>(make_request_info(req));};
     EXPECT_THROW(test(), std::runtime_error);
 }
 
 UTEST(http_request_parse, OptionalQueryMissing) {
-    test_request req{
-    };
+    test_request req{};
     auto value = parse_from_request<OptionalQuery>(make_request_info(req));
     EXPECT_EQ(value.query_enum, std::nullopt);
 }
 
 UTEST(http_request_parse, OptionalQueryExist) {
-    test_request req{
-        .queries = {{"query_enum",{"A"}}}
-    };
+    test_request req{.queries = {{"query_enum", {"A"}}}};
     auto value = parse_from_request<OptionalQuery>(make_request_info(req));
     EXPECT_EQ(value.query_enum, some_enum::A);
 }
 
 UTEST(http_request_parse, OptionalQueryMore) {
-    test_request req{
-        .queries = {{"query_enum",{"A", "B"}}}
+    test_request req{.queries = {{"query_enum", {"A", "B"}}}};
+    auto test = [&]() {
+        parse_from_request<OptionalQuery>(make_request_info(req));
     };
-    auto test = [&](){parse_from_request<OptionalQuery>(make_request_info(req));};
     EXPECT_THROW(test(), std::runtime_error);
 }
 
-
 UTEST(http_request_parse, ArrayQueryMissing) {
-    test_request req{
-    };
+    test_request req{};
     auto value = parse_from_request<ArrayQuery>(make_request_info(req));
     EXPECT_EQ(value.query_enum.size(), 0);
 }
 
 UTEST(http_request_parse, ArrayQueryExist) {
-    test_request req{
-        .queries = {{"query_enum",{"A"}}}
-    };
+    test_request req{.queries = {{"query_enum", {"A"}}}};
     auto value = parse_from_request<ArrayQuery>(make_request_info(req));
     EXPECT_EQ(value.query_enum.size(), 1);
     EXPECT_EQ(value.query_enum[0], some_enum::A);
 }
 
 UTEST(http_request_parse, ArrayQueryMore) {
-    test_request req{
-        .queries = {{"query_enum",{"A", "B"}}}
-    };
+    test_request req{.queries = {{"query_enum", {"A", "B"}}}};
     auto value = parse_from_request<ArrayQuery>(make_request_info(req));
     EXPECT_EQ(value.query_enum.size(), 2);
     EXPECT_EQ(value.query_enum[0], some_enum::A);

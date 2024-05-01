@@ -1,0 +1,11 @@
+{
+    "testMate.cpp.test.advancedExecutables": [
+        {
+            "name": "unit tests",
+            "pattern":"build_debug/unit_tests/openapi-extension-userver_unit_tests",
+            "gtest": {
+                "debug.enableOutputColouring": true
+            },
+        }
+    ],
+}

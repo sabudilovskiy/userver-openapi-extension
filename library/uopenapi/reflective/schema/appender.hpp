@@ -28,17 +28,16 @@ void place_ref_to_response(userver::formats::yaml::ValueBuilder& place) {
 template <typename T, typename requirements>
 struct schema_appender {
     // can have static void append(schema_view, requirements)
-    // can have static void append<requirements>(schema_view)
+};
+
+template <typename T, typename Requirements>
+concept has_schema_appender = requires(schema_view sv, Requirements req) {
+    schema_appender<T, Requirements>::append(sv, req);
 };
 
 template <typename T, utils::ce::string name, typename appender>
 concept field_exist_rt_append = requires(schema_view schema) {
     appender::append(schema, requirements_field<T, name>);
-};
-
-template <typename T, utils::ce::string name, typename appender>
-concept field_exist_nttp_append = requires(schema_view schema) {
-    appender::template append<requirements_field<T, name>>(schema);
 };
 
 template <typename T, typename appender>
@@ -49,24 +48,22 @@ concept exist_rt_append = requires(schema_view schema) {
 template <typename T, utils::ce::string name, typename F>
 void call_append(schema_view schema) {
     using appender = schema_appender<F, requirements_field_t<T, name>>;
-    if constexpr (nttp_requirements_field<T, name>) {
-        static_assert(field_exist_nttp_append<T, name, appender>,
-                      "static void append<req>(schema) missing");
-        return appender::template append<requirements_field<T, name>>(schema);
-    } else if constexpr (field_exist_rt_append<T, name, appender>) {
+    if constexpr (field_exist_rt_append<T, name, appender>) {
         return appender::append(schema, requirements_field<T, name>);
     } else {
         static_assert(
             field_exist_rt_append<T, name, appender>,
-            "Не найдена специализация appender с передачей requirements как "
-            "нешаблонного аргумента."
-            "Это возможно в трех случаях: "
-            "1) У requirements отсутствует constexpr. Добавьте его. Если "
-            "используете макрос, то правильный макрос: REQUIREMENTS_CE_UOPENAPI"
-            "2) Специализация не видна в месте инстанцирования call_append() "
-            "или не существует вообще"
-            "3) Вы выставили type_requirements на тип, на который некорректно "
-            "его выставлять.");
+            "The appender specialization that passed requirements as a "
+            "non-template argument was not found."
+            "This is possible in three cases: "
+            "1) Requirements does not have constexpr. Add it. If "
+            "you use a macro, then the macro is correct: "
+            "REQUIREMENTS_CE_UOPENAPI"
+            "2) Specialization is not visible at the instantiation location "
+            "call_append() "
+            "or doesn't exist at all"
+            "3) You set type_requirements to type, which is incorrect "
+            "exhibit it.");
     }
 }
 template <typename T>
@@ -80,17 +77,19 @@ struct schema_appender<T, none_requirements> {
         } else if constexpr (exist_rt_append<T, next_appender>) {
             next_appender::append(schema, requirements_type<T>);
         } else {
-            static_assert(exist_rt_append<T, next_appender>,
-                          "Не найдена специализация appender с передачей "
-                          "requirements как нешаблонного аргумента."
-                          "Это возможно в трех случаях: "
-                          "1) У requirements отсутствует constexpr. Добавьте "
-                          "его. Если используете макрос, то правильный макрос: "
-                          "REQUIREMENTS_CE_UOPENAPI"
-                          "2) Специализация не видна в месте инстанцирования "
-                          "call_append() или не существует вообще"
-                          "3) Вы выставили type_requirements на тип, на "
-                          "который некорректно его выставлять.");
+            static_assert(
+                exist_rt_append<T, next_appender>,
+                "The appender specialization that passed requirements as a "
+                "non-template argument was not found."
+                "This is possible in three cases: "
+                "1) Requirements does not have constexpr. Add it. If "
+                "you use a macro, then the macro is correct: "
+                "REQUIREMENTS_CE_UOPENAPI"
+                "2) Specialization is not visible at the instantiation "
+                "location call_append() "
+                "or doesn't exist at all"
+                "3) You set type_requirements to type, which is incorrect "
+                "exhibit it.");
         }
     }
 };

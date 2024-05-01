@@ -11,9 +11,8 @@ enum struct some_enum { A, B, C, D };
 namespace uopenapi::utils {
 template <>
 struct converter<std::string, some_enum> {
-    using source_type = std::string;
-    using result_type = some_enum;
-    static result_type convert(const source_type& source) {
+    static constexpr auto type = convert_type::strong;
+    static some_enum convert(const std::string& source) {
         if (source == "A") {
             return some_enum::A;
         }
@@ -31,9 +30,8 @@ struct converter<std::string, some_enum> {
 };
 template <>
 struct converter<std::string_view, some_enum> {
-    using source_type = std::string_view;
-    using result_type = some_enum;
-    static result_type convert(source_type source) {
+    static constexpr auto type = convert_type::strong;
+    static some_enum convert(std::string_view source) {
         if (source == "A") {
             return some_enum::A;
         }
@@ -51,9 +49,8 @@ struct converter<std::string_view, some_enum> {
 };
 template <>
 struct converter<some_enum, std::string_view> {
-    using source_type = some_enum;
-    using result_type = std::string_view;
-    static result_type convert(const source_type& source) {
+    static constexpr auto type = convert_type::strong;
+    static std::string_view convert(some_enum source) {
         switch (source) {
             case some_enum::A:
                 return "A";
@@ -69,9 +66,8 @@ struct converter<some_enum, std::string_view> {
 };
 template <>
 struct converter<some_enum, std::string> {
-    using source_type = some_enum;
-    using result_type = std::string;
-    static result_type convert(const source_type& source) {
+    static constexpr auto type = convert_type::strong;
+    static std::string convert(some_enum source) {
         switch (source) {
             case some_enum::A:
                 return "A";
@@ -91,8 +87,7 @@ struct converter<some_enum, std::string> {
 namespace uopenapi::reflective {
 template <>
 struct schema_appender<some_enum, none_requirements> {
-    template <none_requirements>
-    static void append(schema_view schemaView) {
+    static void append(schema_view schemaView, none_requirements = {}) {
         place_ref_to_type<some_enum>(schemaView.cur_place);
         auto type_node =
             schemaView

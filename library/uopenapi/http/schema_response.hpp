@@ -1,6 +1,7 @@
 #pragma once
 
 #include <uopenapi/http/field_source.hpp>
+#include <uopenapi/http/schema/response/appender.hpp>
 #include <uopenapi/http/source_type.hpp>
 #include <uopenapi/reflective/schema/appender.hpp>
 #include <uopenapi/reflective/schema/schema.hpp>
@@ -8,53 +9,6 @@
 
 namespace uopenapi::http {
 namespace details {
-template <typename T, utils::ce::string name>
-requires(uopenapi::http::field_source<T, name> == source_type::header)
-void append_response_field(reflective::schema_view schemaView) {
-    using F = pfr_extension::tuple_element_name_t<T, name>;
-    auto& [root, cur] = schemaView;
-    auto name_s = name.AsString();
-    auto header = cur["headers"][name_s]["schema"];
-
-    if constexpr (!utils::is_optional<F>) {
-        reflective::call_append<T, name, F>(schemaView.from_node(header));
-        header["required"] = true;
-    } else {
-        using raw_type = utils::optional_getter_t<T>;
-        reflective::call_append<T, name, raw_type>(
-            schemaView.from_node(header));
-        header["required"] = false;
-    }
-}
-
-template <typename T, utils::ce::string name>
-requires(uopenapi::http::field_source<T, name> == source_type::query)
-void append_response_field(reflective::schema_view) {
-    static_assert(uopenapi::http::field_source<T, name> != source_type::query,
-                  "query cannot be in response");
-}
-template <typename T, utils::ce::string name>
-requires(uopenapi::http::field_source<T, name> == source_type::cookie)
-void append_response_field(reflective::schema_view) {
-    static_assert(uopenapi::http::field_source<T, name> != source_type::query,
-                  "openapi 3.0 didnt support cookie in response");
-}
-
-template <typename T, utils::ce::string name>
-requires(uopenapi::http::field_source<T, name> == source_type::body_JSON)
-void append_response_field(reflective::schema_view schemaView) {
-    using F = pfr_extension::tuple_element_name_t<T, name>;
-    auto& [root, cur] = schemaView;
-    auto schema = cur["content"]["application/json"]["schema"];
-    auto view = schemaView.from_node(schema);
-
-    if constexpr (!utils::is_optional<F>) {
-        reflective::call_append<T, name, F>(view);
-    } else {
-        using raw_type = utils::optional_getter_t<T>;
-        reflective::call_append<T, name, raw_type>(view);
-    }
-}
 
 template <typename T, std::size_t I>
 void append_response(reflective::schema_view schemaView) {
@@ -75,8 +29,27 @@ void append_response(reflective::schema_view schemaView) {
     }
     response["description"] = "";
     auto viewResponse = schemaView.from_node(response);
-    auto visitor = [viewResponse]<typename, typename Info>() {
-        append_response_field<T, Info::name>(viewResponse);
+    auto visitor = [viewResponse]<typename Field, typename Info>() {
+        /*
+        This code is specifically written to be more gcc friendly. Explicit use
+        of Info::name leads to a segfault, auto instead of type types in st and
+        Info::name leads to absurd errors.
+        */
+        constexpr utils::ce::string name = Info::name;
+
+        using Requirements = reflective::requirements_field_t<T, name>;
+        constexpr source_type st = http::field_source<T, name>;
+        const auto& req = reflective::requirements_field<T, name>;
+
+        using appender =
+            http::schema_appender_response<Field, Requirements, st>;
+
+        auto checked_append = [&]<typename = void>
+            requires has_schema_appender_response<Field, Requirements, st>
+            () {
+            appender::append(viewResponse, name.AsStringView(), req);
+        };
+        checked_append();
     };
     pfr_extension::visit_struct<T>(visitor);
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <uopenapi/reflective/requirements/none_requirements.hpp>
 #pragma once
 
 #include <numeric>
@@ -8,16 +9,25 @@
 #include <uopenapi/reflective/schema/schema.hpp>
 
 namespace uopenapi::reflective {
+
 template <>
-struct schema_appender<std::int32_t, number_requirements<std::int32_t>> {
-    template <number_requirements<std::int32_t> req>
-    static void append(schema_view schema) {
+struct schema_appender<std::int32_t, none_requirements> {
+    static void append(schema_view schema, none_requirements = {}) {
         auto& field_node = schema.cur_place;
         if (!field_node.IsObject()) {
             field_node = userver::formats::common::Type::kObject;
         }
         field_node["type"] = "integer";
         field_node["format"] = "int32";
+    }
+};
+
+template <>
+struct schema_appender<std::int32_t, number_requirements<std::int32_t>> {
+    static void append(schema_view schema,
+                       const number_requirements<std::int32_t>& req) {
+        auto& field_node = schema.cur_place;
+        schema_appender<std::int32_t, none_requirements>::append(schema);
         if (req.minimum) {
             field_node["minimum"] = *req.minimum;
         }
@@ -33,19 +43,6 @@ struct schema_appender<std::int32_t, number_requirements<std::int32_t>> {
         if (req.multiple_of) {
             field_node["multipleOf"] = *req.multiple_of;
         }
-    }
-};
-
-template <>
-struct schema_appender<std::int32_t, none_requirements> {
-    template <none_requirements>
-    static void append(schema_view schema) {
-        auto& field_node = schema.cur_place;
-        if (!field_node.IsObject()) {
-            field_node = userver::formats::common::Type::kObject;
-        }
-        field_node["type"] = "integer";
-        field_node["format"] = "int32";
     }
 };
 

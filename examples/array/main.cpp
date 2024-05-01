@@ -28,7 +28,6 @@ struct Body {
     std::optional<std::vector<std::int64_t>> third;
 };
 
-
 /*
 Let's put requirements on each field.
 */
@@ -51,21 +50,22 @@ struct Request {
 };
 
 /*
-By default, fields from a query with names other than body are parsed from query,
-and with body it is obvious from where.
+By default, fields from a query with names other than body are parsed from
+query, and with body it is obvious from where.
 
-In general, our plan is elementary: we will add a number to the corresponding field from the body.
-Thus, we will be able to see not only the behavior.
+In general, our plan is elementary: we will add a number to the corresponding
+field from the body. Thus, we will be able to see not only the behavior.
 
 if validation failed at the request parsing stage,
 but also if validation failed at the serialization stage.
 
-Let's write the requirements for index_add, since it should be obvious from 1 to 3.
-For this we will use number_requirements.
+Let's write the requirements for index_add, since it should be obvious from 1
+to 3. For this we will use number_requirements.
 
 */
 
-UOPENAPI_CE_REQUIREMENTS(Request, index_add) = number_requirements<std::int64_t>{
+UOPENAPI_CE_REQUIREMENTS(Request,
+                         index_add) = number_requirements<std::int64_t>{
     .minimum = 1, .maximum = 3};
 
 struct Response {
@@ -85,7 +85,8 @@ struct Handler : Base {
     Handler(const userver::components::ComponentConfig& cfg,
             const userver::components::ComponentContext& ctx)
         : Base(cfg, ctx) {}
-    //Response with a small letter is a usage inside the base class, which is std::variant of all responses.
+    // Response with a small letter is a usage inside the base class, which is
+    // std::variant of all responses.
     response handle(Request req) const override {
         Resp200 resp200;
         auto& resp_body = resp200->body;
@@ -119,7 +120,7 @@ int main(int argc, char* argv[]) {
             .Append<userver::clients::dns::Component>()
             .Append<userver::server::handlers::TestsControl>();
     component_list.Append<Handler>();
-    //append schemas components
+    // append schemas components
     component_list.Append<uopenapi::components::schema_storage>();
     component_list.Append<uopenapi::components::schema_http_distributor>();
 

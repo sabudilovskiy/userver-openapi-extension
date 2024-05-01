@@ -7,8 +7,7 @@ namespace uopenapi::reflective {
 template <typename Enum>
 requires enum_helpers::has_introspector<Enum>
 struct schema_appender<Enum, none_requirements> {
-    template <none_requirements>
-    static void append(schema_view schema) {
+    static void append(schema_view schema, none_requirements) {
         if (!schema.is_root()) {
             place_ref_to_type<Enum>(schema.cur_place);
         }

@@ -8,7 +8,7 @@ UTEST(openapi_schema_appenders, GenericInt16None) {
     using appender = schema_appender<std::int16_t, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
-    appender::append<none_requirements{}>(view);
+    appender::append(view, none_requirements{});
     auto expected = UOPENAPI_RAW_STRING(R"(
 type: integer
 minimum: -32768
@@ -29,7 +29,7 @@ UTEST(openapi_schema_appenders, GenericInt16Full) {
         schema_appender<std::int16_t, number_requirements<std::int16_t>>;
     schema s;
     auto view = schema_view::from_schema(s);
-    appender::append<req>(view);
+    appender::append(view, req);
     auto expected = UOPENAPI_RAW_STRING(R"(
 type: integer
 minimum: 1
@@ -51,7 +51,7 @@ UTEST(openapi_schema_appenders, GenericInt16Part) {
         schema_appender<std::int16_t, number_requirements<std::int16_t>>;
     schema s;
     auto view = schema_view::from_schema(s);
-    appender::append<req>(view);
+    appender::append(view, req);
     auto expected = UOPENAPI_RAW_STRING(R"(
 type: integer
 minimum: -32768
