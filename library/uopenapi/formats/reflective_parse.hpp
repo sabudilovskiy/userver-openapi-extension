@@ -1,5 +1,6 @@
 #pragma once
 #include <type_traits>
+#include <uopenapi/formats/utils.hpp>
 #include <uopenapi/pfr_extension/for_each_named_field.hpp>
 #include <uopenapi/reflective/reflectivable.hpp>
 #include <uopenapi/reflective/requirements/requirements_field.hpp>
@@ -10,7 +11,8 @@
 namespace userver::formats::parse {
 
 template <typename Value, typename T>
-requires uopenapi::reflective::reflectivable<T>
+requires uopenapi::reflective::reflectivable<T> &&
+         uopenapi::formats::userver_formats_value<Value>
 T Parse(const Value& value, userver::formats::parse::To<T>) {
     T t;
     auto one_field = [&]<typename Info>(auto& field) {

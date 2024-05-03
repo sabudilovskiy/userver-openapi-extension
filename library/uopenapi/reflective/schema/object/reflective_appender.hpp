@@ -4,16 +4,14 @@
 #include <uopenapi/utils/optional_meta/optional_getter.hpp>
 #include <userver/utils/overloaded.hpp>
 
+#include "userver/formats/yaml/value_builder.hpp"
+
 namespace uopenapi::reflective {
 template <typename T>
 requires uopenapi::reflective::reflectivable<T>
 struct schema_appender<T, none_requirements> {
-    static void append(schema_view schema, none_requirements = {}) {
-        if (!schema.is_root()) {
-            place_ref_to_type<T>(schema.cur_place);
-        }
-        std::string name_type = schema_type_name<T>();
-        auto type_node = schema.root["components"]["schemas"][name_type];
+    static void place_definition(
+        schema_view schema, userver::formats::yaml::ValueBuilder& type_node) {
         if (type_node.IsObject()) {
             return;
         }
@@ -39,6 +37,14 @@ struct schema_appender<T, none_requirements> {
         auto visiter =
             userver::utils::Overloaded{required_visiter, optional_visiter};
         uopenapi::pfr_extension::visit_struct<T>(visiter);
+    }
+    static void append(schema_view schema, none_requirements = {}) {
+        if (!schema.is_root()) {
+            place_ref_to_type<T>(schema.cur_place);
+        }
+        std::string name_type = schema_type_name<T>();
+        auto type_node = schema.root["components"]["schemas"][name_type];
+        place_definition(schema, type_node);
     }
 };
 }  // namespace uopenapi::reflective

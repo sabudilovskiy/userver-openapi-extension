@@ -1,4 +1,5 @@
 #pragma once
+#include <exception>
 #include <string_view>
 
 namespace uopenapi::http {
@@ -22,5 +23,6 @@ constexpr std::string_view to_string_view(source_type sourceType) {
         case source_type::cookie:
             return "cookie";
     }
+    throw std::exception();
 }
 }  // namespace uopenapi::http

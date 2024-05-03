@@ -1,4 +1,5 @@
 #pragma once
+#include <uopenapi/formats/utils.hpp>
 #include <uopenapi/pfr_extension/for_each_named_field.hpp>
 #include <uopenapi/reflective/reflectivable.hpp>
 #include <uopenapi/reflective/requirements/requirements_field.hpp>
@@ -11,7 +12,8 @@
 namespace userver::formats::serialize {
 
 template <typename T, typename Value>
-requires uopenapi::reflective::reflectivable<T>
+requires uopenapi::reflective::reflectivable<T> &&
+         uopenapi::formats::userver_formats_value<Value>
 Value Serialize(const T& t, userver::formats::serialize::To<Value>) {
     typename Value::Builder builder = userver::formats::common::Type::kObject;
     auto one_field = [&]<typename Info, typename F>(const F& field) {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstddef>
+#include <exception>
 
 namespace uopenapi::utils::ce {
 struct access_to_null : public std::exception {
@@ -67,8 +67,8 @@ struct optional {
     }
 
    public:
-    // поля переставлены местами, потому что clang от 15 до 17 крашится в
-    // некоторых контекстах
+    // field swapped because clang crashed:
+    // https://github.com/llvm/llvm-project/issues/83718
     bool has_value_;
     T value_;
 };
