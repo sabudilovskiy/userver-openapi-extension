@@ -2,8 +2,7 @@
 #include <uopenapi/enum_helpers/introspector.hpp>
 #include <uopenapi/reflective/schema/appender.hpp>
 #include <uopenapi/reflective/schema/schema.hpp>
-
-#include "userver/formats/yaml/value_builder.hpp"
+#include <userver/formats/yaml/value_builder.hpp>
 
 namespace uopenapi::reflective {
 template <typename Enum>

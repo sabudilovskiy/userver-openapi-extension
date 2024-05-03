@@ -2,9 +2,8 @@
 #include <uopenapi/reflective/schema/appender.hpp>
 #include <uopenapi/utils/optional_meta/is_optional.hpp>
 #include <uopenapi/utils/optional_meta/optional_getter.hpp>
+#include <userver/formats/yaml/value_builder.hpp>
 #include <userver/utils/overloaded.hpp>
-
-#include "userver/formats/yaml/value_builder.hpp"
 
 namespace uopenapi::reflective {
 template <typename T>

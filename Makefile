@@ -68,9 +68,9 @@ make start-example:
 .PHONY: format
 format:
 	python3.10 scripts/generate_all_headers.py library/uopenapi uopenapi
-	python3.10 scripts/format_includes.py library boost uopenapi checks
-	python3.10 scripts/format_includes.py examples boost uopenapi checks
-	python3.10 scripts/format_includes.py unit_tests boost uopenapi checks
+	python3.10 scripts/format_includes.py library boost uopenapi checks userver
+	python3.10 scripts/format_includes.py examples boost uopenapi checks userver
+	python3.10 scripts/format_includes.py unit_tests boost uopenapi checks userver
 	find examples -name '*pp' -type f | xargs clang-format-17 -i
 	find library -name '*pp' -type f | xargs clang-format-17 -i
 	find unit_tests -name '*pp' -type f | xargs clang-format-17 -i
