@@ -1,20 +1,22 @@
 #pragma once
+
 #include <type_traits>
-#include <uopenapi/formats/utils.hpp>
 #include <uopenapi/pfr_extension/for_each_named_field.hpp>
+#include <uopenapi/pfr_extension/sorted_names.hpp>
 #include <uopenapi/reflective/reflectivable.hpp>
 #include <uopenapi/reflective/requirements/requirements_field.hpp>
 #include <uopenapi/reflective/requirements/validate.hpp>
 #include <uopenapi/utils/formatted_exception.hpp>
 #include <userver/formats/parse/to.hpp>
+#include <userver/yaml_config/yaml_config.hpp>
 
 namespace userver::formats::parse {
 
-template <typename Value, typename T>
-requires uopenapi::reflective::reflectivable<T> &&
-         uopenapi::formats::userver_formats_value<Value>
-T Parse(const Value& value, userver::formats::parse::To<T>) {
+template <typename T>
+requires uopenapi::reflective::reflectivable<T>
+T Parse(const yaml_config::YamlConfig& value, userver::formats::parse::To<T>) {
     T t;
+
     auto one_field = [&]<typename Info>(auto& field) {
         using F = std::remove_cvref_t<decltype(field)>;
         auto name = Info::name.AsStringView();

@@ -2,6 +2,7 @@
 #include <string>
 #include <unordered_map>
 #include <uopenapi/all.hpp>
+#include <uopenapi/reflective/requirements/requirements_field.hpp>
 #include <userver/utest/utest.hpp>
 
 using namespace uopenapi::reflective;
@@ -16,6 +17,7 @@ struct Data {
     int c;
     int d;
     std::string test;
+    SecretStruct secret_struct;
 };
 
 UOPENAPI_CE_REQUIREMENTS(Data, a) = number_requirements<int>{.minimum = 1,
@@ -59,11 +61,22 @@ components:
           type: string
           format: date-time
           pattern: f$
+        secret_struct:
+          $ref: "#/components/schemas/SecretStruct"
       required:
         - a
         - b
         - c
         - d
         - test
-)"));
+        - secret_struct
+    SecretStruct:
+      type: object
+      additionalProperties: false
+      properties:
+        b:
+          type: string
+      required:
+        - b
+)")) << result;
 }

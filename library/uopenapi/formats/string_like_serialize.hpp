@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <string_view>
+#include <uopenapi/formats/utils.hpp>
 #include <uopenapi/utils/converter/converter.hpp>
 #include <userver/formats/serialize/to.hpp>
 
@@ -8,7 +9,8 @@ namespace userver::formats::serialize {
 
 template <typename T, typename Value>
 requires(uopenapi::utils::has_strong_converter<T, std::string> ||
-         uopenapi::utils::has_strong_converter<T, std::string_view>)
+         uopenapi::utils::has_strong_converter<T, std::string_view>) &&
+        uopenapi::formats::userver_formats_value<Value>
 Value Serialize(const T& value, userver::formats::serialize::To<Value>) {
     if constexpr (uopenapi::utils::has_strong_converter<T, std::string_view>) {
         using converter = uopenapi::utils::converter<T, std::string_view>;

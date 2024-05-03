@@ -61,10 +61,16 @@ find-c-compiler:
         echo "Unknown compiler" >&2;  \
       fi
 
+.PHONY: start-example
+make start-example:
+	build_debug/examples/$(service)/example_$(service) --config_vars_override examples/$(service)/configs/config_vars.yaml --config examples/$(service)/configs/static_config.yaml
+
 .PHONY: format
 format:
 	python3.10 scripts/generate_all_headers.py library/uopenapi uopenapi
-	python3.10 scripts/format_includes.py library boost uopenapi checks
+	python3.10 scripts/format_includes.py library boost uopenapi checks userver
+	python3.10 scripts/format_includes.py examples boost uopenapi checks userver
+	python3.10 scripts/format_includes.py unit_tests boost uopenapi checks userver
 	find examples -name '*pp' -type f | xargs clang-format-17 -i
 	find library -name '*pp' -type f | xargs clang-format-17 -i
 	find unit_tests -name '*pp' -type f | xargs clang-format-17 -i

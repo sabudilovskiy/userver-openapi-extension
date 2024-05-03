@@ -1,6 +1,5 @@
 #pragma once
 
-#include <numeric>
 #include <uopenapi/reflective/requirements/none_requirements.hpp>
 #include <uopenapi/reflective/requirements/number/number_requirements.hpp>
 #include <uopenapi/reflective/schema/appender.hpp>

@@ -13,5 +13,11 @@
             "type": "shell",
             "group": "build",
         },
+        {
+            "label": "start unit tests",
+            "command": "${workspaceFolder}/build_debug/unit_tests/openapi-extension-userver_unit_tests",
+            "type": "process",
+            "group": "build"
+        }
     ]
 }

@@ -1,10 +1,12 @@
 #pragma once
 
 #include <string>
+#include <uopenapi/reflective/requirements/none_requirements.hpp>
 #include <uopenapi/reflective/schema/appender.hpp>
 #include <uopenapi/utils/converter/converter.hpp>
 #include <uopenapi/utils/formatted_exception.hpp>
 #include <userver/formats/json.hpp>
+#include <userver/formats/yaml.hpp>
 
 enum struct some_enum { A, B, C, D };
 
@@ -87,11 +89,8 @@ struct converter<some_enum, std::string> {
 namespace uopenapi::reflective {
 template <>
 struct schema_appender<some_enum, none_requirements> {
-    static void append(schema_view schemaView, none_requirements = {}) {
-        place_ref_to_type<some_enum>(schemaView.cur_place);
-        auto type_node =
-            schemaView
-                .root["components"]["schemas"][schema_type_name<some_enum>()];
+    static void place_definition(
+        userver::formats::yaml::ValueBuilder& type_node) {
         type_node["type"] = "string";
         type_node["enum"] = userver::formats::yaml::Type::kArray;
         type_node["enum"].PushBack("A");
@@ -99,7 +98,16 @@ struct schema_appender<some_enum, none_requirements> {
         type_node["enum"].PushBack("C");
         type_node["enum"].PushBack("D");
     }
+    static void append(schema_view schemaView, none_requirements = {}) {
+        place_ref_to_type<some_enum>(schemaView.cur_place);
+        auto type_node =
+            schemaView
+                .root["components"]["schemas"][schema_type_name<some_enum>()];
+        place_definition(type_node);
+    }
 };
+
+static_assert(has_schema_appender<some_enum, none_requirements>, "invariant");
 }  // namespace uopenapi::reflective
 
 inline some_enum Parse(const userver::formats::json::Value& j,

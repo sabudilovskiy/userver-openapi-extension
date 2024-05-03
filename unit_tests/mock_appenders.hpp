@@ -1,19 +1,21 @@
 #pragma once
+#include <uopenapi/reflective/requirements/none_requirements.hpp>
 #include <uopenapi/reflective/schema/appender.hpp>
 #include <uopenapi/utils/optional_meta/optional_getter.hpp>
 
-#define MOCK_APPENDER(TYPE, OPENAPI_TYPE_NAME)                         \
-    namespace uopenapi::reflective {                                   \
-    template <>                                                        \
-    struct schema_appender<TYPE, none_requirements> {                  \
-        static void append(schema_view view, none_requirements = {}) { \
-            auto& item_node = view.cur_place;                          \
-            if (item_node.IsObject()) {                                \
-                item_node = userver::formats::yaml::Type::kObject;     \
-            }                                                          \
-            item_node["type"] = #OPENAPI_TYPE_NAME;                    \
-        }                                                              \
-    };                                                                 \
+#define MOCK_APPENDER(TYPE, OPENAPI_TYPE_NAME)                                \
+    namespace uopenapi::reflective {                                          \
+    template <>                                                               \
+    struct schema_appender<TYPE, none_requirements> {                         \
+        static void append(schema_view view, none_requirements = {}) {        \
+            auto& item_node = view.cur_place;                                 \
+            if (item_node.IsObject()) {                                       \
+                item_node = userver::formats::yaml::Type::kObject;            \
+            }                                                                 \
+            item_node["type"] = #OPENAPI_TYPE_NAME;                           \
+        }                                                                     \
+    };                                                                        \
+    static_assert(has_schema_appender<TYPE, none_requirements>, "invariant"); \
     }
 
 struct MockString {};

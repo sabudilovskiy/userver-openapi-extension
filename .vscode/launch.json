@@ -62,6 +62,36 @@
                     "ignoreFailures": true
                 }
             ]
-        }
+        },
+        {
+            "name": "[example_array][gdb] launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build_debug/examples/array/example_array",
+            "args": [
+                "--config_vars_override", 
+                "${workspaceFolder}/examples/array/configs/config_vars.yaml", 
+                "--config", 
+                "${workspaceFolder}/examples/array/configs/static_config.yaml"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        
     ]
 }
