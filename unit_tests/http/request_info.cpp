@@ -43,41 +43,24 @@ struct ArrayQuery {
 }  // namespace tests_request_http
 
 using namespace tests_request_http;
+
 UOPENAPI_SOURCE_TYPE(RequiredHeader, header_enum, header);
 UOPENAPI_SOURCE_TYPE(OptionalHeader, header_enum, header);
 UOPENAPI_SOURCE_TYPE(RequiredCookie, cookie_enum, cookie);
 UOPENAPI_SOURCE_TYPE(OptionalCookie, cookie_enum, cookie);
 
-static_assert(uopenapi::http::has_request_parser<
-                  some_enum, uopenapi::http::source_type::header>,
-              "test");
-static_assert(uopenapi::http::has_request_parser<
-                  some_enum, uopenapi::http::source_type::cookie>,
-              "test");
-static_assert(uopenapi::http::has_request_parser<
-                  some_enum, uopenapi::http::source_type::query>,
-              "test");
-static_assert(
-    uopenapi::http::has_request_parser<std::optional<some_enum>,
-                                       uopenapi::http::source_type::header>,
-    "test");
-static_assert(
-    uopenapi::http::has_request_parser<std::optional<some_enum>,
-                                       uopenapi::http::source_type::cookie>,
-    "test");
-static_assert(uopenapi::http::has_request_parser<
-                  std::optional<some_enum>, uopenapi::http::source_type::query>,
-              "test");
-static_assert(uopenapi::http::has_request_parser<
-                  std::vector<some_enum>, uopenapi::http::source_type::query>,
-              "test");
-static_assert(uopenapi::http::has_request_parser<
-                  TestBody, uopenapi::http::source_type::body_JSON>,
-              "test");
-static_assert(
-    uopenapi::http::has_request_parser<std::optional<TestBody>,
-                                       uopenapi::http::source_type::body_JSON>,
-    "test");
+using st = source_type;
+// clang-format off
+static_assert(has_request_parser<some_enum, st::header>, "invariant");
+static_assert(has_request_parser<some_enum, st::cookie>, "invariant");
+static_assert(has_request_parser<some_enum, st::query>, "invariant");
+static_assert(has_request_parser<std::optional<some_enum>, st::header>, "invariant");
+static_assert(has_request_parser<std::optional<some_enum>, st::cookie>, "invariant");
+static_assert(has_request_parser<std::optional<some_enum>, st::query>, "invariant");
+static_assert(has_request_parser<std::vector<some_enum>, st::query>, "invariant");
+static_assert(has_request_parser<TestBody, st::body_JSON>, "invariant");
+static_assert(has_request_parser<std::optional<TestBody>, st::body_JSON>, "invariant");
+// clang-format on
 
 UTEST(http_request_parse, OptionalBodyMissing) {
     test_request req{.body = ""};

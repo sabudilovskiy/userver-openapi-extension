@@ -4,7 +4,7 @@
 
 using namespace uopenapi::reflective;
 
-UTEST(openapi_schema_appenders, Int32None) {
+UTEST(openapi_schema, Int32None) {
     using appender = schema_appender<std::int32_t, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
@@ -16,7 +16,7 @@ format: int32
     EXPECT_EQ(ToString(s.v.ExtractValue()), expected);
 }
 
-UTEST(openapi_schema_appenders, Int32Full) {
+UTEST(openapi_schema, Int32Full) {
     constexpr auto req =
         uopenapi::reflective::number_requirements<std::int32_t>{
             .minimum = 1,

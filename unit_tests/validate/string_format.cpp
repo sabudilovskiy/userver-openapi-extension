@@ -4,7 +4,7 @@
 
 using namespace uopenapi::reflective;
 
-UTEST(openapi_validates, StringFormatDatetime) {
+UTEST(openapi_validate, StringFormatDatetime) {
     std::string v = "test";
     constexpr string_requirements<"date-time"> req{};
     auto result = validate(v, uopenapi::utils::create_nttp_adl<req>());

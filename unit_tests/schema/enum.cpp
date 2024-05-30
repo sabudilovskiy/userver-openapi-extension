@@ -23,7 +23,7 @@ static_assert(uopenapi::enum_helpers::has_introspector<SomeEnum>);
 
 MOCK_OPENAPI_NAME(SomeEnum);
 
-UTEST(openapi_schema_appenders, EnumBasic) {
+UTEST(openapi_schema, EnumBasic) {
     using appender = schema_appender<SomeEnum, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);

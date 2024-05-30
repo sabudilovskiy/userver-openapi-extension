@@ -4,7 +4,7 @@
 
 using namespace uopenapi::reflective;
 
-UTEST(openapi_schema_appenders, GenericInt16None) {
+UTEST(openapi_schema, GenericInt16None) {
     using appender = schema_appender<std::int16_t, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
@@ -17,7 +17,7 @@ maximum: 32767
     EXPECT_EQ(ToString(s.v.ExtractValue()), expected);
 }
 
-UTEST(openapi_schema_appenders, GenericInt16Full) {
+UTEST(openapi_schema, GenericInt16Full) {
     constexpr auto req =
         uopenapi::reflective::number_requirements<std::int16_t>{
             .minimum = 1,
@@ -41,7 +41,7 @@ multipleOf: 3
     EXPECT_EQ(ToString(s.v.ExtractValue()), expected);
 }
 
-UTEST(openapi_schema_appenders, GenericInt16Part) {
+UTEST(openapi_schema, GenericInt16Part) {
     constexpr auto req =
         uopenapi::reflective::number_requirements<std::int16_t>{
             .exclusive_minimum = true,

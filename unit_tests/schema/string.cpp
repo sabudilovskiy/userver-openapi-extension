@@ -4,7 +4,7 @@
 
 using namespace uopenapi::reflective;
 
-UTEST(openapi_schema_appenders, StringNone) {
+UTEST(openapi_schema, StringNone) {
     using appender = schema_appender<std::string, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
@@ -15,7 +15,7 @@ type: string
     EXPECT_EQ(ToString(s.v.ExtractValue()), expected);
 }
 
-UTEST(openapi_schema_appenders, StringAllEmptyFormat) {
+UTEST(openapi_schema, StringAllEmptyFormat) {
     using appender = schema_appender<std::string, string_requirements<>>;
     schema s;
     auto view = schema_view::from_schema(s);
@@ -32,7 +32,7 @@ pattern: "[a-z]"
     EXPECT_EQ(got, expected);
 }
 
-UTEST(openapi_schema_appenders, StringAll) {
+UTEST(openapi_schema, StringAll) {
     using appender =
         schema_appender<std::string, string_requirements<"date_time">>;
     schema s;
@@ -51,7 +51,7 @@ pattern: "[a-z]"
     EXPECT_EQ(got, expected);
 }
 
-UTEST(openapi_schema_appenders, Uuid) {
+UTEST(openapi_schema, Uuid) {
     using appender = schema_appender<boost::uuids::uuid, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
@@ -64,7 +64,7 @@ format: uuid
     EXPECT_EQ(got, expected);
 }
 
-UTEST(openapi_schema_appenders, UserverDate) {
+UTEST(openapi_schema, UserverDate) {
     using appender =
         schema_appender<userver::utils::datetime::Date, none_requirements>;
     schema s;

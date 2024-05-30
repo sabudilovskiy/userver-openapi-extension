@@ -11,7 +11,7 @@ using enum_tests::Color;
 static_assert(uopenapi::enum_helpers::has_introspector<Color>);
 static_assert(uopenapi::enum_helpers::has_introspector<AnotherColor>);
 
-UTEST(EnumTests, BasicDeclare) {
+UTEST(enum_tests, BasicDeclare) {
     using introspector = uopenapi::enum_helpers::enum_introspector<Color>;
     auto names = introspector::names;
     auto values = introspector ::values;
@@ -25,7 +25,7 @@ UTEST(EnumTests, BasicDeclare) {
     ASSERT_EQ(values[2], Color::blue);
 }
 
-UTEST(EnumTests, BasicDeclareWithValues) {
+UTEST(enum_tests, BasicDeclareWithValues) {
     using introspector =
         uopenapi::enum_helpers::enum_introspector<AnotherColor>;
     auto names = introspector::names;

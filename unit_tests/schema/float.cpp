@@ -4,7 +4,7 @@
 
 using namespace uopenapi::reflective;
 
-UTEST(openapi_schema_appenders, FloatNone) {
+UTEST(openapi_schema, FloatNone) {
     using appender = schema_appender<float, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
@@ -16,7 +16,7 @@ format: float
     EXPECT_EQ(ToString(s.v.ExtractValue()), expected);
 }
 
-UTEST(openapi_schema_appenders, FloatReqs) {
+UTEST(openapi_schema, FloatReqs) {
     constexpr auto req = uopenapi::reflective::number_requirements<float>{
         .minimum = 1.5,
         .maximum = 6.5,
