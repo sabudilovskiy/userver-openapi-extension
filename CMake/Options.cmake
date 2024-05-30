@@ -9,7 +9,7 @@ CreateGlobalVariable(
 
 CreateProjectVariable(
         variable USERVER_VERSION
-        value 690596421c5278d06a6ce430c60c65586ec031f8
+        value 2ab37ab25adf2e9acc1ec31807dd632b02e9adfb
 )
 
 #size of constexpr strings
