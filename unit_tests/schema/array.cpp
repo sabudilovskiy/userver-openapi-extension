@@ -24,7 +24,7 @@ struct schema_appender<MockType, none_requirements> {
 };
 }  // namespace uopenapi::reflective
 
-UTEST(openapi_schema_appenders, ArrayNone) {
+UTEST(openapi_schema, ArrayNone) {
     using appender = schema_appender<std::vector<MockType>, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
@@ -37,7 +37,7 @@ items:
     EXPECT_EQ(ToString(s.v.ExtractValue()), expected);
 }
 
-UTEST(openapi_schema_appenders, ArrayFull) {
+UTEST(openapi_schema, ArrayFull) {
     using appender = schema_appender<std::vector<MockType>, array_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);

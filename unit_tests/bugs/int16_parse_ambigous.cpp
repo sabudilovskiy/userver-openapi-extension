@@ -3,7 +3,7 @@
 #include <userver/formats/parse/common.hpp>
 #include <userver/utest/utest.hpp>
 
-UTEST(Bugs, Int16tParseAmibigous) {
+UTEST(bugs, Int16tParseAmibigous) {
     userver::formats::json::ValueBuilder test =
         userver::formats::json::Type::kObject;
     test["ss"] = 111;

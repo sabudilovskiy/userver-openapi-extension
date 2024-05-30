@@ -11,7 +11,7 @@ UOPENAPI_DECLARE_ENUM(Color3, int, red, green, blue);
 using enum_tests::Color3;
 using enum enum_tests::Color3;
 
-UTEST(EnumTests, JsonEnumSerialize) {
+UTEST(enum_tests, JsonEnumSerialize) {
     userver::formats::json::ValueBuilder obj;
     obj["color1"] = red;
     obj["color2"] = green;
@@ -21,7 +21,7 @@ UTEST(EnumTests, JsonEnumSerialize) {
     EXPECT_EQ(json, expected) << json;
 }
 
-UTEST(EnumTests, JsonEnumParse) {
+UTEST(enum_tests, JsonEnumParse) {
     auto json_str = R"(
 {
     "color1" : "red",

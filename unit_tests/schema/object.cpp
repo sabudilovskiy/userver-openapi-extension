@@ -25,7 +25,7 @@ struct BasicObjectOpt {
 MOCK_OPENAPI_NAME(BasicObject);
 MOCK_OPENAPI_NAME(BasicObjectOpt);
 
-UTEST(openapi_schema_appenders, BasicObject) {
+UTEST(openapi_schema, BasicObject) {
     using appender = schema_appender<BasicObject, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
@@ -48,7 +48,7 @@ components:
     EXPECT_EQ(ToString(s.v.ExtractValue()), expected);
 }
 
-UTEST(openapi_schema_appenders, ObjectOptionalFields) {
+UTEST(openapi_schema, ObjectOptionalFields) {
     using appender = schema_appender<BasicObjectOpt, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
@@ -92,7 +92,7 @@ constexpr auto ::uopenapi::reflective::requirements_field<BasicObjectReqFields,
                                                           "f2"> =
     some_requirements{.max_length = 5};
 
-UTEST(openapi_schema_appenders, ObjectReqFields) {
+UTEST(openapi_schema, ObjectReqFields) {
     using appender = schema_appender<BasicObjectReqFields, none_requirements>;
     schema s;
     auto view = schema_view::from_schema(s);
@@ -115,4 +115,41 @@ components:
         - f2
 )");
     EXPECT_EQ(ToString(s.v.ExtractValue()), expected);
+}
+
+struct SubObject {
+    MockString mock_string;
+};
+
+struct Object {
+    SubObject sub_object;
+};
+
+UTEST(openapi_schema, ObjectRef) {
+    using appender = schema_appender<Object, none_requirements>;
+    schema s;
+    auto view = schema_view::from_schema(s);
+    appender::append(view, none_requirements{});
+    auto expected = UOPENAPI_RAW_STRING(R"(
+components:
+  schemas:
+    Object:
+      type: object
+      additionalProperties: false
+      properties:
+        sub_object:
+          $ref: "#/components/schemas/SubObject"
+      required:
+        - sub_object
+    SubObject:
+      type: object
+      additionalProperties: false
+      properties:
+        mock_string:
+          type: string
+      required:
+        - mock_string
+)");
+    auto got = ToString(s.v.ExtractValue());
+    EXPECT_EQ(got, expected) << got;
 }

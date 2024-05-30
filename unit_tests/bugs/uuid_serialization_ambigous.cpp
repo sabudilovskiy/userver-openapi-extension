@@ -2,7 +2,7 @@
 #include <userver/formats/serialize/boost_uuid.hpp>
 #include <userver/utest/utest.hpp>
 
-UTEST(Bugs, UuidSerializationAmibigous) {
+UTEST(bugs, UuidSerializationAmibigous) {
     userver::formats::json::ValueBuilder test =
         userver::formats::json::Type::kObject;
     boost::uuids::uuid s;

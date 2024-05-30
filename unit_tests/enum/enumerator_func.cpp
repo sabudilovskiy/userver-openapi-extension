@@ -7,7 +7,7 @@ UOPENAPI_DECLARE_ENUM(Color2, int, red, green, blue);
 }  // namespace enum_tests
 using enum_tests::Color2;
 
-UTEST(EnumTests, BasicEnumeratorFunc) {
+UTEST(enum_tests, BasicEnumeratorFunc) {
     using enum enum_tests::Color2;
     userver::utils::TrivialBiMap biMap =
         uopenapi::enum_helpers::create_enumerator_func<Color2>();
