@@ -19,7 +19,10 @@ FetchContent_MakeAvailable(userver)
 
 enable_testing()
 
-userver_setup_environment()
+if (${PROJECT_NAME}_SETUP_ENV)
+    message(STATUS "UOPENAPI set env: ${${PROJECT_NAME}_SETUP_ENV}")
+    userver_setup_environment()
+endif()
 
 include(Library.cmake)
 

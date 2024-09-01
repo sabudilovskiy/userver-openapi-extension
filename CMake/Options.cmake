@@ -41,6 +41,11 @@ CreateProjectVariable(
 )
 
 CreateProjectVariable(
+        variable SETUP_ENV
+        value ON
+)
+
+CreateProjectVariable(
         variable COMPILE_OPTIONS_VISIBLE
         value PUBLIC
 )
